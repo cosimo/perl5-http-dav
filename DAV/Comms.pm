@@ -1,4 +1,4 @@
-# $Id: Comms.pm,v 0.21 2002/04/06 17:45:42 pcollins Exp $
+# $Id$
 package HTTP::DAV::Comms;
 
 use HTTP::DAV::Utils;

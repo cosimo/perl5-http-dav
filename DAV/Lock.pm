@@ -1,4 +1,4 @@
-# $Id: Lock.pm,v 0.8 2001/08/28 16:27:57 pcollins Exp $
+# $Id$
 package HTTP::DAV::Lock;
 
 use HTTP::DAV::Utils;

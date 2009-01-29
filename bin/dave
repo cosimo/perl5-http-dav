@@ -1,5 +1,5 @@
 #!/usr/local/bin/perl -w
-# $Id: dave,v 1.23 2001/10/30 15:48:21 pcollins Exp $
+# $Id$
 
 use strict;
 use vars '$AUTOLOAD';

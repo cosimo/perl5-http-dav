@@ -1,4 +1,4 @@
-# $Id: DAV.pm,v 0.35 2008/11/03 10:05:00 cosimo Exp $
+# $Id$
 package HTTP::DAV;
 
 use LWP;

@@ -1,4 +1,4 @@
-$Id: README.pod,v 1.9 2002/04/13 12:20:37 pcollins Exp $
+$Id$
 
 =for html 
 <div id="content">
@@ -253,7 +253,7 @@ All rights reserved.
 
 You may distribute this module under the terms of either the GNU General Public License or the Artistic License, as specified in the Perl README file.
 
-$Id: README.pod,v 1.9 2002/04/13 12:20:37 pcollins Exp $
+$Id$
 
 =cut
 

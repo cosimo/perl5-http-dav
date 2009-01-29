@@ -1,4 +1,4 @@
-# $Id: Resource.pm,v 0.29 2002/04/06 17:45:42 pcollins Exp $
+# $Id$
 package HTTP::DAV::Resource;
 
 use HTTP::DAV;

@@ -1,4 +1,4 @@
-# $Id: Utils.pm,v 0.10 2001/09/07 17:23:38 pcollins Exp $
+# $Id$
 package HTTP::DAV::Utils;
 
 $VERSION = sprintf("%d.%02d", q$Revision: 0.10 $ =~ /(\d+)\.(\d+)/);
