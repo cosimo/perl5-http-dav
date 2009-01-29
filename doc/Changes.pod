@@ -12,6 +12,25 @@ Revision history for PerlDAV
 
 =end text
   
+=head2 v0.36 (released 2009/01/29):
+
+=over 4
+
+=item *
+
+B<bug fixes>
+
+  - Fixed RT #19616 (http://rt.cpan.org/Public/Bug/Display.html?id=19616),
+    LWP::UserAgent::redirect_ok() is not changed anymore. We're subclassing
+    it from HTTP::DAV::UserAgent and overriding redirect_ok() there.
+
+  - Fixed RT #42877 (http://rt.cpan.org/Public/Bug/Display.html?id=42877),
+    HTTP::DAV::UserAgent::credentials() has been modified to behave like
+    LWP::UserAgent::credentials(), otherwise basic authentication breakages
+    can occur.
+
+=back
+
 =head2 v0.35 (released 2008/11/03):
 
 =over 4
