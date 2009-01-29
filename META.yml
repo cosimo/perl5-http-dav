@@ -1,0 +1,13 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         HTTP-DAV
+version:      0.35
+version_from: DAV.pm
+installdirs:  site
+requires:
+    LWP:                           5.48
+    Scalar::Util:                  0
+    XML::DOM:                      0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.30_01
