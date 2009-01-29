@@ -1,4 +1,5 @@
 # $Id$
+
 package HTTP::DAV;
 
 use LWP;
@@ -12,20 +13,23 @@ use URI::file;
 use URI::Escape;
 use FileHandle;
 use File::Glob;
+
 #use Carp (cluck);
 
-use Cwd qw(getcwd); # Can't import all of it, cwd clashes with our namespace.
+use Cwd qw(getcwd);  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION     = '0.35';
-               #sprintf("%d.%02d", q$Revision: 0.31 $ =~ /(\d+)\.(\d+)/);
-$VERSION_DATE= '2008/11/03';
-               #sprintf("%s", q$Date: 2002/04/13 12:21:07 $ =~ m# (.*) $# );
+$VERSION = '0.36';
 
-$DEBUG=0; # Set this up to 3
+#sprintf("%d.%02d", q$Revision: 0.31 $ =~ /(\d+)\.(\d+)/);
+$VERSION_DATE = '2009/01/29';
+
+#sprintf("%s", q$Date: 2002/04/13 12:21:07 $ =~ m# (.*) $# );
+
+$DEBUG = 0;          # Set this up to 3
 
 use strict;
-use vars  qw($VERSION $VERSION_DATE $DEBUG);
+use vars qw($VERSION $VERSION_DATE $DEBUG);
 
 sub new {
     my $class = shift;
@@ -35,208 +39,222 @@ sub new {
 }
 
 ###########################################################################
-sub clone
-{
-    my $self = @_;
+sub clone {
+    my $self  = @_;
     my $class = ref($self);
     my %clone = %{$self};
-    bless { %clone }, $class;
+    bless {%clone}, $class;
 }
 
 ###########################################################################
 {
-   sub _init
-   {
-       my($self,@p) = @_;
-       my ($uri,$headers,$useragent) = 
-          HTTP::DAV::Utils::rearrange(['URI','HEADERS','USERAGENT'], @p);
 
-       $self->{_lockedresourcelist} = HTTP::DAV::ResourceList->new();
-       $self->{_comms} = HTTP::DAV::Comms->new(-useragent=>$useragent);
-       if ( $uri ) {
-          $self->set_workingresource($self->new_resource( -uri => $uri)); 
-       }
+    sub _init {
+        my ( $self, @p ) = @_;
+        my ( $uri, $headers, $useragent )
+            = HTTP::DAV::Utils::rearrange( [ 'URI', 'HEADERS', 'USERAGENT' ],
+            @p );
 
-       return $self;
-   }
+        $self->{_lockedresourcelist} = HTTP::DAV::ResourceList->new();
+        $self->{_comms} = HTTP::DAV::Comms->new( -useragent => $useragent );
+        if ($uri) {
+            $self->set_workingresource( $self->new_resource( -uri => $uri ) );
+        }
+
+        return $self;
+    }
 }
 
 sub DebugLevel {
-   shift if ref($_[0]) =~ /HTTP/;
-   my $level = shift;
-   $level =256 if !defined $level || $level eq "";
+    shift if ref( $_[0] ) =~ /HTTP/;
+    my $level = shift;
+    $level = 256 if !defined $level || $level eq "";
 
-   $DEBUG=$level;
+    $DEBUG = $level;
 }
 
 ######################################################################
 # new_resource acts as a resource factory.
 # It will create a new one for you each time you ask.
-# Sometimes, if it holds state information about this 
+# Sometimes, if it holds state information about this
 # URL, it may return an old populated object.
 sub new_resource {
-   my ($self) = shift;
+    my ($self) = shift;
 
-   ####
-   # This is the order of the arguments unless used as
-   # named parameters
-   my ($uri) = HTTP::DAV::Utils::rearrange(['URI'], @_);
-   $uri = HTTP::DAV::Utils::make_uri($uri);
-   #cluck "new_resource: now $uri\n";
+    ####
+    # This is the order of the arguments unless used as
+    # named parameters
+    my ($uri) = HTTP::DAV::Utils::rearrange( ['URI'], @_ );
+    $uri = HTTP::DAV::Utils::make_uri($uri);
 
-   my $resource = $self->{_lockedresourcelist}->get_member($uri);
-   if ($resource) {
-      print "new_resource: For $uri, returning existing resource $resource\n" if $HTTP::DAV::DEBUG>2;
-      # Just reset the url to honour trailing slash status.
-      $resource->set_uri($uri);
-      return $resource;
-   } else {
-      print "new_resource: For $uri, creating new resource\n" if $HTTP::DAV::DEBUG>2;
-      return HTTP::DAV::Resource->new ( 
-           -Comms              => $self->{_comms},
-           -LockedResourceList => $self->{_lockedresourcelist},
-           -uri => $uri,
-           -Client => $self
-           );
-   }
+    #cluck "new_resource: now $uri\n";
+
+    my $resource = $self->{_lockedresourcelist}->get_member($uri);
+    if ($resource) {
+        print
+            "new_resource: For $uri, returning existing resource $resource\n"
+            if $HTTP::DAV::DEBUG > 2;
+
+        # Just reset the url to honour trailing slash status.
+        $resource->set_uri($uri);
+        return $resource;
+    }
+    else {
+        print "new_resource: For $uri, creating new resource\n"
+            if $HTTP::DAV::DEBUG > 2;
+        return HTTP::DAV::Resource->new(
+            -Comms              => $self->{_comms},
+            -LockedResourceList => $self->{_lockedresourcelist},
+            -uri                => $uri,
+            -Client             => $self
+        );
+    }
 }
 
 ###########################################################################
 # ACCESSOR METHODS
 
 # GET
-sub get_user_agent  { $_[0]->{_comms}->get_user_agent(); }
-sub get_last_request   { $_[0]->{_comms}->get_last_request(); }
-sub get_last_response  { $_[0]->{_comms}->get_last_response(); }
-sub get_workingresource{ $_[0]->{_workingresource} }
-sub get_workingurl     { $_[0]->{_workingresource}->get_uri() if defined $_[0]->{_workingresource}; }
+sub get_user_agent      { $_[0]->{_comms}->get_user_agent(); }
+sub get_last_request    { $_[0]->{_comms}->get_last_request(); }
+sub get_last_response   { $_[0]->{_comms}->get_last_response(); }
+sub get_workingresource { $_[0]->{_workingresource} }
+
+sub get_workingurl {
+    $_[0]->{_workingresource}->get_uri()
+        if defined $_[0]->{_workingresource};
+}
 sub get_lockedresourcelist { $_[0]->{_lockedresourcelist} }
 
 # SET
-sub set_workingresource{ $_[0]->{_workingresource} = $_[1]; }
-sub credentials{ shift->{_comms}->credentials(@_); }
+sub set_workingresource { $_[0]->{_workingresource} = $_[1]; }
+sub credentials { shift->{_comms}->credentials(@_); }
 
 ######################################################################
 # Error handling
 
-
 ## Error conditions
 my %err = (
-   'ERR_WRONG_ARGS'    => 'Wrong number of arguments supplied.',
-   'ERR_UNAUTHORIZED'  => 'Unauthorized. ',
-   'ERR_NULL_RESOURCE' => 'Not connected. Do an open first. ',
-   'ERR_RESP_FAIL'     => 'Server response: ',
-   'ERR_GENERIC'       => '',
+    'ERR_WRONG_ARGS'    => 'Wrong number of arguments supplied.',
+    'ERR_UNAUTHORIZED'  => 'Unauthorized. ',
+    'ERR_NULL_RESOURCE' => 'Not connected. Do an open first. ',
+    'ERR_RESP_FAIL'     => 'Server response: ',
+    'ERR_GENERIC'       => '',
 );
 
 sub err {
-   my ($self,$error,$mesg,$url) = @_;
+    my ( $self, $error, $mesg, $url ) = @_;
 
-   my $err_msg;
-   $err_msg = "";
-   $err_msg .= $err{$error} if defined $err{$error};
-   $err_msg .= $mesg if defined $mesg;
-   $err_msg .= "ERROR" unless defined $err_msg;
+    my $err_msg;
+    $err_msg = "";
+    $err_msg .= $err{$error} if defined $err{$error};
+    $err_msg .= $mesg if defined $mesg;
+    $err_msg .= "ERROR" unless defined $err_msg;
 
-   $self->{_message} = $err_msg;
-   my $callback=$self->{_callback};
-   &$callback(0,$err_msg,$url) if $callback;
+    $self->{_message} = $err_msg;
+    my $callback = $self->{_callback};
+    &$callback( 0, $err_msg, $url ) if $callback;
 
-   if ($self->{_multi_op}) {
-      push(@{$self->{_errors}},$err_msg);
-   }
-   $self->{_status} = 0;
+    if ( $self->{_multi_op} ) {
+        push( @{ $self->{_errors} }, $err_msg );
+    }
+    $self->{_status} = 0;
 
-   return 0;
+    return 0;
 }
 
 sub ok {
-   my ($self,$mesg,$url,$so_far,$length) = @_;
+    my ( $self, $mesg, $url, $so_far, $length ) = @_;
 
-   $self->{_message} = $mesg;
-   my $callback=$self->{_callback};
-   &$callback(1,$mesg,$url,$so_far,$length) if $callback;
+    $self->{_message} = $mesg;
+    my $callback = $self->{_callback};
+    &$callback( 1, $mesg, $url, $so_far, $length ) if $callback;
 
-   if ( $self->{_multi_op} ) {
-      $self->{_status} = 1 unless $self->{_status} == 0;
-   } else {
-      $self->{_status} = 1;
-   }
-   return 1;
+    if ( $self->{_multi_op} ) {
+        $self->{_status} = 1 unless $self->{_status} == 0;
+    }
+    else {
+        $self->{_status} = 1;
+    }
+    return 1;
 }
 
 sub _start_multi_op {
-   my ($self,$mesg,$callback) = @_;
-   $_[0]->{_multi_mesg} = $mesg || "";
-   $_[0]->{_status} = 1;
-   $_[0]->{_errors} = ();
-   $_[0]->{_multi_op} = 1;
-   $_[0]->{_callback} = $callback if defined $callback;
+    my ( $self, $mesg, $callback ) = @_;
+    $_[0]->{_multi_mesg} = $mesg || "";
+    $_[0]->{_status}     = 1;
+    $_[0]->{_errors}     = ();
+    $_[0]->{_multi_op}   = 1;
+    $_[0]->{_callback}   = $callback if defined $callback;
 }
 
-sub _end_multi_op { 
-   my ($self) = @_;
-   $self->{_multi_op} = 0; 
-   $self->{_callback} = undef; 
-   my $message = $self->{_multi_mesg} . " ";
-   $message .= ($self->{_status}) ? "succeeded" : "failed";
-   $self->{_message} = $message;
-   $self->{_multi_mesg} = undef;
+sub _end_multi_op {
+    my ($self) = @_;
+    $self->{_multi_op} = 0;
+    $self->{_callback} = undef;
+    my $message = $self->{_multi_mesg} . " ";
+    $message .= ( $self->{_status} ) ? "succeeded" : "failed";
+    $self->{_message}    = $message;
+    $self->{_multi_mesg} = undef;
 }
 
-sub message   {  $_[0]->{_message}||"" };
-sub errors    {@{$_[0]->{_errors}}||() };
-sub is_success{  $_[0]->{_status}      };
+sub message { $_[0]->{_message}     || "" }
+sub errors  { @{ $_[0]->{_errors} } || () }
+sub is_success { $_[0]->{_status} }
 
 ######################################################################
 # Operations
 
 # CWD
 sub cwd {
-   my($self,@p) = @_;
-   my ($url) = HTTP::DAV::Utils::rearrange(['URL'], @p);
+    my ( $self, @p ) = @_;
+    my ($url) = HTTP::DAV::Utils::rearrange( ['URL'], @p );
 
-   return $self->err('ERR_WRONG_ARGS') if (!defined $url || $url eq "");
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_WRONG_ARGS') if ( !defined $url || $url eq "" );
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   $url = HTTP::DAV::Utils::make_trail_slash($url);
-   my $new_uri = $self->get_absolute_uri($url);
-   ($new_uri) = $self->get_globs($new_uri);
+    $url = HTTP::DAV::Utils::make_trail_slash($url);
+    my $new_uri = $self->get_absolute_uri($url);
+    ($new_uri) = $self->get_globs($new_uri);
 
-   return 0 unless ($new_uri);
+    return 0 unless ($new_uri);
 
-   print "cwd: Changing to $new_uri\n" if $DEBUG;
-   return $self->open( $new_uri );
+    print "cwd: Changing to $new_uri\n" if $DEBUG;
+    return $self->open($new_uri);
 }
 
 # DELETE
 sub delete {
-   my($self,@p) = @_;
-   my ($url,$callback) = HTTP::DAV::Utils::rearrange(['URL','CALLBACK'], @p);
+    my ( $self, @p ) = @_;
+    my ( $url, $callback )
+        = HTTP::DAV::Utils::rearrange( [ 'URL', 'CALLBACK' ], @p );
 
-   return $self->err('ERR_WRONG_ARGS') if (!defined $url || $url eq "");
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_WRONG_ARGS') if ( !defined $url || $url eq "" );
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   my $new_url = $self->get_absolute_uri($url);
-   my @urls = $self->get_globs($new_url);
+    my $new_url = $self->get_absolute_uri($url);
+    my @urls    = $self->get_globs($new_url);
 
-   $self->_start_multi_op("delete $url",$callback) if @urls>1;
+    $self->_start_multi_op( "delete $url", $callback ) if @urls > 1;
 
-   foreach my $u ( @urls ) {
-      my $resource = $self->new_resource( -uri => $u);
+    foreach my $u (@urls) {
+        my $resource = $self->new_resource( -uri => $u );
 
-      my $resp = $resource->delete();
+        my $resp = $resource->delete();
 
-      if ($resp->is_success) {
-         $self->ok( "deleted $u successfully", $u );
-      } else {
-         $self->err( 'ERR_RESP_FAIL',$resp->message(), $u);
-      }
-   }
+        if ( $resp->is_success ) {
+            $self->ok( "deleted $u successfully", $u );
+        }
+        else {
+            $self->err( 'ERR_RESP_FAIL', $resp->message(), $u );
+        }
+    }
 
-   $self->_end_multi_op() if @urls>1;
+    $self->_end_multi_op() if @urls > 1;
 
-   return $self->is_success;
+    return $self->is_success;
 }
 
 # GET
@@ -246,406 +264,443 @@ sub delete {
 #   _get dir2, to_local
 #   _get dir3, to_local
 sub get {
-   my($self,@p) = @_;
-   my ($url,$to,$callback,$chunk) = 
-      HTTP::DAV::Utils::rearrange(['URL','TO','CALLBACK','CHUNK'], @p);
+    my ( $self, @p ) = @_;
+    my ( $url, $to, $callback, $chunk )
+        = HTTP::DAV::Utils::rearrange( [ 'URL', 'TO', 'CALLBACK', 'CHUNK' ],
+        @p );
 
-   return $self->err('ERR_WRONG_ARGS') if (!defined $url || $url eq "");
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_WRONG_ARGS') if ( !defined $url || $url eq "" );
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   $self->_start_multi_op("get $url",$callback);
+    $self->_start_multi_op( "get $url", $callback );
 
-   my $new_url = $self->get_absolute_uri($url);
-   my (@urls)  = $self->get_globs($new_url);
+    my $new_url = $self->get_absolute_uri($url);
+    my (@urls) = $self->get_globs($new_url);
 
-   return 0 unless ($#urls>-1);
+    return 0 unless ( $#urls > -1 );
 
-   ############
-   # HANDLE -TO
-   #
-   $to ||= '';
-   if ($to eq '.') {
-      $to = getcwd();
-   }
+    ############
+    # HANDLE -TO
+    #
+    $to ||= '';
+    if ( $to eq '.' ) {
+        $to = getcwd();
+    }
 
-   # If the TO argument is a file handle or a scalar 
-   # then check that we only got one glob. If we got multiple
-   # globs, then we can't keep going because we can't write multiple files 
-   # to one FileHandle.
-   if ($#urls > 0) {
-      if (ref($to) =~ /SCALAR/) { 
-         return $self->err('ERR_WRONG_ARGS',
-           "Can't retrieve multiple files to a single scalar\n");
-      }
-      elsif (ref($to) =~ /GLOB/) {
-        return $self->err('ERR_WRONG_ARGS',
-           "Can't retrieve multiple files to a single filehandle\n");
-      }
-   }
+    # If the TO argument is a file handle or a scalar
+    # then check that we only got one glob. If we got multiple
+    # globs, then we can't keep going because we can't write multiple files
+    # to one FileHandle.
+    if ( $#urls > 0 ) {
+        if ( ref($to) =~ /SCALAR/ ) {
+            return $self->err( 'ERR_WRONG_ARGS',
+                "Can't retrieve multiple files to a single scalar\n" );
+        }
+        elsif ( ref($to) =~ /GLOB/ ) {
+            return $self->err( 'ERR_WRONG_ARGS',
+                "Can't retrieve multiple files to a single filehandle\n" );
+        }
+    }
 
-   # If it's a dir, remove last '/' from destination.
-   # Later we need to concatenate the destination filename. 
-   if (defined $to && $to ne '' && -d $to) {
-      $to =~ s{/$}{};
-   }
+    # If it's a dir, remove last '/' from destination.
+    # Later we need to concatenate the destination filename.
+    if ( defined $to && $to ne '' && -d $to ) {
+        $to =~ s{/$}{};
+    }
 
-   # Foreach file... do the get.
-   foreach my $u ( @urls ) {
-      my ($left, $leafname) = HTTP::DAV::Utils::split_leaf($u);
+    # Foreach file... do the get.
+    foreach my $u (@urls) {
+        my ( $left, $leafname ) = HTTP::DAV::Utils::split_leaf($u);
 
-      # Handle SCALARREF and GLOB cases
-      my $dest_file = $to;
+        # Handle SCALARREF and GLOB cases
+        my $dest_file = $to;
 
-      # Directories
-      if (-d $to) {
-         $dest_file = "$to/$leafname";
+        # Directories
+        if ( -d $to ) {
+            $dest_file = "$to/$leafname";
 
-      # Multiple targets
-      } elsif ( !defined $to || $to eq "" ) {
-         $dest_file = $leafname;
-      }
+            # Multiple targets
+        }
+        elsif ( !defined $to || $to eq "" ) {
+            $dest_file = $leafname;
+        }
 
-      warn "get: $u -> $dest_file\n" if $DEBUG;
+        warn "get: $u -> $dest_file\n" if $DEBUG;
 
-      # Setup the resource based on the passed url and do a propfind.
-      my $resource = $self->new_resource( -uri => $u);
-      my $resp = $resource->propfind(-depth=>1);
+        # Setup the resource based on the passed url and do a propfind.
+        my $resource = $self->new_resource( -uri => $u );
+        my $resp = $resource->propfind( -depth => 1 );
 
-      if ($resp->is_error) {
-         return $self->err('ERR_RESP_FAIL', $resp->message(), $u);
-      }
+        if ( $resp->is_error ) {
+            return $self->err( 'ERR_RESP_FAIL', $resp->message(), $u );
+        }
 
-      $self->_get($resource, $dest_file, $callback, $chunk);
-   }
+        $self->_get( $resource, $dest_file, $callback, $chunk );
+    }
 
-   $self->_end_multi_op();
-   return $self->is_success;
+    $self->_end_multi_op();
+    return $self->is_success;
 }
 
-# Note: is is expected that $resource has had 
+# Note: is is expected that $resource has had
 # a propfind depth 1 performed on it.
 #
 sub _get {
-   my($self,@p) = @_;
-   my ($resource,$local_name,$callback,$chunk) = 
-      HTTP::DAV::Utils::rearrange(['RESOURCE','TO','CALLBACK','CHUNK'], @p);
+    my ( $self, @p ) = @_;
+    my ( $resource, $local_name, $callback, $chunk )
+        = HTTP::DAV::Utils::rearrange(
+        [ 'RESOURCE', 'TO', 'CALLBACK', 'CHUNK' ], @p );
 
-   my $url = $resource->get_uri();
+    my $url = $resource->get_uri();
 
-   # GET A DIRECTORY
-   if ( $resource->is_collection ) {
+    # GET A DIRECTORY
+    if ( $resource->is_collection ) {
 
-      # If the TO argument is a file handle, a scalar or empty
-      # then we 
-      # can't keep going because we can't write multiple files 
-      # to one FileHandle, scalar, etc.
-      if  ( ref($local_name) =~ /SCALAR/ ) { 
-           return $self->err('ERR_WRONG_ARGS',
-              "Can't retrieve a collection to a scalar\n",$url);
-      }
-      elsif ( ref($local_name) =~ /GLOB/ ) {
-           return $self->err('ERR_WRONG_ARGS',
-              "Can't retrieve a collection to a filehandle\n",$url);
-      }
-      elsif ($local_name eq "" ) {
-         return $self->err('ERR_GENERIC',
-           "Can't retrieve a collection without a target directory (-to).",$url);
-      }
+        # If the TO argument is a file handle, a scalar or empty
+        # then we
+        # can't keep going because we can't write multiple files
+        # to one FileHandle, scalar, etc.
+        if ( ref($local_name) =~ /SCALAR/ ) {
+            return $self->err( 'ERR_WRONG_ARGS',
+                "Can't retrieve a collection to a scalar\n", $url );
+        }
+        elsif ( ref($local_name) =~ /GLOB/ ) {
+            return $self->err( 'ERR_WRONG_ARGS',
+                "Can't retrieve a collection to a filehandle\n", $url );
+        }
+        elsif ( $local_name eq "" ) {
+            return $self->err(
+                'ERR_GENERIC',
+                "Can't retrieve a collection without a target directory (-to).",
+                $url
+            );
+        }
 
-      # Try and make the directory locally
-      print "MKDIR $local_name (before escape)\n";
-      $local_name = URI::Escape::uri_unescape($local_name);
-      if (! mkdir $local_name ) {
-         return $self->err('ERR_GENERIC',
-           "mkdir local:$local_name failed: $!") 
-      }
+        # Try and make the directory locally
+        print "MKDIR $local_name (before escape)\n";
+        $local_name = URI::Escape::uri_unescape($local_name);
+        if ( !mkdir $local_name ) {
+            return $self->err( 'ERR_GENERIC',
+                "mkdir local:$local_name failed: $!" );
+        }
 
-      $self->ok("mkdir $local_name");
-   
-      # This is the degenerate case for an empty dir.
-      print "Made directory $local_name\n" if $DEBUG>2;
+        $self->ok("mkdir $local_name");
 
-      my $resource_list = $resource->get_resourcelist();
-      if ($resource_list) {
-         # FOREACH FILE IN COLLECTION, GET IT.
-         foreach my $progeny_r ( $resource_list->get_resources() ) {
-   
-            my $progeny_url = $progeny_r->get_uri();
-            print "Found progeny:$progeny_url\n" if $DEBUG>2;
-            my $progeny_local_filename = HTTP::DAV::Utils::get_leafname($progeny_url);
-            $progeny_local_filename = URI::Escape::uri_unescape($progeny_local_filename);
-   
-            $progeny_local_filename = 
-               URI::file->new($progeny_local_filename)->abs("$local_name/");
-   
-            if ( $progeny_r->is_collection() ) {
-               $progeny_r->propfind(-depth=>1);
+        # This is the degenerate case for an empty dir.
+        print "Made directory $local_name\n" if $DEBUG > 2;
+
+        my $resource_list = $resource->get_resourcelist();
+        if ($resource_list) {
+
+            # FOREACH FILE IN COLLECTION, GET IT.
+            foreach my $progeny_r ( $resource_list->get_resources() ) {
+
+                my $progeny_url = $progeny_r->get_uri();
+                print "Found progeny:$progeny_url\n" if $DEBUG > 2;
+                my $progeny_local_filename
+                    = HTTP::DAV::Utils::get_leafname($progeny_url);
+                $progeny_local_filename
+                    = URI::Escape::uri_unescape($progeny_local_filename);
+
+                $progeny_local_filename
+                    = URI::file->new($progeny_local_filename)
+                    ->abs("$local_name/");
+
+                if ( $progeny_r->is_collection() ) {
+                    $progeny_r->propfind( -depth => 1 );
+                }
+                $self->_get( $progeny_r, $progeny_local_filename, $callback,
+                    $chunk );
+
+               # } else {
+               #    $self->_do_get_tofile($progeny_r,$progeny_local_filename);
+               # }
             }
-            $self->_get($progeny_r,$progeny_local_filename,$callback,$chunk);
+        }
+    }
 
-           # } else {
-           #    $self->_do_get_tofile($progeny_r,$progeny_local_filename);
-           # }
-         }
-      }
-   }
+    # GET A FILE
+    else {
+        my $response;
+        my $name_ref = ref $local_name;
 
-   # GET A FILE
-   else 
-   {
-      my $response;
-      my $name_ref = ref $local_name;
+        if ( $callback || $name_ref =~ /SCALAR/ || $name_ref =~ /GLOB/ ) {
+            $self->{_so_far} = 0;
 
-      if ($callback || $name_ref =~ /SCALAR/ || $name_ref =~ /GLOB/) {
-         $self->{_so_far} = 0;
-   
-         my $fh;
-         my $put_to_scalar = 0;
-         if ($name_ref =~ /GLOB/ ) {
-            $fh = $local_name;
-         } elsif ($name_ref =~ /SCALAR/) {
-            $put_to_scalar = 1;
-            $$local_name = "";
-         } else {
-            $fh = FileHandle->new;
+            my $fh;
+            my $put_to_scalar = 0;
+            if ( $name_ref =~ /GLOB/ ) {
+                $fh = $local_name;
+            }
+            elsif ( $name_ref =~ /SCALAR/ ) {
+                $put_to_scalar = 1;
+                $$local_name   = "";
+            }
+            else {
+                $fh         = FileHandle->new;
+                $local_name = URI::Escape::uri_unescape($local_name);
+                if ( !$fh->open(">$local_name") ) {
+                    return $self->err( 'ERR_GENERIC',
+                        "open \">$local_name\" failed: $!", $url );
+                }
+            }
+            $self->{_fh} = $fh;
+
+            $response = $resource->get(
+                -chunk => $chunk,
+                -progress_callback =>
+
+                    sub {
+                    my ( $data, $response, $protocol ) = @_;
+
+                    $self->{_so_far} += length($data);
+
+                    my $fh = $self->{_fh};
+                    print $fh $data if defined $fh;
+
+                    $$local_name .= $data if ($put_to_scalar);
+
+                    my $user_callback = $self->{_callback};
+                    &$user_callback( -1, "transfer in progress",
+                        $url, $self->{_so_far}, $response->content_length(),
+                        $data )
+                        if defined $user_callback;
+
+                    }
+
+            );    # end get( ... );
+
+            # Close the filehandle if it was set.
+            if ( defined $self->{_fh} ) {
+                $self->{_fh}->close();
+                delete $self->{_fh};
+            }
+        }
+        else {
             $local_name = URI::Escape::uri_unescape($local_name);
-            if ( ! $fh->open(">$local_name") ) {
-               return $self->err('ERR_GENERIC',
-                  "open \">$local_name\" failed: $!", $url);
-            }
-         }
-         $self->{_fh} = $fh;
-   
-         $response = $resource->get (
-            -chunk             => $chunk,
-            -progress_callback => 
-   
-               sub {
-                  my($data,$response,$protocol) = @_;
-   
-                  $self->{_so_far}+= length($data);
-   
-                  my $fh = $self->{_fh};
-                  print $fh $data if defined $fh;
+            $response = $resource->get( -save_to => $local_name );
+        }
 
-                  $$local_name .= $data if ($put_to_scalar);
-   
-                  my $user_callback = $self->{_callback};
-                  &$user_callback(
-                     -1,
-                     "transfer in progress",
-                     $url,
-                     $self->{_so_far},
-                     $response->content_length(),
-                     $data
-                  ) if defined $user_callback;
- 
-               }
-   
-           ); # end get( ... );
-   
-         # Close the filehandle if it was set.
-         if (defined $self->{_fh} ) {
-            $self->{_fh}->close();
-            delete $self->{_fh};
-         }
-      } else {
-         $local_name = URI::Escape::uri_unescape($local_name);
-         $response = $resource->get( -save_to => $local_name  );
-      }
+        # Handle response
+        if ( $response->is_error ) {
+            return $self->err( 'ERR_GENERIC',
+                "get $url failed: " . $response->message, $url );
+        }
+        else {
+            return $self->ok( "get $url", $url, $self->{_so_far},
+                $response->content_length() );
+        }
 
-      # Handle response
-      if ($response->is_error) {
-         return $self->err('ERR_GENERIC',
-            "get $url failed: ". $response->message,
-            $url);
-      } else {
-         return $self->ok("get $url",
-            $url, $self->{_so_far}, $response->content_length() );
-      }
+    }
 
-   }
-
-   return 1;
+    return 1;
 }
-
 
 # LOCK
 sub lock {
-   my($self,@p) = @_;
-   my($url,$owner,$depth,$timeout,$scope,$type,@other) =
-      HTTP::DAV::Utils::rearrange(['URL','OWNER','DEPTH',
-                                   'TIMEOUT','SCOPE','TYPE'],@p);
+    my ( $self, @p ) = @_;
+    my ( $url, $owner, $depth, $timeout, $scope, $type, @other )
+        = HTTP::DAV::Utils::rearrange(
+        [ 'URL', 'OWNER', 'DEPTH', 'TIMEOUT', 'SCOPE', 'TYPE' ], @p );
 
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   my $resource;
-   if ($url) {
-      $url = $self->get_absolute_uri($url);
-      $resource = $self->new_resource( -uri => $url );
-   } else {
-      $resource = $self->get_workingresource();
-      $url= $resource->get_uri;
-   }
+    my $resource;
+    if ($url) {
+        $url = $self->get_absolute_uri($url);
+        $resource = $self->new_resource( -uri => $url );
+    }
+    else {
+        $resource = $self->get_workingresource();
+        $url      = $resource->get_uri;
+    }
 
-   # Make the lock
-   my $resp = $resource->lock(-owner=>$owner,-depth=>$depth,
-                              -timeout=>$timeout,-scope=>$scope,
-                              -type=>$type);
+    # Make the lock
+    my $resp = $resource->lock(
+        -owner   => $owner,
+        -depth   => $depth,
+        -timeout => $timeout,
+        -scope   => $scope,
+        -type    => $type
+    );
 
-   if ( $resp->is_success() ) {
-      return $self->ok( "lock $url succeeded",$url );
-   } else {
-      return $self->err( 'ERR_RESP_FAIL',$resp->message,$url );
-   }
+    if ( $resp->is_success() ) {
+        return $self->ok( "lock $url succeeded", $url );
+    }
+    else {
+        return $self->err( 'ERR_RESP_FAIL', $resp->message, $url );
+    }
 }
 
 # UNLOCK
 sub unlock {
-   my($self,@p) = @_;
-   my ($url) = HTTP::DAV::Utils::rearrange(['URL'], @p);
+    my ( $self, @p ) = @_;
+    my ($url) = HTTP::DAV::Utils::rearrange( ['URL'], @p );
 
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   my $resource;
-   if ($url) {
-      $url = $self->get_absolute_uri($url);
-      $resource = $self->new_resource( -uri => $url );
-   } else {
-      $resource = $self->get_workingresource();
-      $url= $resource->get_uri;
-   }
+    my $resource;
+    if ($url) {
+        $url = $self->get_absolute_uri($url);
+        $resource = $self->new_resource( -uri => $url );
+    }
+    else {
+        $resource = $self->get_workingresource();
+        $url      = $resource->get_uri;
+    }
 
-   # Make the lock
-   my $resp = $resource->unlock();
-   if ( $resp->is_success ) {
-      return $self->ok( "unlock $url succeeded",$url );
-   } else {
-      # The Resource.pm::lock routine has a hack 
-      # where if it doesn't know the locktoken, it will 
-      # just return an empty response with message "Client Error".
-      # Make a custom message for this case.
-      my $msg = $resp->message;
-      if ( $msg=~ /Client error/i ) {
-          $msg = "No locks found. Try steal";
-          return $self->err( 'ERR_GENERIC',$msg,$url );
-      } else {
-          return $self->err( 'ERR_RESP_FAIL',$msg,$url );
-      }
-   }
+    # Make the lock
+    my $resp = $resource->unlock();
+    if ( $resp->is_success ) {
+        return $self->ok( "unlock $url succeeded", $url );
+    }
+    else {
+
+        # The Resource.pm::lock routine has a hack
+        # where if it doesn't know the locktoken, it will
+        # just return an empty response with message "Client Error".
+        # Make a custom message for this case.
+        my $msg = $resp->message;
+        if ( $msg =~ /Client error/i ) {
+            $msg = "No locks found. Try steal";
+            return $self->err( 'ERR_GENERIC', $msg, $url );
+        }
+        else {
+            return $self->err( 'ERR_RESP_FAIL', $msg, $url );
+        }
+    }
 }
 
 sub steal {
-   my($self,@p) = @_;
-   my ($url) = HTTP::DAV::Utils::rearrange(['URL'], @p);
+    my ( $self, @p ) = @_;
+    my ($url) = HTTP::DAV::Utils::rearrange( ['URL'], @p );
 
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   my $resource;
-   if ($url) {
-      $url = $self->get_absolute_uri($url);
-      $resource = $self->new_resource( -uri => $url );
-   } else {
-      $resource = $self->get_workingresource();
-   }
+    my $resource;
+    if ($url) {
+        $url = $self->get_absolute_uri($url);
+        $resource = $self->new_resource( -uri => $url );
+    }
+    else {
+        $resource = $self->get_workingresource();
+    }
 
-   # Go the steal
-   my $resp = $resource->forcefully_unlock_all();
-   if ( $resp->is_success() ) {
-      return $self->ok( "steal succeeded",$url );
-   } else {
-      return $self->err( 'ERR_RESP_FAIL',$resp->message(),$url );
-   }
+    # Go the steal
+    my $resp = $resource->forcefully_unlock_all();
+    if ( $resp->is_success() ) {
+        return $self->ok( "steal succeeded", $url );
+    }
+    else {
+        return $self->err( 'ERR_RESP_FAIL', $resp->message(), $url );
+    }
 }
 
 # MKCOL
 sub mkcol {
-   my($self,@p) = @_;
-   my ($url) = HTTP::DAV::Utils::rearrange(['URL'], @p);
+    my ( $self, @p ) = @_;
+    my ($url) = HTTP::DAV::Utils::rearrange( ['URL'], @p );
 
-   return $self->err('ERR_WRONG_ARGS') if (!defined $url || $url eq "");
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_WRONG_ARGS') if ( !defined $url || $url eq "" );
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   $url = HTTP::DAV::Utils::make_trail_slash($url);
-   my $new_url = $self->get_absolute_uri($url);
-   my $resource = $self->new_resource( -uri => $new_url );
+    $url = HTTP::DAV::Utils::make_trail_slash($url);
+    my $new_url = $self->get_absolute_uri($url);
+    my $resource = $self->new_resource( -uri => $new_url );
 
-   # Make the lock
-   my $resp = $resource->mkcol();
-   if ( $resp->is_success() ) {
-      return $self->ok( "mkcol $new_url", $new_url );
-   } else {
-      return $self->err( 'ERR_RESP_FAIL',$resp->message(), $new_url );
-   }
+    # Make the lock
+    my $resp = $resource->mkcol();
+    if ( $resp->is_success() ) {
+        return $self->ok( "mkcol $new_url", $new_url );
+    }
+    else {
+        return $self->err( 'ERR_RESP_FAIL', $resp->message(), $new_url );
+    }
 }
 
 # OPTIONS
 sub options {
-   my($self,@p) = @_;
-   my ($url) = HTTP::DAV::Utils::rearrange(['URL'], @p);
+    my ( $self, @p ) = @_;
+    my ($url) = HTTP::DAV::Utils::rearrange( ['URL'], @p );
 
-   #return $self->err('ERR_WRONG_ARGS') if (!defined $url || $url eq "");
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    #return $self->err('ERR_WRONG_ARGS') if (!defined $url || $url eq "");
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   my $resource;
-   if ($url) {
-      $url = $self->get_absolute_uri($url);
-      $resource = $self->new_resource( -uri => $url );
-   } else {
-      $resource = $self->get_workingresource();
-      $url = $resource->get_uri;
-   }
+    my $resource;
+    if ($url) {
+        $url = $self->get_absolute_uri($url);
+        $resource = $self->new_resource( -uri => $url );
+    }
+    else {
+        $resource = $self->get_workingresource();
+        $url      = $resource->get_uri;
+    }
 
-   # Make the call
-   my $resp = $resource->options();
-   if ( $resp->is_success() ) {
-      $self->ok( "options $url succeeded",$url );
-      return $resource->get_options();
-   } else {
-      $self->err( 'ERR_RESP_FAIL',$resp->message(),$url );
-      return undef;
-   }
+    # Make the call
+    my $resp = $resource->options();
+    if ( $resp->is_success() ) {
+        $self->ok( "options $url succeeded", $url );
+        return $resource->get_options();
+    }
+    else {
+        $self->err( 'ERR_RESP_FAIL', $resp->message(), $url );
+        return undef;
+    }
 }
 
 # MOVE
-sub move { return shift->_move_copy("move",@_); }
-sub copy { return shift->_move_copy("copy",@_); }
+sub move { return shift->_move_copy( "move", @_ ); }
+sub copy { return shift->_move_copy( "copy", @_ ); }
+
 sub _move_copy {
-   my($self,$method,@p) = @_;
-   my($url,$dest_url,$overwrite,$depth,$text,@other) = 
-      HTTP::DAV::Utils::rearrange(['URL','DEST','OVERWRITE','DEPTH','TEXT'],@p);
+    my ( $self, $method, @p ) = @_;
+    my ( $url, $dest_url, $overwrite, $depth, $text, @other )
+        = HTTP::DAV::Utils::rearrange(
+        [ 'URL', 'DEST', 'OVERWRITE', 'DEPTH', 'TEXT' ], @p );
 
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   if (!(defined $url && $url ne "" && defined $dest_url && $dest_url ne "")) {
-      return $self->err('ERR_WRONG_ARGS',
-                        "Must supply a source and destination url");
-   }
+    if (!(  defined $url && $url ne "" && defined $dest_url && $dest_url ne ""
+        )
+        )
+    {
+        return $self->err( 'ERR_WRONG_ARGS',
+            "Must supply a source and destination url" );
+    }
 
-   $url =      $self->get_absolute_uri($url);
-   $dest_url = $self->get_absolute_uri($dest_url);
-   my $resource =      $self->new_resource( -uri => $url );
-   my $dest_resource = $self->new_resource( -uri => $dest_url );
+    $url      = $self->get_absolute_uri($url);
+    $dest_url = $self->get_absolute_uri($dest_url);
+    my $resource      = $self->new_resource( -uri => $url );
+    my $dest_resource = $self->new_resource( -uri => $dest_url );
 
-   my $resp = $dest_resource->propfind(-depth=>1);
-   if ($resp->is_success && $dest_resource->is_collection) {
-      my $leafname = HTTP::DAV::Utils::get_leafname($url);
-      $dest_url = "$dest_url/$leafname";
-      $dest_resource = $self->new_resource( -uri => $dest_url );
-   }
+    my $resp = $dest_resource->propfind( -depth => 1 );
+    if ( $resp->is_success && $dest_resource->is_collection ) {
+        my $leafname = HTTP::DAV::Utils::get_leafname($url);
+        $dest_url = "$dest_url/$leafname";
+        $dest_resource = $self->new_resource( -uri => $dest_url );
+    }
 
-   # Make the lock
-   $resp = $resource->$method(-dest=>$dest_resource,
-                              -overwrite=>$overwrite,
-                              -depth=>$depth,
-                              -text=>$text,
-                             );
+    # Make the lock
+    $resp = $resource->$method(
+        -dest      => $dest_resource,
+        -overwrite => $overwrite,
+        -depth     => $depth,
+        -text      => $text,
+    );
 
-   if ( $resp->is_success() ) {
-      return $self->ok( "$method $url to $dest_url succeeded",$url );
-   } else {
-      return $self->err( 'ERR_RESP_FAIL',$resp->message,$url );
-   }
+    if ( $resp->is_success() ) {
+        return $self->ok( "$method $url to $dest_url succeeded", $url );
+    }
+    else {
+        return $self->err( 'ERR_RESP_FAIL', $resp->message, $url );
+    }
 }
 
 # OPEN
@@ -655,260 +710,293 @@ sub _move_copy {
 # $dav->open( -url => localhost:81 );
 # $dav->open( localhost );
 sub open {
-   my($self,@p) = @_;
-   my ($url) = HTTP::DAV::Utils::rearrange(['URL'], @p);
+    my ( $self, @p ) = @_;
+    my ($url) = HTTP::DAV::Utils::rearrange( ['URL'], @p );
 
-   my $resource;
-   if ( defined $url && $url ne "") {
-      $url = HTTP::DAV::Utils::make_trail_slash($url);
-      $resource = $self->new_resource( -uri => $url );
-   } else {
-      $resource = $self->get_workingresource();
-      $url = $resource->get_uri() if ($resource);
-      return $self->err('ERR_WRONG_ARGS') if (!defined $url || $url eq "");
-   }
+    my $resource;
+    if ( defined $url && $url ne "" ) {
+        $url = HTTP::DAV::Utils::make_trail_slash($url);
+        $resource = $self->new_resource( -uri => $url );
+    }
+    else {
+        $resource = $self->get_workingresource();
+        $url = $resource->get_uri() if ($resource);
+        return $self->err('ERR_WRONG_ARGS')
+            if ( !defined $url || $url eq "" );
+    }
 
-   my $response = $resource->propfind(-depth=>0);
-   #print $response->as_string;
-   #print $resource->as_string;
-   if ($response->is_error() ) {
-      if ($response->www_authenticate) {
-         return $self->err('ERR_UNAUTHORIZED');
-      }
-      elsif (! $resource->is_dav_compliant) {
-         return $self->err('ERR_GENERIC',
-            "The URL \"$url\" is not DAV enabled or not accessible.",$url);
-      }
-      else {
-         return $self->err('ERR_RESP_FAIL',
-            "Could not access $url: ".$response->message(), $url);
-      }
-   }
- 
-   # If it is a collection but the URI doesn't 
-   # end in a trailing slash.
-   # Then we need to reopen with the /
-   elsif ( $resource->is_collection && 
-           $url !~ m#/\s*$# ) 
-   {
-      my $newurl = $url . "/";
-      print  "Redirecting to $newurl\n" if $DEBUG > 1;
-      return $self->open( $newurl );
-   }
+    my $response = $resource->propfind( -depth => 0 );
 
-   # If it is not a collection then we 
-   # can't open it.
-   elsif ( !$resource->is_collection ) 
-   {
-      return $self->err('ERR_GENERIC',"Operation failed. You can only open a collection (directory)", $url);
-   }
-   else {
-      $self->set_workingresource($resource);
-      return $self->ok( "Connected to $url",$url );
-   }
+    #print $response->as_string;
+    #print $resource->as_string;
+    if ( $response->is_error() ) {
+        if ( $response->www_authenticate ) {
+            return $self->err('ERR_UNAUTHORIZED');
+        }
+        elsif ( !$resource->is_dav_compliant ) {
+            return $self->err( 'ERR_GENERIC',
+                "The URL \"$url\" is not DAV enabled or not accessible.",
+                $url );
+        }
+        else {
+            return $self->err( 'ERR_RESP_FAIL',
+                "Could not access $url: " . $response->message(), $url );
+        }
+    }
 
-   return $self->err('ERR_GENERIC',$url);
+    # If it is a collection but the URI doesn't
+    # end in a trailing slash.
+    # Then we need to reopen with the /
+    elsif ($resource->is_collection
+        && $url !~ m#/\s*$# )
+    {
+        my $newurl = $url . "/";
+        print "Redirecting to $newurl\n" if $DEBUG > 1;
+        return $self->open($newurl);
+    }
+
+    # If it is not a collection then we
+    # can't open it.
+    elsif ( !$resource->is_collection ) {
+        return $self->err( 'ERR_GENERIC',
+            "Operation failed. You can only open a collection (directory)",
+            $url );
+    }
+    else {
+        $self->set_workingresource($resource);
+        return $self->ok( "Connected to $url", $url );
+    }
+
+    return $self->err( 'ERR_GENERIC', $url );
 }
 
-# Performs a propfind and then returns the populated 
-# resource. The resource will have a resourcelist if 
-# it is a collection. 
+# Performs a propfind and then returns the populated
+# resource. The resource will have a resourcelist if
+# it is a collection.
 sub propfind {
-   my($self,@p) = @_;
-   my ($url,$depth) = HTTP::DAV::Utils::rearrange(['URL','DEPTH'], @p);
+    my ( $self, @p ) = @_;
+    my ( $url, $depth )
+        = HTTP::DAV::Utils::rearrange( [ 'URL', 'DEPTH' ], @p );
 
-   $depth||=1;
+    $depth ||= 1;
 
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   my $resource;
-   if ($url) {
-      $url = $self->get_absolute_uri($url);
-      $resource = $self->new_resource( -uri => $url );
-   } else {
-      $resource = $self->get_workingresource();
-   }
+    my $resource;
+    if ($url) {
+        $url = $self->get_absolute_uri($url);
+        $resource = $self->new_resource( -uri => $url );
+    }
+    else {
+        $resource = $self->get_workingresource();
+    }
 
-   # Make the call
-   my $resp = $resource->propfind(-depth=>$depth);
-   if ( $resp->is_success() ) {
-      $resource->build_ls($resource);
-      $self->ok( "propfind ". $resource->get_uri() ." succeeded", $url );
-      return $resource;
-   } else {
-      return $self->err( 'ERR_RESP_FAIL',$resp->message(),$url );
-   }
+    # Make the call
+    my $resp = $resource->propfind( -depth => $depth );
+    if ( $resp->is_success() ) {
+        $resource->build_ls($resource);
+        $self->ok( "propfind " . $resource->get_uri() . " succeeded", $url );
+        return $resource;
+    }
+    else {
+        return $self->err( 'ERR_RESP_FAIL', $resp->message(), $url );
+    }
 }
 
 # Set a property on the resource
 sub set_prop {
-   my($self,@p) = @_;
-   my($url,$namespace,$propname,$propvalue,$nsabbr) = 
-      HTTP::DAV::Utils::rearrange( 
-         ['URL','NAMESPACE','PROPNAME','PROPVALUE','NSABBR'],@p);
-   $self->proppatch(
-      -url=>$url,
-      -namespace=>$namespace,
-      -propname=>$propname,
-      -propvalue=>$propvalue,
-      -action=>"set",
-      -nsabbr=>$nsabbr,
-      );
+    my ( $self, @p ) = @_;
+    my ( $url, $namespace, $propname, $propvalue, $nsabbr )
+        = HTTP::DAV::Utils::rearrange(
+        [ 'URL', 'NAMESPACE', 'PROPNAME', 'PROPVALUE', 'NSABBR' ], @p );
+    $self->proppatch(
+        -url       => $url,
+        -namespace => $namespace,
+        -propname  => $propname,
+        -propvalue => $propvalue,
+        -action    => "set",
+        -nsabbr    => $nsabbr,
+    );
 }
 
 # Unsets a property on the resource
 sub unset_prop {
-   my($self,@p) = @_;
-   my($url,$namespace,$propname,$nsabbr) = 
-      HTTP::DAV::Utils::rearrange( 
-         ['URL','NAMESPACE','PROPNAME','NSABBR'],@p);
-   $self->proppatch(
-      -url=>$url,
-      -namespace=>$namespace,
-      -propname=>$propname,
-      -action=>"remove",
-      -nsabbr=>$nsabbr,
-      );
+    my ( $self, @p ) = @_;
+    my ( $url, $namespace, $propname, $nsabbr )
+        = HTTP::DAV::Utils::rearrange(
+        [ 'URL', 'NAMESPACE', 'PROPNAME', 'NSABBR' ], @p );
+    $self->proppatch(
+        -url       => $url,
+        -namespace => $namespace,
+        -propname  => $propname,
+        -action    => "remove",
+        -nsabbr    => $nsabbr,
+    );
 }
 
 # Performs a proppatch on the resource
 sub proppatch {
-   my($self,@p) = @_;
-   my($url,$namespace,$propname,$propvalue,$action,$nsabbr) = 
-      HTTP::DAV::Utils::rearrange( 
-         ['URL','NAMESPACE','PROPNAME','PROPVALUE','ACTION','NSABBR'],@p);
+    my ( $self, @p ) = @_;
+    my ( $url, $namespace, $propname, $propvalue, $action, $nsabbr )
+        = HTTP::DAV::Utils::rearrange(
+        [ 'URL', 'NAMESPACE', 'PROPNAME', 'PROPVALUE', 'ACTION', 'NSABBR' ],
+        @p );
 
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   my $resource;
-   if ($url) {
-      $url = $self->get_absolute_uri($url);
-      $resource = $self->new_resource( -uri => $url );
-   } else {
-      $resource = $self->get_workingresource();
-   }
+    my $resource;
+    if ($url) {
+        $url = $self->get_absolute_uri($url);
+        $resource = $self->new_resource( -uri => $url );
+    }
+    else {
+        $resource = $self->get_workingresource();
+    }
 
-   # Make the call
-   my $resp = $resource->proppatch(
-      -namespace=>$namespace,
-      -propname=>$propname,
-      -propvalue=>$propvalue,
-      -action=>$action,
-      -nsabbr=>$nsabbr
-   );
+    # Make the call
+    my $resp = $resource->proppatch(
+        -namespace => $namespace,
+        -propname  => $propname,
+        -propvalue => $propvalue,
+        -action    => $action,
+        -nsabbr    => $nsabbr
+    );
 
-   if ( $resp->is_success() ) {
-      $resource->build_ls($resource);
-      $self->ok( "proppatch ". $resource->get_uri() ." succeeded", $url );
-      return $resource;
-   } else {
-      return $self->err( 'ERR_RESP_FAIL',$resp->message(),$url );
-   }
+    if ( $resp->is_success() ) {
+        $resource->build_ls($resource);
+        $self->ok( "proppatch " . $resource->get_uri() . " succeeded", $url );
+        return $resource;
+    }
+    else {
+        return $self->err( 'ERR_RESP_FAIL', $resp->message(), $url );
+    }
 }
-
 
 ######################################################################
 sub put {
-   my($self,@p) = @_;
-   my ($local,$url,$callback) = 
-      HTTP::DAV::Utils::rearrange(['LOCAL','URL','CALLBACK'], @p);
+    my ( $self, @p ) = @_;
+    my ( $local, $url, $callback )
+        = HTTP::DAV::Utils::rearrange( [ 'LOCAL', 'URL', 'CALLBACK' ], @p );
 
-   $self->_start_multi_op("put $local",$callback);
-   if ( ref($local) eq "SCALAR" ) {
-      $self->_put(@p);
-   } else {
-      $local =~ s/\ /\\ /g;
-      my @globs=glob("$local");
-      #my @globs=glob("\"$local\"");
-      foreach my $file (@globs) {
-         print "Starting put of $file\n" if $HTTP::DAV::DEBUG>1;
-         $self->_put(-local=>$file,-url=>$url,-callback=>$callback);
-      }
-   }
-   $self->_end_multi_op();
-   return $self->is_success;
+    $self->_start_multi_op( "put $local", $callback );
+    if ( ref($local) eq "SCALAR" ) {
+        $self->_put(@p);
+    }
+    else {
+        $local =~ s/\ /\\ /g;
+        my @globs = glob("$local");
+
+        #my @globs=glob("\"$local\"");
+        foreach my $file (@globs) {
+            print "Starting put of $file\n" if $HTTP::DAV::DEBUG > 1;
+            $self->_put(
+                -local    => $file,
+                -url      => $url,
+                -callback => $callback
+            );
+        }
+    }
+    $self->_end_multi_op();
+    return $self->is_success;
 }
 
 sub _put {
-   my($self,@p) = @_;
-   my ($local,$url) = 
-      HTTP::DAV::Utils::rearrange(['LOCAL','URL'], @p);
+    my ( $self, @p ) = @_;
+    my ( $local, $url )
+        = HTTP::DAV::Utils::rearrange( [ 'LOCAL', 'URL' ], @p );
 
-   return $self->err('ERR_WRONG_ARGS')    if (!defined $local || $local eq "");
-   return $self->err('ERR_NULL_RESOURCE') unless $self->get_workingresource();
+    return $self->err('ERR_WRONG_ARGS')
+        if ( !defined $local || $local eq "" );
+    return $self->err('ERR_NULL_RESOURCE')
+        unless $self->get_workingresource();
 
-   # Check if they passed a reference to content rather than a filename.
-   my $content_ptr = (ref($local) eq "SCALAR" ) ? 1:0;
+    # Check if they passed a reference to content rather than a filename.
+    my $content_ptr = ( ref($local) eq "SCALAR" ) ? 1 : 0;
 
-   # Setup the resource based on the passed url
-   # Check if the remote resource exists and is a collection.
-   $url = $self->get_absolute_uri($url);
-   my $resource = $self->new_resource($url);
-   my $response = $resource->propfind(-depth=>0);
-   my $leaf_name;
-   if ($response->is_success && $resource->is_collection && ! $content_ptr) {
-      # Add one / to the end of the collection
-      $url =~ s/\/*$//g; #Strip em
-      $url .= "/";       #Add one
-      $leaf_name = HTTP::DAV::Utils::get_leafname($local);
-   } else {
-      $leaf_name = HTTP::DAV::Utils::get_leafname($url);
-   }
+    # Setup the resource based on the passed url
+    # Check if the remote resource exists and is a collection.
+    $url = $self->get_absolute_uri($url);
+    my $resource = $self->new_resource($url);
+    my $response = $resource->propfind( -depth => 0 );
+    my $leaf_name;
+    if ( $response->is_success && $resource->is_collection && !$content_ptr )
+    {
 
-   my $target = $self->get_absolute_uri($leaf_name,$url);
-   #print "$local => $target ($url, $leaf_name)\n";
+        # Add one / to the end of the collection
+        $url =~ s/\/*$//g;    #Strip em
+        $url .= "/";          #Add one
+        $leaf_name = HTTP::DAV::Utils::get_leafname($local);
+    }
+    else {
+        $leaf_name = HTTP::DAV::Utils::get_leafname($url);
+    }
 
-   # PUT A DIRECTORY
-   if ( !$content_ptr && -d $local ) {
-      # mkcol
-      # Return 0 if fail because the error will have already 
-      # been set by the mkcol routine
-      if ( $self->mkcol( $target ) ) {
-         if (! opendir(DIR,$local) ) {
-            $self->err('ERR_GENERIC',
-              "chdir to \"$local\" failed: $!") 
-         } else {
-            my @files = readdir(DIR);
-            close DIR;
-            foreach my $file ( @files ) {
-               next if $file eq ".";
-               next if $file eq "..";
-               my $progeny = "$local/$file";
-               $progeny =~ s#//#/#g; # Fold down double slashes
-               $self->_put( -local=>$progeny, 
-                            -url=>"$target/$file",
-                          );
+    my $target = $self->get_absolute_uri( $leaf_name, $url );
+
+    #print "$local => $target ($url, $leaf_name)\n";
+
+    # PUT A DIRECTORY
+    if ( !$content_ptr && -d $local ) {
+
+        # mkcol
+        # Return 0 if fail because the error will have already
+        # been set by the mkcol routine
+        if ( $self->mkcol($target) ) {
+            if ( !opendir( DIR, $local ) ) {
+                $self->err( 'ERR_GENERIC', "chdir to \"$local\" failed: $!" );
             }
-         }
-      }
+            else {
+                my @files = readdir(DIR);
+                close DIR;
+                foreach my $file (@files) {
+                    next if $file eq ".";
+                    next if $file eq "..";
+                    my $progeny = "$local/$file";
+                    $progeny =~ s#//#/#g;    # Fold down double slashes
+                    $self->_put(
+                        -local => $progeny,
+                        -url   => "$target/$file",
+                    );
+                }
+            }
+        }
 
-   # PUT A FILE
-   } else {
-      my $content="";
-      my $fail=0;
-      if ($content_ptr) {
-         $content = $$local;
-      } else {
-         if (! CORE::open(F,$local) ) {
-            $self->err('ERR_GENERIC', "Couldn't open local file $local: $!") ;
-            $fail=1;
-         } else {
-            binmode F;
-            while(<F>) { $content .= $_; }
-            close F;
-         }
-      }
+        # PUT A FILE
+    }
+    else {
+        my $content = "";
+        my $fail    = 0;
+        if ($content_ptr) {
+            $content = $$local;
+        }
+        else {
+            if ( !CORE::open( F, $local ) ) {
+                $self->err( 'ERR_GENERIC',
+                    "Couldn't open local file $local: $!" );
+                $fail = 1;
+            }
+            else {
+                binmode F;
+                while (<F>) { $content .= $_; }
+                close F;
+            }
+        }
 
-      if (!$fail) {
-         my $resource = $self->new_resource( -uri => $target);
-         my $response = $resource->put($content);
-         if ($response->is_success) {
-            $self->ok( "put $target (" . length($content) ." bytes)",$target );
-         } else {
-            $self->err('ERR_RESP_FAIL',"put failed " .$response->message(),$target);
-         }
-      }
-   }
+        if ( !$fail ) {
+            my $resource = $self->new_resource( -uri => $target );
+            my $response = $resource->put($content);
+            if ( $response->is_success ) {
+                $self->ok( "put $target (" . length($content) . " bytes)",
+                    $target );
+            }
+            else {
+                $self->err( 'ERR_RESP_FAIL',
+                    "put failed " . $response->message(), $target );
+            }
+        }
+    }
 }
 
 ######################################################################
@@ -919,21 +1007,22 @@ sub _put {
 # and returns the absolute URI based
 # on the remote current working directory
 sub get_absolute_uri {
-   my($self,@p) = @_;
-   my ($rel_uri,$base_uri) = 
-      HTTP::DAV::Utils::rearrange(['REL_URI','BASE_URI'], @p);
+    my ( $self, @p ) = @_;
+    my ( $rel_uri, $base_uri )
+        = HTTP::DAV::Utils::rearrange( [ 'REL_URI', 'BASE_URI' ], @p );
 
-   local $URI::URL::ABS_REMOTE_LEADING_DOTS = 1;
-   if (! defined $base_uri) {
-      $base_uri = $self->get_workingresource()->get_uri();
-   }
+    local $URI::URL::ABS_REMOTE_LEADING_DOTS = 1;
+    if ( !defined $base_uri ) {
+        $base_uri = $self->get_workingresource()->get_uri();
+    }
 
-   if($base_uri) {
-      my $new_url = URI->new_abs($rel_uri,$base_uri);
-      return $new_url;
-   } else {
-      $rel_uri;
-   }
+    if ($base_uri) {
+        my $new_url = URI->new_abs( $rel_uri, $base_uri );
+        return $new_url;
+    }
+    else {
+        $rel_uri;
+    }
 }
 
 ## Takes a $dav->get_globs(URI)
@@ -946,47 +1035,53 @@ sub get_absolute_uri {
 # Performs a propfind to determine the url's that match
 #
 sub get_globs {
-   my($self,$url) = @_;
-   my @urls=();
-   my ($left,$leafname) = HTTP::DAV::Utils::split_leaf($url);
+    my ( $self, $url ) = @_;
+    my @urls = ();
+    my ( $left, $leafname ) = HTTP::DAV::Utils::split_leaf($url);
 
-   # We need to unescape it because it may have been encoded.
-   $leafname = URI::Escape::uri_unescape($leafname);
+    # We need to unescape it because it may have been encoded.
+    $leafname = URI::Escape::uri_unescape($leafname);
 
-   if ($leafname =~ /[\*\?\[]/ ) {
-      my $resource = $self->new_resource( -uri => $left);
-      my $resp = $resource->propfind(-depth=>1);
-      if ($resp->is_error) {
-         $self->err('ERR_RESP_FAIL',$resp->message(),$left);
-         return ();
-      }
+    if ( $leafname =~ /[\*\?\[]/ ) {
+        my $resource = $self->new_resource( -uri => $left );
+        my $resp = $resource->propfind( -depth => 1 );
+        if ( $resp->is_error ) {
+            $self->err( 'ERR_RESP_FAIL', $resp->message(), $left );
+            return ();
+        }
 
-      $leafname = HTTP::DAV::Utils::glob2regex($leafname);
-      my $rl = $resource->get_resourcelist();
-      if ($rl) {
-         my $match = 0;
+        $leafname = HTTP::DAV::Utils::glob2regex($leafname);
+        my $rl = $resource->get_resourcelist();
+        if ($rl) {
+            my $match = 0;
 
-         # We eval this because a bogus leafname could bomb the regex.
-         eval {
-            foreach my $progeny ( $rl->get_resources() ) {
-               my $progeny_url = $progeny->get_uri;
-               my $progeny_leaf= HTTP::DAV::Utils::get_leafname($progeny_url);
-               if ( $progeny_leaf =~ /^$leafname$/ ) {
-                  print "Matched $progeny_url\n" if $HTTP::DAV::DEBUG>1;
-                  $match++;
-                  push(@urls,$progeny_url);
-               } else {
-                  print "Skipped $progeny_url\n" if $HTTP::DAV::DEBUG>1;
-               }
-            }
-         };
-         $self->err('ERR_GENERIC',"No match found") unless ($match);
-      }
-   } else {
-      push(@urls,$url);
-   }
+            # We eval this because a bogus leafname could bomb the regex.
+            eval {
+                foreach my $progeny ( $rl->get_resources() )
+                {
+                    my $progeny_url = $progeny->get_uri;
+                    my $progeny_leaf
+                        = HTTP::DAV::Utils::get_leafname($progeny_url);
+                    if ( $progeny_leaf =~ /^$leafname$/ ) {
+                        print "Matched $progeny_url\n"
+                            if $HTTP::DAV::DEBUG > 1;
+                        $match++;
+                        push( @urls, $progeny_url );
+                    }
+                    else {
+                        print "Skipped $progeny_url\n"
+                            if $HTTP::DAV::DEBUG > 1;
+                    }
+                }
+            };
+            $self->err( 'ERR_GENERIC', "No match found" ) unless ($match);
+        }
+    }
+    else {
+        push( @urls, $url );
+    }
 
-   return @urls;
+    return @urls;
 }
 1;
 
