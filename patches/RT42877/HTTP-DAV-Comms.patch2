@@ -1,0 +1,35 @@
+--- /usr/share/perl5/HTTP/DAV/Comms.pm	2008-08-05 17:31:42.000000000 +0200
++++ lib/HTTP/DAV/Comms.pm	2009-01-29 13:28:53.432372325 +0100
+@@ -313,7 +313,10 @@ sub credentials {
+     }
+ 
+     sub credentials {
+-       my($self, $netloc, $realm,$user,$pass) = @_;
++       my $self   = shift;
++       my $netloc = shift;
++       my $realm  = shift;
++
+        $realm = "default" unless $realm;
+        if ($netloc) {
+           $netloc = "http://$netloc" unless $netloc=~/^http/;
+@@ -323,9 +326,18 @@ sub credentials {
+           $netloc = "default";
+        }
+        { no warnings; 
+-       print "Setting auth details for $netloc, $realm to $user,$pass\n" if $HTTP::DAV::DEBUG > 2;
++       print "Setting auth details for $netloc, $realm to '$_[0]','$_[1]'\n" if $HTTP::DAV::DEBUG > 2;
+        }
+-       @{ $self->{'basic_authentication'}{$netloc}{$realm}}= ($user, $pass);
++
++       my $current = $self->{basic_authentication}{$netloc}{$realm};
++
++       if ( @_ ) {
++	   @{ $self->{'basic_authentication'}{$netloc}{$realm}} = @_;
++       }
++
++       return unless $current;
++       return @$current if wantarray;
++       return join(":", @$current);
+     }
+ 
+     sub get_basic_credentials
