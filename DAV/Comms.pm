@@ -11,13 +11,6 @@ $VERSION = sprintf( "%d.%02d", q$Revision: 0.21 $ =~ /(\d+)\.(\d+)/ );
 
 use strict;
 use vars qw($VERSION $DEBUG);
-{
-    no warnings;
-
-    BEGIN {
-        *LWP::UserAgent::redirect_ok = sub {0}
-    }
-}
 
 ####
 # Construct a new object and initialize it
@@ -340,22 +333,40 @@ sub credentials {
 
     sub credentials {
         my ( $self, $netloc, $realm, $user, $pass ) = @_;
-        $realm = "default" unless $realm;
+
+        $realm = 'default' unless $realm;
+
         if ($netloc) {
-            $netloc = "http://$netloc" unless $netloc =~ /^http/;
+            $netloc = "http://$netloc" unless $netloc =~ m{^http};
             my $uri = URI->new($netloc);
             $netloc = $uri->host_port;
         }
         else {
-            $netloc = "default";
+            $netloc = 'default';
         }
+
         {
             no warnings;
-            print "Setting auth details for $netloc, $realm to $user,$pass\n"
+            print
+                "Setting auth details for $netloc, $realm to '$user', '$pass'\n"
                 if $HTTP::DAV::DEBUG > 2;
         }
-        @{ $self->{'basic_authentication'}{$netloc}{$realm} }
-            = ( $user, $pass );
+
+        my $cred = $self->{basic_authentication}->{$netloc}->{$realm};
+
+        # Replace with new credentials (if any)
+        if ( defined $user ) {
+            $cred->[0] = $user;
+            $cred->[1] = $pass;
+        }
+
+        # Return current values
+
+        # User/password pair
+        if (wantarray) { return @{$cred} }
+
+        # As string: 'user:password'
+        return join( ':', @{$cred} );
     }
 
     sub get_basic_credentials {
@@ -379,6 +390,12 @@ sub credentials {
         }
         return @$userpass;
     }
+
+    # Override to disallow redirects. Also, see RT #19616
+    sub redirect_ok {
+        return 0;
+    }
+
 }
 
 ###########################################################################
