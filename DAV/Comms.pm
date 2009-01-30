@@ -358,6 +358,7 @@ sub credentials {
         if ( defined $user ) {
             $cred->[0] = $user;
             $cred->[1] = $pass;
+            $self->{basic_authentication}->{$netloc}->{$realm} = $cred;
         }
 
         # Return current values
