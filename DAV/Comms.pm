@@ -346,22 +346,30 @@ sub credentials {
         }
 
         {
-            no warnings;
-            print
-                "Setting auth details for $netloc, $realm to '$user', '$pass'\n"
-                if $HTTP::DAV::DEBUG > 2;
+          	no warnings;
+			if ($HTTP::DAV::DEBUG > 2) {
+				if (defined $user) {
+					print "Setting auth details for $netloc, $realm to '$user', '$pass'\n";
+				}
+				else {
+					print "Resetting user and password for $netloc, $realm\n";
+				}
+			}
         }
 
-        my $cred = $self->{basic_authentication}->{$netloc}->{$realm};
+		my $cred = ($self->{basic_authentication}->{$netloc}->{$realm} ||= []);
 
         # Replace with new credentials (if any)
-        if ( defined $user ) {
+        if (defined $user) {
             $cred->[0] = $user;
             $cred->[1] = $pass;
             $self->{basic_authentication}->{$netloc}->{$realm} = $cred;
         }
 
         # Return current values
+		if (! @{$cred}) {
+			return wantarray ? () : undef;
+		}
 
         # User/password pair
         if (wantarray) { return @{$cred} }
