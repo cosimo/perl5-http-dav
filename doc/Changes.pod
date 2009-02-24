@@ -12,7 +12,7 @@ Revision history for PerlDAV
 
 =end text
   
-=head2 v0.36 (released 2009/01/29):
+=head2 v0.36 (released 2009/02/25):
 
 =over 4
 
@@ -28,6 +28,11 @@ B<bug fixes>
     HTTP::DAV::UserAgent::credentials() has been modified to behave like
     LWP::UserAgent::credentials(), otherwise basic authentication breakages
     can occur.
+
+  - Fixed a problem with C<-depth> argument to C<HTTP::DAV::propfind()> that
+    could lead to massive performance degradation, especially when running
+	C<propfind()> against large folders.
+	C<-depth> was set to 1 even when passed as zero.
 
 =back
 

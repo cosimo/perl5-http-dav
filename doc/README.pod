@@ -31,11 +31,37 @@ Learn more about WebDAV at http://www.webdav.org/
 
 =head1 LATEST VERSION AND WHAT'S NEW
 
-The latest version is: v0.35 (released 2008/11/03)
+The latest version is: v0.36 (released 2009/02/25)
 
 Download: http://search.cpan.org/dist/HTTP-DAV/
 
 =over 4
+
+=item *
+
+B<bug fixes>
+
+Fixed RT #19616 (http://rt.cpan.org/Public/Bug/Display.html?id=19616),
+LWP::UserAgent::redirect_ok() is not changed anymore. We're subclassing
+it from HTTP::DAV::UserAgent and overriding redirect_ok() there.
+
+=item *
+
+B<bug fixes>
+
+Fixed RT #42877 (http://rt.cpan.org/Public/Bug/Display.html?id=42877),
+HTTP::DAV::UserAgent::credentials() has been modified to behave like
+LWP::UserAgent::credentials(), otherwise basic authentication breakages
+can occur.
+
+=item *
+
+B<bug fixes>
+
+Fixed a problem with C<-depth> argument to C<HTTP::DAV::propfind()> that
+could lead to massive performance degradation, especially when running
+C<propfind()> against large folders.
+C<-depth> was set to 1 even when passed as zero.
 
 =item *
 
@@ -250,6 +276,13 @@ This module is Copyright (C) 2001 by
    Phone: +61 2 9663 4916
 
 All rights reserved.
+
+=head1 MAINTAINER
+
+The current maintainer of HTTP-DAV is Opera Software ASA.
+You can contact us at C<opera@cpan.org>.
+
+=head1 LICENSE
 
 You may distribute this module under the terms of either the GNU General Public License or the Artistic License, as specified in the Perl README file.
 

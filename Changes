@@ -1,5 +1,22 @@
 Revision history for PerlDAV
 
+  v0.36 (released 2009/02/25):
+    *   bug fixes
+
+          - Fixed RT #19616 (http://rt.cpan.org/Public/Bug/Display.html?id=19616),
+            LWP::UserAgent::redirect_ok() is not changed anymore. We're subclassing
+            it from HTTP::DAV::UserAgent and overriding redirect_ok() there.
+
+          - Fixed RT #42877 (http://rt.cpan.org/Public/Bug/Display.html?id=42877),
+            HTTP::DAV::UserAgent::credentials() has been modified to behave like
+            LWP::UserAgent::credentials(), otherwise basic authentication breakages
+            can occur.
+
+          - Fixed a problem with C<-depth> argument to C<HTTP::DAV::propfind()> that
+            could lead to massive performance degradation, especially when running
+            C<propfind()> against large folders.
+            C<-depth> was set to 1 even when passed as zero.
+
   v0.35 (released 2008/11/03):
     *   bug fixes
 
@@ -145,6 +162,5 @@ Revision history for PerlDAV
 
      - supports PUT,GET,MLCOL,DELETE,OPTIONS,PROPFIND,LOCK,UNLOCK,steal_lock,lock_discovery
 
-    ** This file was automatically generated from **
-    ** doc/Changes.pod. To edit it, see there.    **
-
+** This file was automatically generated from **
+** doc/Changes.pod. To edit it, see there.    **

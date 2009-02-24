@@ -1,5 +1,4 @@
 TODO
-
   dave
        - globs on lock(),unlock(),steal(),options()?,move(),copy(),propfind(),proppatch() (and set/unset).
        - rework ls to use globs.
@@ -60,6 +59,5 @@ TODO
 
     $Id$
 
-    ** This file was automatically generated from **
-    ** doc/TODO.pod. To edit it, see there.    **
-
+** This file was automatically generated from **
+** doc/TODO.pod. To edit it, see there.    **

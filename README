@@ -14,9 +14,32 @@ PerlDAV -- A WebDAV client library for Perl5
     Learn more about WebDAV at http://www.webdav.org/
 
 LATEST VERSION AND WHAT'S NEW
-    The latest version is: v0.35 (released 2008/11/03)
+    The latest version is: v0.36 (released 2009/02/25)
 
     Download: http://search.cpan.org/dist/HTTP-DAV/
+
+    *   bug fixes
+
+        Fixed RT #19616
+        (http://rt.cpan.org/Public/Bug/Display.html?id=19616),
+        LWP::UserAgent::redirect_ok() is not changed anymore. We're
+        subclassing it from HTTP::DAV::UserAgent and overriding
+        redirect_ok() there.
+
+    *   bug fixes
+
+        Fixed RT #42877
+        (http://rt.cpan.org/Public/Bug/Display.html?id=42877),
+        HTTP::DAV::UserAgent::credentials() has been modified to behave like
+        LWP::UserAgent::credentials(), otherwise basic authentication
+        breakages can occur.
+
+    *   bug fixes
+
+        Fixed a problem with "-depth" argument to "HTTP::DAV::propfind()"
+        that could lead to massive performance degradation, especially when
+        running "propfind()" against large folders. "-depth" was set to 1
+        even when passed as zero.
 
     *   bug fixes
 
@@ -54,8 +77,7 @@ LATEST VERSION AND WHAT'S NEW
 
          - Now works with mod_dav under Apache 2.
 
-    See the Changes file for previous releases.
-
+See the Changes file for previous releases.
 INSTALLING PERLDAV
     The lazy way to install PerlDAV:
 
@@ -173,10 +195,11 @@ BUGS and TODO
     Need to convert XML::DOM to a DOM Level 2 compliant parser like
     XML::Gdome.
 
-    See TODO for what is left to be done.
+See TODO for what is left to be done.
 
 AUTHOR AND COPYRIGHT
-    This module is Copyright (C) 2001 by
+
+    This module is Copyright (C) 2001-2008 by
 
        Patrick Collins
        G03 Gloucester Place, Kensington
@@ -187,12 +210,18 @@ AUTHOR AND COPYRIGHT
 
     All rights reserved.
 
+MAINTAINER
+
+	The current maintainer for HTTP::DAV is Opera Software ASA.
+	Contact us at C<opera@cpan.org>
+
+LICENSE
+
     You may distribute this module under the terms of either the GNU General
     Public License or the Artistic License, as specified in the Perl README
     file.
 
     $Id$
 
-    ** This file was automatically generated from **
-    ** doc/Changes.pod. To edit it, see there.    **
-
+** This file was automatically generated from **
+** doc/Changes.pod. To edit it, see there.    **
