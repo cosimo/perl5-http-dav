@@ -775,10 +775,12 @@ sub open {
 # it is a collection.
 sub propfind {
     my ( $self, @p ) = @_;
-    my ( $url, $depth )
-        = HTTP::DAV::Utils::rearrange( [ 'URL', 'DEPTH' ], @p );
+    my ( $url, $depth ) = HTTP::DAV::Utils::rearrange( [ 'URL', 'DEPTH' ], @p );
 
-    $depth ||= 1;
+    # depth = 1 is the default
+    if (! defined $depth) {
+        $depth = 1;
+    }
 
     return $self->err('ERR_NULL_RESOURCE')
         unless $self->get_workingresource();
