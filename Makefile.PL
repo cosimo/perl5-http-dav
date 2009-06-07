@@ -11,7 +11,8 @@ WriteMakefile(
     'VERSION_FROM' => 'DAV.pm', # finds $VERSION
     'dist'          => { COMPRESS => 'gzip -9f --best',
                          SUFFIX => '.gz',
-                         PREOP => 'bin/dist' },
+#                         PREOP => 'bin/dist'
+					   },
     'EXE_FILES'     => [ map {"bin/$_"} @programs_to_install ],
     'PREREQ_PM' => { 
         'LWP'          => 5.48,

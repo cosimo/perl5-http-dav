@@ -19,10 +19,10 @@ use File::Glob;
 use Cwd qw(getcwd);  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION = '0.36';
+$VERSION = '0.37';
 
 #sprintf("%d.%02d", q$Revision: 0.31 $ =~ /(\d+)\.(\d+)/);
-$VERSION_DATE = '2009/01/29';
+$VERSION_DATE = '2009/03/24';
 
 #sprintf("%s", q$Date: 2002/04/13 12:21:07 $ =~ m# (.*) $# );
 
@@ -882,11 +882,12 @@ sub put {
     my ( $local, $url, $callback )
         = HTTP::DAV::Utils::rearrange( [ 'LOCAL', 'URL', 'CALLBACK' ], @p );
 
-    $self->_start_multi_op( "put $local", $callback );
     if ( ref($local) eq "SCALAR" ) {
+    	$self->_start_multi_op( 'put ' . ${$local}, $callback );
         $self->_put(@p);
     }
     else {
+    	$self->_start_multi_op( 'put ' . $local, $callback );
         $local =~ s/\ /\\ /g;
         my @globs = glob("$local");
 

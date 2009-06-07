@@ -1,4 +1,10 @@
 Revision history for PerlDAV
+  v0.37 (released 2009/03/24):
+    *   bug fixes
+
+          - Fixed RT #44409 (http://rt.cpan.org/Public/Bug/Display.html?id=44409),
+            Small bug in HTTP::DAV::put(). Passing a reference as local content resulted
+            in the "SCALAR(0x12345678)" being logged instead of the real scalar.
 
   v0.36 (released 2009/02/25):
     *   bug fixes
@@ -14,8 +20,8 @@ Revision history for PerlDAV
 
           - Fixed a problem with C<-depth> argument to C<HTTP::DAV::propfind()> that
             could lead to massive performance degradation, especially when running
-            C<propfind()> against large folders.
-            C<-depth> was set to 1 even when passed as zero.
+                C<propfind()> against large folders.
+                C<-depth> was set to 1 even when passed as zero.
 
   v0.35 (released 2008/11/03):
     *   bug fixes

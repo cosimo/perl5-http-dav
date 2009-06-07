@@ -14,9 +14,16 @@ PerlDAV -- A WebDAV client library for Perl5
     Learn more about WebDAV at http://www.webdav.org/
 
 LATEST VERSION AND WHAT'S NEW
-    The latest version is: v0.36 (released 2009/02/25)
+    The latest version is: v0.37 (released 2009/03/24)
 
     Download: http://search.cpan.org/dist/HTTP-DAV/
+
+    *   bug fixes
+
+        Fixed RT #44409
+        (http://rt.cpan.org/Public/Bug/Display.html?id=44409), Small bug in
+        HTTP::DAV::put(). Passing a reference as local content resulted in
+        the "SCALAR(0x12345678)" being logged instead of the real scalar.
 
     *   bug fixes
 
@@ -196,10 +203,8 @@ BUGS and TODO
     XML::Gdome.
 
 See TODO for what is left to be done.
-
 AUTHOR AND COPYRIGHT
-
-    This module is Copyright (C) 2001-2008 by
+    This module is Copyright (C) 2001 by
 
        Patrick Collins
        G03 Gloucester Place, Kensington
@@ -211,12 +216,10 @@ AUTHOR AND COPYRIGHT
     All rights reserved.
 
 MAINTAINER
-
-	The current maintainer for HTTP::DAV is Opera Software ASA.
-	Contact us at C<opera@cpan.org>
+    The current maintainer of HTTP-DAV is Opera Software ASA. You can
+    contact us at "opera@cpan.org".
 
 LICENSE
-
     You may distribute this module under the terms of either the GNU General
     Public License or the Artistic License, as specified in the Perl README
     file.
