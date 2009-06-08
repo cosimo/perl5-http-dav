@@ -1,10 +1,22 @@
 Revision history for PerlDAV
+  v0.38 (released 2009/06/09):
+    *   bug fixes
+
+          - Fixed RT #14506 (http://rt.cpan.org/Public/Bug/Display.html?id=14506),
+            about the missing get_lastresponse() method. It was a documentation bug.
+
+          - Fixed RT #29788 (http://rt.cpan.org/Public/Bug/Display.html?id=29788),
+            avoid file corruptions on Win32 when calling HTTP::DAV::get() method.
+
+          - Fixed RT #31014 (http://rt.cpan.org/Public/Bug/Display.html?id=31014),
+            probably already in v0.34, since it seems related to propfind() "depth" bug.
+
   v0.37 (released 2009/03/24):
     *   bug fixes
 
           - Fixed RT #44409 (http://rt.cpan.org/Public/Bug/Display.html?id=44409),
             Small bug in HTTP::DAV::put(). Passing a reference as local content resulted
-            in the "SCALAR(0x12345678)" being logged instead of the real scalar.
+                in the "SCALAR(0x12345678)" being logged instead of the real scalar.
 
   v0.36 (released 2009/02/25):
     *   bug fixes

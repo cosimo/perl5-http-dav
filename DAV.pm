@@ -19,10 +19,10 @@ use File::Glob;
 use Cwd qw(getcwd);  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION = '0.37';
+$VERSION = '0.38';
 
 #sprintf("%d.%02d", q$Revision: 0.31 $ =~ /(\d+)\.(\d+)/);
-$VERSION_DATE = '2009/03/24';
+$VERSION_DATE = '2009/06/09';
 
 #sprintf("%s", q$Date: 2002/04/13 12:21:07 $ =~ m# (.*) $# );
 
@@ -378,7 +378,8 @@ sub _get {
         }
 
         # Try and make the directory locally
-        print "MKDIR $local_name (before escape)\n";
+        print "MKDIR $local_name (before escape)\n" if $DEBUG > 2;
+
         $local_name = URI::Escape::uri_unescape($local_name);
         if ( !mkdir $local_name ) {
             return $self->err( 'ERR_GENERIC',
@@ -430,21 +431,31 @@ sub _get {
 
             my $fh;
             my $put_to_scalar = 0;
+
             if ( $name_ref =~ /GLOB/ ) {
                 $fh = $local_name;
             }
+
             elsif ( $name_ref =~ /SCALAR/ ) {
                 $put_to_scalar = 1;
                 $$local_name   = "";
             }
+
             else {
                 $fh         = FileHandle->new;
                 $local_name = URI::Escape::uri_unescape($local_name);
-                if ( !$fh->open(">$local_name") ) {
-                    return $self->err( 'ERR_GENERIC',
-                        "open \">$local_name\" failed: $!", $url );
+                if (! $fh->open(">$local_name") ) {
+                    return $self->err(
+                        'ERR_GENERIC',
+                        "open \">$local_name\" failed: $!",
+                        $url
+                    );
                 }
+
+                # RT #29788, avoid file corruptions on Win32
+                binmode $fh;
             }
+
             $self->{_fh} = $fh;
 
             $response = $resource->get(
@@ -966,7 +977,7 @@ sub _put {
             }
         }
 
-        # PUT A FILE
+    # PUT A FILE
     }
     else {
         my $content = "";
@@ -1888,7 +1899,7 @@ This value will always be the same as the value returned from an HTTP::DAV::meth
 You may want to use the is_success method if you didn't capture the return value immediately. But in most circumstances you're better off just evaluating as follows:
   if($d->lock($url)) { ... }
 
-=item B<get_lastresponse>
+=item B<get_last_response>
 
 Takes no arguments and returns the last seen C<HTTP::DAV::Response> object. 
 
@@ -1896,13 +1907,13 @@ You may want to use this if you have just called a propfind and need the individ
 
 If you find that you're using get_last_response() method a lot, you may be better off using the more advanced C<HTTP::DAV> interface and interacting with the HTTP::DAV::* interfaces directly as discussed in the intro. For instance, if you find that you're always wanting a detailed understanding of the server's response headers or messages, then you're probably better off using the C<HTTP::DAV::Resource> methods and interpreting the C<HTTP::DAV::Response> directly.
 
-To perform detailed analysis of the server's response (if for instance you got back a multistatus response) you can call get_lastresponse which will return to you the most recent response object (always the result of the last operation, PUT, PROPFIND, etc). With the returned HTTP::DAV::Response object you can handle multi-status responses.
+To perform detailed analysis of the server's response (if for instance you got back a multistatus response) you can call C<get_last_response()> which will return to you the most recent response object (always the result of the last operation, PUT, PROPFIND, etc). With the returned HTTP::DAV::Response object you can handle multi-status responses.
 
 For example:
 
    # Print all of the messages in a multistatus response
    if (! $d->unlock($url) ) {
-      $response = $d->get_lastresponse();
+      $response = $d->get_last_response();
       if ($response->is_multistatus() ) {
         foreach $num ( 0 .. $response->response_count() ) {
            ($err_code,$mesg,$url,$desc) =

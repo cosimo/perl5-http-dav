@@ -14,9 +14,23 @@ PerlDAV -- A WebDAV client library for Perl5
     Learn more about WebDAV at http://www.webdav.org/
 
 LATEST VERSION AND WHAT'S NEW
-    The latest version is: v0.37 (released 2009/03/24)
+    The latest version is: v0.38 (released 2009/06/09)
 
     Download: http://search.cpan.org/dist/HTTP-DAV/
+
+    *   bug fixes
+
+        Fixed RT #14506
+        (http://rt.cpan.org/Public/Bug/Display.html?id=14506), about the
+        missing get_lastresponse() method. It was a documentation bug.
+
+        Fixed RT #29788
+        (http://rt.cpan.org/Public/Bug/Display.html?id=29788), avoid file
+        corruptions on Win32 when calling HTTP::DAV::get() method.
+
+        Fixed RT #31014
+        (http://rt.cpan.org/Public/Bug/Display.html?id=31014), probably
+        already in v0.34, since it seems related to propfind() "depth" bug.
 
     *   bug fixes
 
