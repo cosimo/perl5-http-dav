@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               HTTP-DAV
-version:            0.37
+version:            0.38
 abstract:           ~
 author:  []
 license:            unknown
