@@ -231,6 +231,7 @@ sub compare_uris {
    $uri2 = make_uri($uri2);
    $uri1=~s#\/$##g;
    $uri2=~s#\/$##g;
+   s/(%\p{IsXDigit}{2})/lc $1/eg for ($uri1, $uri2);
    $uri1 eq $uri2;
 }
 
