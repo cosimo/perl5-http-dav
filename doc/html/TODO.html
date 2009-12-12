@@ -10,8 +10,10 @@
 
 <body>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 <!--
 
 <ul>
@@ -25,7 +27,11 @@
 	</ul>
 
 </ul>
+
 -->
+
+
+</div>
 <!-- INDEX END -->
 
 <div id="content"><H1>TODO</H1></div><div id="content"><p>
@@ -39,6 +45,9 @@
 </p>
 <h2><a name="http__dav">HTTP::DAV</a></h2>
 <pre>
+   - Rework the file transfer code to avoid slurping complete files in memory
+     and read through a fixed size buffer, to avoid memory hogs or crashes
+         when transferring huge files.
    - LWP doesn't allow callback on upload, only download. This means
      we can't do progress indicators on &quot;PUT&quot;. How to do it? Could patch
      LWP? Specialise LWP::UserAgent? Ugh.

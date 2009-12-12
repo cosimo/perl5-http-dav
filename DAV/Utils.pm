@@ -206,12 +206,10 @@ sub make_uri {
    if ( ref($uri) =~ /URI/ ) { 
       $uri = $uri->as_string;
    }
-   #$uri =~ "http://$uri" unless $uri=~ /^http:\/\//;
-   #if $uri = "" return URI->new();
    # Remove double slashes from the url
    $uri =URI->new($uri);
-   my $path =$uri->path;
-   $path =~ s#//#/#g;
+   my $path = $uri->path;
+   $path =~ s{//}{/}g;
    #print "make_uri: $uri->$path\n";
    $uri->path($path);
    #print "make_uri: $uri\n";
@@ -220,19 +218,21 @@ sub make_uri {
 
 sub make_trail_slash {
    my ($uri) = @_;
-   $uri =~ s#/*$##g;
-   $uri.="/";
+   $uri =~ s{/*$}{};
+   $uri .= '/';
    return $uri;
 }
 
 sub compare_uris {
    my ($uri1,$uri2) = @_;
-   $uri1 = make_uri($uri1);
-   $uri2 = make_uri($uri2);
-   $uri1=~s#\/$##g;
-   $uri2=~s#\/$##g;
-   s/(%\p{IsXDigit}{2})/lc $1/eg for ($uri1, $uri2);
-   $uri1 eq $uri2;
+
+   for ($uri1, $uri2) {
+      $_ = make_uri($_);
+      s{/$}{};
+      s{(%[0-9a-fA-F][0-9a-fA-F])}{lc $1}eg;
+   }
+
+   return $uri1 eq $uri2;
 }
 
 # This subroutine takes a URI and gets the last portion 

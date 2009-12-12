@@ -1,4 +1,6 @@
-# $Id$
+#
+# Perl WebDAV client library
+#
 
 package HTTP::DAV;
 
@@ -15,16 +17,11 @@ use FileHandle;
 use File::Glob;
 
 #use Carp (cluck);
-
 use Cwd qw(getcwd);  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION = '0.38';
-
-#sprintf("%d.%02d", q$Revision: 0.31 $ =~ /(\d+)\.(\d+)/);
-$VERSION_DATE = '2009/06/09';
-
-#sprintf("%s", q$Date: 2002/04/13 12:21:07 $ =~ m# (.*) $# );
+$VERSION = '0.39';
+$VERSION_DATE = '2009/12/12';
 
 $DEBUG = 0;          # Set this up to 3
 
@@ -1953,6 +1950,8 @@ resource is valid.
 
 =head1 INSTALLATION, TODO, MAILING LISTS and REVISION HISTORY
 
+[OUTDATED]
+
 Please see the primary HTTP::DAV webpage at
 (http://www.webdav.org/perldav/http-dav/)
 or the README file in this library.
@@ -2002,8 +2001,8 @@ This module is Copyright (C) 2001-2008 by
 
 All rights reserved.
 
-Current co-maintainer of the module is Opera Software ASA,
-L<opera@cpan.org>.
+Current co-maintainer of the module is Cosimo Streppone
+for Opera Software ASA, L<opera@cpan.org>.
 
 You may distribute this module under the terms of either the
 GNU General Public License or the Artistic License,

@@ -5,6 +5,9 @@ TODO
        - multistatus responses don't come through nicely.
 
   HTTP::DAV
+       - Rework the file transfer code to avoid slurping complete files in memory
+         and read through a fixed size buffer, to avoid memory hogs or crashes
+             when transferring huge files.
        - LWP doesn't allow callback on upload, only download. This means
          we can't do progress indicators on "PUT". How to do it? Could patch
          LWP? Specialise LWP::UserAgent? Ugh.

@@ -11,12 +11,20 @@ PerlDAV -- A WebDAV client library for Perl5
         interacting with WebDAV servers. dave looks and feels like a
         standard Unix ftp program.
 
-    Learn more about WebDAV at http://www.webdav.org/
+    Learn more about WebDAV at http://www.webdav.org/ (outdated)
 
 LATEST VERSION AND WHAT'S NEW
-    The latest version is: v0.38 (released 2009/06/09)
+    The latest version is: v0.39 (released 2009/12/12)
 
     Download: http://search.cpan.org/dist/HTTP-DAV/
+
+    *   bug fixes
+
+        Fixed RT #52665
+        (<http://rt.cpan.org/Public/Bug/Display.html?id=52665>), Using dave
+        or "propfind()" on URLs containing escaped chars (%xx) could fail,
+        due to upper/lower case differences. Thanks to cebjyre for the patch
+        and test case.
 
     *   bug fixes
 

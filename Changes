@@ -1,4 +1,12 @@
 Revision history for PerlDAV
+  v0.39 (released 2009/12/12):
+    *   bug fixes
+
+          - Fixed RT #52665 (http://rt.cpan.org/Public/Bug/Display.html?id=52665),
+            Using dave or propfind() on URLs containing escaped chars (%xx) could fail,
+                due to upper/lower case differences. Thanks to cebjyre for the patch
+                and the test case.
+
   v0.38 (released 2009/06/09):
     *   bug fixes
 

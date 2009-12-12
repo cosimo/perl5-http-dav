@@ -10,13 +10,15 @@
 
 <body>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 <!--
 
 <ul>
 
-	<li><a href="#perldav__a_webdav_client_library_for_perl5">PerlDAV - A WebDAV client library for Perl5</a></li>
+	<li><a href="#perldav____a_webdav_client_library_for_perl5">PerlDAV - A WebDAV client library for Perl5</a></li>
 	<li><a href="#latest_version_and_what_s_new">LATEST VERSION AND WHAT'S NEW</a></li>
 	<li><a href="#installing_perldav">INSTALLING PERLDAV</a></li>
 	<ul>
@@ -36,8 +38,14 @@
 	<li><a href="#the_test_suite___interoperability">THE TEST SUITE &amp; INTEROPERABILITY</a></li>
 	<li><a href="#bugs_and_todo">BUGS and TODO</a></li>
 	<li><a href="#author_and_copyright">AUTHOR AND COPYRIGHT</a></li>
+	<li><a href="#maintainer">MAINTAINER</a></li>
+	<li><a href="#license">LICENSE</a></li>
 </ul>
+
 -->
+
+
+</div>
 <!-- INDEX END -->
 
 <div id="content">
@@ -52,14 +60,55 @@
 <p><strong>dave</strong> - the DAV Explorer, an end-user Unix console program for interacting with WebDAV servers. dave looks and feels like a standard Unix ftp program.</p>
 </li>
 </ul>
-<p>Learn more about WebDAV at <a href="http://www.webdav.org/">http://www.webdav.org/</a></p>
+<p>Learn more about WebDAV at <a href="http://www.webdav.org/">http://www.webdav.org/</a> (outdated)</p>
 <p>
 </p>
 <hr />
 <h1><a name="latest_version_and_what_s_new">LATEST VERSION AND WHAT'S NEW</a></h1>
-<p>The latest version is: v0.35 (released 2008/11/03)</p>
+<p>The latest version is: v0.39 (released 2009/12/12)</p>
 <p>Download: <a href="http://search.cpan.org/dist/HTTP-DAV/">http://search.cpan.org/dist/HTTP-DAV/</a></p>
 <ul>
+<li>
+<p><strong>bug fixes</strong></p>
+<p>Fixed RT #52665 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=52665">http://rt.cpan.org/Public/Bug/Display.html</a>),
+Using dave or <code>propfind()</code> on URLs containing escaped chars (<code>%xx</code>) could fail,
+due to upper/lower case differences. Thanks to cebjyre for the patch and test case.</p>
+</li>
+<li>
+<p><strong>bug fixes</strong></p>
+<p>Fixed RT #14506 (http://rt.cpan.org/Public/Bug/Display.html?id=14506),
+about the missing <code>get_lastresponse()</code> method. It was a documentation bug.</p>
+<p>Fixed RT #29788 (http://rt.cpan.org/Public/Bug/Display.html?id=29788),
+avoid file corruptions on Win32 when calling HTTP::DAV::get() method.</p>
+<p>Fixed RT #31014 (http://rt.cpan.org/Public/Bug/Display.html?id=31014),
+probably already in v0.34, since it seems related to <code>propfind()</code> &quot;depth&quot; bug.</p>
+</li>
+<li>
+<p><strong>bug fixes</strong></p>
+<p>Fixed RT #44409 (http://rt.cpan.org/Public/Bug/Display.html?id=44409),
+Small bug in HTTP::DAV::put(). Passing a reference as local content resulted
+in the &quot;SCALAR(0x12345678)&quot; being logged instead of the real scalar.</p>
+</li>
+<li>
+<p><strong>bug fixes</strong></p>
+<p>Fixed RT #19616 (http://rt.cpan.org/Public/Bug/Display.html?id=19616),
+LWP::UserAgent::redirect_ok() is not changed anymore. We're subclassing
+it from HTTP::DAV::UserAgent and overriding <code>redirect_ok()</code> there.</p>
+</li>
+<li>
+<p><strong>bug fixes</strong></p>
+<p>Fixed RT #42877 (http://rt.cpan.org/Public/Bug/Display.html?id=42877),
+HTTP::DAV::UserAgent::credentials() has been modified to behave like
+LWP::UserAgent::credentials(), otherwise basic authentication breakages
+can occur.</p>
+</li>
+<li>
+<p><strong>bug fixes</strong></p>
+<p>Fixed a problem with <code>-depth</code> argument to <code>HTTP::DAV::propfind()</code> that
+could lead to massive performance degradation, especially when running
+<code>propfind()</code> against large folders.
+<code>-depth</code> was set to 1 even when passed as zero.</p>
+</li>
 <li>
 <p><strong>bug fixes</strong></p>
 <pre>
@@ -229,6 +278,16 @@ then:
    <a href="mailto:pcollins@cpan.org">mailto:pcollins@cpan.org</a>
    Phone: +61 2 9663 4916</pre>
 <p>All rights reserved.</p>
+<p>
+</p>
+<hr />
+<h1><a name="maintainer">MAINTAINER</a></h1>
+<p>The current maintainer of HTTP-DAV is Opera Software ASA.
+You can contact us at <code>opera@cpan.org</code>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="license">LICENSE</a></h1>
 <p>You may distribute this module under the terms of either the GNU General Public License or the Artistic License, as specified in the Perl README file.</p>
 <p>$Id$</p>
 </div>
