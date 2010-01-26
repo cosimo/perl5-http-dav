@@ -1,3 +1,7 @@
+#
+# Perl WebDAV client library
+#
+
 package HTTP::DAV;
 
 use LWP;
@@ -1947,6 +1951,8 @@ resource is valid.
 
 =head1 INSTALLATION, TODO, MAILING LISTS and REVISION HISTORY
 
+[OUTDATED]
+
 Please see the primary HTTP::DAV webpage at
 (http://www.webdav.org/perldav/http-dav/)
 or the README file in this library.
@@ -1996,8 +2002,8 @@ This module is Copyright (C) 2001-2008 by
 
 All rights reserved.
 
-Current co-maintainer of the module is Opera Software ASA,
-L<opera@cpan.org>.
+Current co-maintainer of the module is Cosimo Streppone
+for Opera Software ASA, L<opera@cpan.org>.
 
 You may distribute this module under the terms of either the
 GNU General Public License or the Artistic License,
