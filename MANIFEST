@@ -36,6 +36,8 @@ t/6_dav_open_put_get.t
 t/6_dav_options.t
 t/9_RT_19616.t
 t/9_RT_42877.t
+t/9_RT_47500.t
+t/9_RT_52665.t
 t/TestDetails.pm
 t/multistatus.xml
 t/test_data/file1

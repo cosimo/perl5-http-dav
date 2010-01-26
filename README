@@ -14,91 +14,8 @@ PerlDAV -- A WebDAV client library for Perl5
     Learn more about WebDAV at http://www.webdav.org/
 
 LATEST VERSION AND WHAT'S NEW
-    The latest version is: v0.38 (released 2009/06/09)
+    See the included "Changes" file for the full changelog.
 
-    Download: http://search.cpan.org/dist/HTTP-DAV/
-
-    *   bug fixes
-
-        Fixed RT #14506
-        (http://rt.cpan.org/Public/Bug/Display.html?id=14506), about the
-        missing get_lastresponse() method. It was a documentation bug.
-
-        Fixed RT #29788
-        (http://rt.cpan.org/Public/Bug/Display.html?id=29788), avoid file
-        corruptions on Win32 when calling HTTP::DAV::get() method.
-
-        Fixed RT #31014
-        (http://rt.cpan.org/Public/Bug/Display.html?id=31014), probably
-        already in v0.34, since it seems related to propfind() "depth" bug.
-
-    *   bug fixes
-
-        Fixed RT #44409
-        (http://rt.cpan.org/Public/Bug/Display.html?id=44409), Small bug in
-        HTTP::DAV::put(). Passing a reference as local content resulted in
-        the "SCALAR(0x12345678)" being logged instead of the real scalar.
-
-    *   bug fixes
-
-        Fixed RT #19616
-        (http://rt.cpan.org/Public/Bug/Display.html?id=19616),
-        LWP::UserAgent::redirect_ok() is not changed anymore. We're
-        subclassing it from HTTP::DAV::UserAgent and overriding
-        redirect_ok() there.
-
-    *   bug fixes
-
-        Fixed RT #42877
-        (http://rt.cpan.org/Public/Bug/Display.html?id=42877),
-        HTTP::DAV::UserAgent::credentials() has been modified to behave like
-        LWP::UserAgent::credentials(), otherwise basic authentication
-        breakages can occur.
-
-    *   bug fixes
-
-        Fixed a problem with "-depth" argument to "HTTP::DAV::propfind()"
-        that could lead to massive performance degradation, especially when
-        running "propfind()" against large folders. "-depth" was set to 1
-        even when passed as zero.
-
-    *   bug fixes
-
-          - Fixed RT #40318 (http://rt.cpan.org/Public/Bug/Display.html?id=40318),
-            about getting single or multiple files directly to \*STDOUT.
-
-    *   bug fixes
-
-          - Fixed RT #39150 (http://rt.cpan.org/Public/Bug/Display.html?id=39150),
-            about downloading multiple files in the same directory.
-
-    *   documentation
-
-          - Clearly state that Opera Software ASA is now co-maintainer of HTTP::DAV
-
-          - Fixed various inconsistencies in the v0.32 documentation
-
-    *   incompatibilities
-
-         - Now HTTP::DAV requires Perl 5.6.0+ and Scalar::Util (core in 5.8.x).
-
-    *   bug fixes
-
-         - Now HTTP::DAV objects are correctly released from memory when
-           they go out of scope. Now it should be possible to use multiple instances
-           of HTTP::DAV even in long-running processes.
-
-           Was caused by circular references between HTTP::DAV and HTTP::DAV::Resource.
-
-    *   Windows support
-
-         - Multiple people have confirmed that PerlDAV install and runs under Windows (subject to fixing the binmode bug below).
-
-    *   Apache 2 mod_dav support
-
-         - Now works with mod_dav under Apache 2.
-
-See the Changes file for previous releases.
 INSTALLING PERLDAV
     The lazy way to install PerlDAV:
 
@@ -230,8 +147,9 @@ AUTHOR AND COPYRIGHT
     All rights reserved.
 
 MAINTAINER
-    The current maintainer of HTTP-DAV is Opera Software ASA. You can
-    contact us at "opera@cpan.org".
+    The current maintainer of HTTP-DAV is Cosimo Streppone for Opera
+    Software ASA. You can contact us at "cosimo@cpan.org" or
+    "opera@cpan.org".
 
 LICENSE
     You may distribute this module under the terms of either the GNU General

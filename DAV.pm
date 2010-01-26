@@ -1,5 +1,3 @@
-# $Id$
-
 package HTTP::DAV;
 
 use LWP;
@@ -15,18 +13,14 @@ use FileHandle;
 use File::Glob;
 
 #use Carp (cluck);
-
 use Cwd qw(getcwd);  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION = '0.38';
+$VERSION = '0.40';
+$VERSION_DATE = '2010/01/26';
 
-#sprintf("%d.%02d", q$Revision: 0.31 $ =~ /(\d+)\.(\d+)/);
-$VERSION_DATE = '2009/06/09';
-
-#sprintf("%s", q$Date: 2002/04/13 12:21:07 $ =~ m# (.*) $# );
-
-$DEBUG = 0;          # Set this up to 3
+# Set this up to 3
+$DEBUG = 0;
 
 use strict;
 use vars qw($VERSION $VERSION_DATE $DEBUG);

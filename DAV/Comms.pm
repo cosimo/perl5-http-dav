@@ -7,7 +7,7 @@ use HTTP::DAV::Response;
 use LWP;
 use URI;
 
-$VERSION = sprintf( "%d.%02d", q$Revision: 0.21 $ =~ /(\d+)\.(\d+)/ );
+$VERSION = q(0.22);
 
 use strict;
 use vars qw($VERSION $DEBUG);
@@ -357,13 +357,22 @@ sub credentials {
 			}
         }
 
-		my $cred = ($self->{basic_authentication}->{$netloc}->{$realm} ||= []);
+		# Pay attention to not autovivify the hash value (RT #47500)
+		my $cred;
+		if (
+			exists $self->{basic_authentication}->{$netloc} &&
+			exists $self->{basic_authentication}->{$netloc}->{$realm}) {
+			$cred = $self->{basic_authentication}->{$netloc}->{$realm};
+		}
+		else {
+			$cred = [];
+		}
 
         # Replace with new credentials (if any)
         if (defined $user) {
-            $cred->[0] = $user;
-            $cred->[1] = $pass;
-            $self->{basic_authentication}->{$netloc}->{$realm} = $cred;
+            $self->{basic_authentication}->{$netloc}->{$realm}->[0] = $user;
+            $self->{basic_authentication}->{$netloc}->{$realm}->[1] = $pass;
+			$cred = $self->{basic_authentication}->{$netloc}->{$realm};
         }
 
         # Return current values
