@@ -53,6 +53,9 @@ INSTALLING PERLDAV
     *   XML::DOM (Have not tested lower than v1.26). Requires James Clark's
         expat library:
 
+    *   To access SSL urls you will need Crypt::SSLeay and/or
+        IO::Socket::SSL.
+
   Optional Prerequisites.
     *   Crypt::SSLeay if you'd like to use https. Crypt::SSLeay requires the
         openssl library as well. See Crypt::SSLeay's excellent install

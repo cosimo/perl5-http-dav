@@ -20,8 +20,8 @@ use File::Glob;
 use Cwd qw(getcwd);  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION = '0.40';
-$VERSION_DATE = '2010/01/26';
+$VERSION = '0.41';
+$VERSION_DATE = '2010/07/24';
 
 # Set this up to 3
 $DEBUG = 0;
@@ -137,6 +137,7 @@ my %err = (
     'ERR_UNAUTHORIZED'  => 'Unauthorized. ',
     'ERR_NULL_RESOURCE' => 'Not connected. Do an open first. ',
     'ERR_RESP_FAIL'     => 'Server response: ',
+    'ERR_501'           => 'Server response: ',
     'ERR_GENERIC'       => '',
 );
 
@@ -738,23 +739,13 @@ sub open {
 
     #print $response->as_string;
     #print $resource->as_string;
-    if ( $response->is_error() ) {
-        if ( $response->www_authenticate ) {
-            return $self->err('ERR_UNAUTHORIZED');
-        }
-        elsif ( !$resource->is_dav_compliant ) {
-            return $self->err( 'ERR_GENERIC',
-                "The URL \"$url\" is not DAV enabled or not accessible.",
-                $url );
-        }
-        else {
-            return $self->err( 'ERR_RESP_FAIL',
-                "Could not access $url: " . $response->message(), $url );
-        }
+
+    my $result = $self->what_happened($url, $resource, $response);
+    if ($result->{success} == 0) {
+        return $self->err($result->{error_type}, $result->{error_msg}, $url);
     }
 
-    # If it is a collection but the URI doesn't
-    # end in a trailing slash.
+    # If it is a collection but the URI doesn't end in a trailing slash.
     # Then we need to reopen with the /
     elsif ($resource->is_collection
         && $url !~ m#/\s*$# )
@@ -1095,6 +1086,44 @@ sub get_globs {
 
     return @urls;
 }
+
+sub what_happened {
+    my ($self, $url, $resource, $response) = @_;
+
+    if (! $response->is_error()) {
+        return { success => 1 }
+    }
+
+    my $error_type;
+    my $error_msg;
+
+    if ($response->www_authenticate) {
+        $error_type = 'ERR_UNAUTHORIZED';
+        $error_msg  = $response->www_authenticate;
+    }
+    # 501 most probably means your LWP doesn't support SSL
+    elsif ($response->status_line =~ m{501}) {
+        $error_type = 'ERR_501';
+        $error_msg = $response->status_line,
+    }
+    elsif ( !$resource->is_dav_compliant ) {
+        $error_type = 'ERR_GENERIC';
+        $error_msg = qq{The URL "$url" is not DAV enabled or not accessible.};
+    }
+    else {
+        $error_type = 'ERR_RESP_FAIL';
+        my $message = $response->message();
+        $error_msg = qq{Could not access $url: $message};
+    }
+
+    return {
+        success => 0,
+        error_type => $error_type,
+        error_msg => $error_msg,
+    }
+
+}
+
 1;
 
 __END__

@@ -12,6 +12,18 @@ Revision history for PerlDAV
 
 =end text
 
+=head2 v0.41 (released 2010/07/24):
+
+=over 4
+
+=item * B<bug fixes>
+
+  - Fixed RT #59674 (http://rt.cpan.org/Public/Bug/Display.html?id=59674),
+	When SSL support is needed but not installed, a more specific
+    error messages is now displayed, instead of "not DAV enabled or not accessible".
+
+=back
+
 =head2 v0.40 (released 2010/01/27):
 
 =over 4

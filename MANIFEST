@@ -1,3 +1,5 @@
+bin/dave
+bin/dist
 Changes
 DAV.pm
 DAV/Comms.pm
@@ -6,20 +8,18 @@ DAV/Resource.pm
 DAV/ResourceList.pm
 DAV/Response.pm
 DAV/Utils.pm
-MANIFEST
-Makefile.PL
-README
-TODO
-bin/dave
-bin/dist
 doc/Changes.pod
-doc/README.pod
-doc/TODO.pod
 doc/html/Changes.html
 doc/html/dave.html
 doc/html/HTTP-DAV.html
 doc/html/index.html
 doc/html/TODO.html
+doc/README.pod
+doc/TODO.pod
+Makefile.PL
+MANIFEST
+META.yml			Module meta-data (added by MakeMaker)
+README
 t/1_loadme.t
 t/1_utils.t
 t/2_options.t
@@ -38,7 +38,7 @@ t/9_RT_19616.t
 t/9_RT_42877.t
 t/9_RT_47500.t
 t/9_RT_52665.t
-t/TestDetails.pm
+t/9_RT_59674.t
 t/multistatus.xml
 t/test_data/file1
 t/test_data/file2
@@ -46,4 +46,5 @@ t/test_data/file2.txt
 t/test_data/file3
 t/test_data/file4.txt.gz
 t/test_data/subdir/test3.txt
-META.yml                                 Module meta-data (added by MakeMaker)
+t/TestDetails.pm
+TODO

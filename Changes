@@ -1,20 +1,26 @@
 Revision history for PerlDAV
+  v0.41 (released 2010/07/24):
+    *   bug fixes
+
+          - Fixed RT #59674 (http://rt.cpan.org/Public/Bug/Display.html?id=59674),
+                When SSL support is needed but not installed, a more specific
+            error messages is now displayed, instead of "not DAV enabled or not accessible".
+
   v0.40 (released 2010/01/27):
     *   bug fixes
-		  - Fixed RT #47500 (http://rt.cpan.org/Public/Bug/Display.html?id=47500),
-            HTTP::DAV::Comms->credentials() method erroneously autovivified
-            basic authentication internal values, causing wrong or undefined
-            credentials to be sent out, or credentials to be "forgot" by HTTP::DAV.
-			Thanks to stoian.iovchev at imperia.bg and Glenn Fowler for their
-			feedback on this.
+
+          - Fixed RT #47500 (http://rt.cpan.org/Public/Bug/Display.html?id=47500),
+                HTTP::DAV::Comms->credentials() method erroneously autovivified
+                basic authentication internal values, causing wrong or undefined
+                credentials to be sent out, or credentials to be "forgot" by HTTP::DAV.
 
   v0.39 (released 2009/12/12):
     *   bug fixes
 
           - Fixed RT #52665 (http://rt.cpan.org/Public/Bug/Display.html?id=52665),
-            Using dave or propfind() on URLs containing escaped chars (%xx) could fail,
-            due to upper/lower case differences. Thanks to cebjyre for the patch
-            and the test case.
+                Using dave or propfind() on URLs containing escaped chars (%xx) could fail,
+                due to upper/lower case differences. Thanks to cebjyre for the patch
+                and the test case.
 
   v0.38 (released 2009/06/09):
     *   bug fixes

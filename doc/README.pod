@@ -78,6 +78,11 @@ Scalar::Util (standard library from 5.8.0+)
 XML::DOM (Have not tested lower than v1.26). 
 Requires James Clark's expat library:
 
+=item *
+
+To access SSL urls you will need L<Crypt::SSLeay>
+and/or L<IO::Socket::SSL>.
+
 =back
 
 =head2 Optional Prerequisites.
