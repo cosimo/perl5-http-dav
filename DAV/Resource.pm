@@ -523,12 +523,14 @@ sub GET { shift->get( @_ ); }
 # put/PUT the body contents
 
 sub put {
-   my ($self,$content) = @_;
+   my ($self,$content,$custom_headers) = @_;
    my $resp;
 
    # Setup the If: header if it is locked
    my $headers = HTTP::DAV::Headers->new();
+
    $self->_setup_if_headers($headers);
+   $self->_setup_custom_headers($custom_headers);
 
    if ( ! defined $content ) {
       $content = $self->get_content();
@@ -1159,6 +1161,20 @@ sub _XML_parse_and_store_props {
       $self->set_property( "lastmodifiedepoch", $epochgmt);
       $self->set_property( "lastmodifieddate",   HTTP::Date::time2str($epochgmt));
    }
+}
+
+sub _setup_custom_headers {
+   my ($self,$headers,$custom_headers) = @_;
+
+   if ($custom_headers && ref $custom_headers eq 'HASH') {
+      for my $hdr_name (keys %{ $custom_headers }) {
+         my $hdr_value = $custom_headers->{$hdr_name};
+         warn "Setting custom header $hdr_name to '$hdr_value'\n";
+         $headers->header($hdr_name => $hdr_value);
+      }
+   }
+
+   return;
 }
 
 ###########################################################################

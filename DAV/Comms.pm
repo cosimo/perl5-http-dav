@@ -69,14 +69,21 @@ sub get_headers    { $_[0]->{_headers}; }
 sub set_headers {
     my ( $self, $headers ) = @_;
 
+    my $dav_headers;
+
     if ( defined $headers && ref($headers) eq "HTTP::Headers" ) {
-        $headers = HTTP::DAV::Headers->clone($headers);
+        $dav_headers = HTTP::DAV::Headers->clone($headers);
     }
-    else {
-        $headers = HTTP::DAV::Headers->new;
+    elsif (defined $headers && ref($headers) eq "HASH") {
+        $dav_headers = HTTP::DAV::Headers->new();
+        for (keys %{ $headers }) {
+            $dav_headers->header($_ => $headers->{$_});
+        }
+    } else {
+        $dav_headers = HTTP::DAV::Headers->new;
     }
 
-    $self->{_headers} = $headers;
+    $self->{_headers} = $dav_headers;
 }
 
 sub _set_last_request  { $_[0]->{_last_request}  = $_[1]; }

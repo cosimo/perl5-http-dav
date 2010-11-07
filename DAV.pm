@@ -17,11 +17,11 @@ use FileHandle;
 use File::Glob;
 
 #use Carp (cluck);
-use Cwd qw(getcwd);  # Can't import all of it, cwd clashes with our namespace.
+use Cwd ();  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION = '0.41';
-$VERSION_DATE = '2010/07/24';
+$VERSION = '0.42';
+$VERSION_DATE = '2010/11/07';
 
 # Set this up to 3
 $DEBUG = 0;
@@ -54,7 +54,10 @@ sub clone {
             @p );
 
         $self->{_lockedresourcelist} = HTTP::DAV::ResourceList->new();
-        $self->{_comms} = HTTP::DAV::Comms->new( -useragent => $useragent );
+        $self->{_comms} = HTTP::DAV::Comms->new(
+            -useragent => $useragent,
+            -headers => $headers
+        );
         if ($uri) {
             $self->set_workingresource( $self->new_resource( -uri => $uri ) );
         }
@@ -284,7 +287,7 @@ sub get {
     #
     $to ||= '';
     if ( $to eq '.' ) {
-        $to = getcwd();
+        $to = Cwd::getcwd();
     }
 
     # If the TO argument is a file handle or a scalar
@@ -879,8 +882,8 @@ sub proppatch {
 ######################################################################
 sub put {
     my ( $self, @p ) = @_;
-    my ( $local, $url, $callback )
-        = HTTP::DAV::Utils::rearrange( [ 'LOCAL', 'URL', 'CALLBACK' ], @p );
+    my ( $local, $url, $callback, $custom_headers )
+        = HTTP::DAV::Utils::rearrange( [ 'LOCAL', 'URL', 'CALLBACK', 'HEADERS' ], @p );
 
     if ( ref($local) eq "SCALAR" ) {
     	$self->_start_multi_op( 'put ' . ${$local}, $callback );
@@ -897,7 +900,8 @@ sub put {
             $self->_put(
                 -local    => $file,
                 -url      => $url,
-                -callback => $callback
+                -callback => $callback,
+                -headers  => $custom_headers,
             );
         }
     }
@@ -907,8 +911,8 @@ sub put {
 
 sub _put {
     my ( $self, @p ) = @_;
-    my ( $local, $url )
-        = HTTP::DAV::Utils::rearrange( [ 'LOCAL', 'URL' ], @p );
+    my ( $local, $url, $custom_headers )
+        = HTTP::DAV::Utils::rearrange( [ 'LOCAL', 'URL', 'HEADERS' ], @p );
 
     return $self->err('ERR_WRONG_ARGS')
         if ( !defined $local || $local eq "" );
@@ -946,7 +950,7 @@ sub _put {
         # mkcol
         # Return 0 if fail because the error will have already
         # been set by the mkcol routine
-        if ( $self->mkcol($target) ) {
+        if ( $self->mkcol($target, -headers => $custom_headers) ) {
             if ( !opendir( DIR, $local ) ) {
                 $self->err( 'ERR_GENERIC', "chdir to \"$local\" failed: $!" );
             }
@@ -989,7 +993,7 @@ sub _put {
 
         if ( !$fail ) {
             my $resource = $self->new_resource( -uri => $target );
-            my $response = $resource->put($content);
+            my $response = $resource->put($content,$custom_headers);
             if ( $response->is_success ) {
                 $self->ok( "put $target (" . length($content) . " bytes)",
                     $target );
@@ -1141,15 +1145,19 @@ HTTP::DAV - A WebDAV client library for Perl5
 
    use HTTP::DAV;
   
-   $d = new HTTP::DAV;
+   $d = HTTP::DAV->new();
    $url = "http://host.org:8080/dav/";
-  
-   $d->credentials( -user=>"pcollins",-pass =>"mypass", 
-                    -url =>$url,      -realm=>"DAV Realm" );
-  
-   $d->open( -url=>"$url )
+ 
+   $d->credentials(
+      -user  => "pcollins",
+      -pass  => "mypass", 
+      -url   => $url,
+      -realm => "DAV Realm"
+   );
+ 
+   $d->open( -url => $url )
       or die("Couldn't open $url: " .$d->message . "\n");
-  
+ 
    # Make a null lock on newdir
    $d->lock( -url => "$url/newdir", -timeout => "10m" ) 
       or die "Won't put unless I can lock for 10 minutes\n";
@@ -1319,11 +1327,19 @@ All error messages set during a "multi-operation" request (for instance a recurs
 
 =item B<new(USERAGENT)>
 
+=item B<new(USERAGENT, HEADERS)>
+
 Creates a new C<HTTP::DAV> client
 
- $d = HTTP::DAV->new()
+ $d = HTTP::DAV->new();
 
-The C<-useragent> parameter expects an C<HTTP::DAV::UserAgent> object. See the C<dave> program for an advanced example of a custom UserAgent that interactively prompts the user for their username and password.
+The C<-useragent> parameter allows you to pass your own B<user agent object> and expects an C<HTTP::DAV::UserAgent> object. See the C<dave> program for an advanced example of a custom UserAgent that interactively prompts the user for their username and password.
+
+The C<-headers> parameter allows you to specify a list of headers to be sent along with all requests. This can be either a hashref like:
+
+  { "X-My-Header" => "value", ... }
+
+or a L<HTTP::Headers> object.
 
 =item B<credentials(USER,PASS,[URL],[REALM])>
 
@@ -1704,11 +1720,11 @@ C<set_prop> simply calls C<proppatch(-action=>set)> and C<unset_prop> calls C<pr
 
 See C<set_prop> and C<unset_prop> for examples.
 
-=item B<put(LOCAL,[URL],[CALLBACK])>
+=item B<put(LOCAL,[URL],[CALLBACK],[HEADERS])>
 
-uploads the files or directories at -local to the remote destination at -url.
+uploads the files or directories at C<-local> to the remote destination at C<-url>.
 
--local points to a file, directory or series of files or directories (indicated by a glob).
+C<-local> points to a file, directory or series of files or directories (indicated by a glob).
 
 If the filename contains any of the characters `*',  `?' or  `['  it is a candidate for filename substitution, also  known  as  ``globbing''.   This word  is  then regarded as a pattern (``glob-pattern''), and replaced with an alphabetically sorted list  of  file  names which match the pattern.  
 
@@ -1719,6 +1735,8 @@ put requires a working resource to be set before being called. See C<open>.
 The return value is always 1 or 0 indicating success or failure.
 
 See L<get()> for a description of what the optional callback parameter does.
+
+You can also pass a C<-headers> argument. That allows to specify custom HTTP headers. It can be either a hashref with header names and values, or a L<HTTP::Headers> object.
 
 B<put examples:>
 

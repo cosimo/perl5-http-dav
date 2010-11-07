@@ -1,4 +1,11 @@
 Revision history for PerlDAV
+  v0.42 (released 2010/11/07):
+    *   bug fixes
+
+          - Fixed RT #60457 (http://rt.cpan.org/Public/Bug/Display.html?id=60457),
+            Added and documented possibility to pass your own custom HTTP headers.
+          - Fixed errors in the code examples in the synopsis.
+
   v0.41 (released 2010/07/24):
     *   bug fixes
 

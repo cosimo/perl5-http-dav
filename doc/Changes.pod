@@ -12,6 +12,18 @@ Revision history for PerlDAV
 
 =end text
 
+=head2 v0.42 (released 2010/11/07):
+
+=over 4
+
+=item * B<bug fixes>
+
+  - Fixed RT #60457 (http://rt.cpan.org/Public/Bug/Display.html?id=60457),
+    Added and documented possibility to pass your own custom HTTP headers.
+  - Fixed errors in the code examples in the synopsis.
+
+=back
+
 =head2 v0.41 (released 2010/07/24):
 
 =over 4
