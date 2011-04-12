@@ -1,4 +1,11 @@
 Revision history for PerlDAV
+  v0.43 (released 2011/04/12):
+    *   bug fixes
+
+          - Fixed RT #38677 (http://rt.cpan.org/Public/Bug/Display.html?id=38677),
+            Intercept correctly 405 (Method now allowed) errors and report them
+            to the clients.
+
   v0.42 (released 2010/11/07):
     *   bug fixes
 
