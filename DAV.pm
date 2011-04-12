@@ -20,8 +20,8 @@ use File::Glob;
 use Cwd ();  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION = '0.42';
-$VERSION_DATE = '2010/11/07';
+$VERSION = '0.43';
+$VERSION_DATE = '2011/04/13';
 
 # Set this up to 3
 $DEBUG = 0;
@@ -141,6 +141,7 @@ my %err = (
     'ERR_NULL_RESOURCE' => 'Not connected. Do an open first. ',
     'ERR_RESP_FAIL'     => 'Server response: ',
     'ERR_501'           => 'Server response: ',
+    'ERR_405'           => 'Server response: ',
     'ERR_GENERIC'       => '',
 );
 
@@ -1101,14 +1102,19 @@ sub what_happened {
     my $error_type;
     my $error_msg;
 
-    if ($response->www_authenticate) {
-        $error_type = 'ERR_UNAUTHORIZED';
-        $error_msg  = $response->www_authenticate;
+    # Method not allowed
+    if ($response->status_line =~ m{405}) {
+        $error_type = 'ERR_405';
+        $error_msg = $response->status_line;
     }
     # 501 most probably means your LWP doesn't support SSL
     elsif ($response->status_line =~ m{501}) {
         $error_type = 'ERR_501';
-        $error_msg = $response->status_line,
+        $error_msg = $response->status_line;
+    }
+    elsif ($response->www_authenticate) {
+        $error_type = 'ERR_UNAUTHORIZED';
+        $error_msg  = $response->www_authenticate;
     }
     elsif ( !$resource->is_dav_compliant ) {
         $error_type = 'ERR_GENERIC';
