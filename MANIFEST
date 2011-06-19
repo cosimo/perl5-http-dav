@@ -40,6 +40,8 @@ t/9_RT_42877.t
 t/9_RT_47500.t
 t/9_RT_52665.t
 t/9_RT_59674.t
+t/9_RT_60457.t
+t/9_RT_68936.t
 t/multistatus.xml
 t/test_data/file1
 t/test_data/file2

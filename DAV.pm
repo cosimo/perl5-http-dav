@@ -20,8 +20,8 @@ use File::Glob;
 use Cwd ();  # Can't import all of it, cwd clashes with our namespace.
 
 # Globals
-$VERSION = '0.43';
-$VERSION_DATE = '2011/04/13';
+$VERSION = '0.44';
+$VERSION_DATE = '2011/06/19';
 
 # Set this up to 3
 $DEBUG = 0;
