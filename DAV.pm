@@ -167,13 +167,14 @@ sub err {
 }
 
 sub ok {
-    my ( $self, $mesg, $url, $so_far, $length ) = @_;
+    my ($self, $mesg, $url, $so_far, $length) = @_;
 
     $self->{_message} = $mesg;
-    my $callback = $self->{_callback};
-    &$callback( 1, $mesg, $url, $so_far, $length ) if $callback;
 
-    if ( $self->{_multi_op} ) {
+    my $callback = $self->{_callback};
+    &$callback(1, $mesg, $url, $so_far, $length) if $callback;
+
+    if ($self->{_multi_op}) {
         $self->{_status} = 1 unless $self->{_status} == 0;
     }
     else {
@@ -183,12 +184,12 @@ sub ok {
 }
 
 sub _start_multi_op {
-    my ( $self, $mesg, $callback ) = @_;
-    $_[0]->{_multi_mesg} = $mesg || "";
-    $_[0]->{_status}     = 1;
-    $_[0]->{_errors}     = ();
-    $_[0]->{_multi_op}   = 1;
-    $_[0]->{_callback}   = $callback if defined $callback;
+    my ($self, $mesg, $callback) = @_;
+    $self->{_multi_mesg} = $mesg || "";
+    $self->{_status} = 1;
+    $self->{_errors} = [];
+    $self->{_multi_op} = 1;
+    $self->{_callback} = $callback if defined $callback;
 }
 
 sub _end_multi_op {
@@ -201,9 +202,21 @@ sub _end_multi_op {
     $self->{_multi_mesg} = undef;
 }
 
-sub message { $_[0]->{_message}     || "" }
-sub errors  { @{ $_[0]->{_errors} } || () }
-sub is_success { $_[0]->{_status} }
+sub message {
+    my ($self) = @_;
+    return $self->{_message} || "";
+}
+
+sub errors {
+    my ($self) = @_;
+    my $err_ref = $self->{_errors} || [];
+    return @{ $err_ref };
+}
+
+sub is_success {
+    my ($self) = @_;
+    return $self->{_status};
+}
 
 ######################################################################
 # Operations
