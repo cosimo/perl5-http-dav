@@ -1,4 +1,11 @@
 Revision history for PerlDAV
+  v0.44 (released 2011/06/19):
+    *   bug fixes
+
+          - Fixed RT #68936 (http://rt.cpan.org/Public/Bug/Display.html?id=68936),
+            Fixed errors() method that would bomb out when the "_errors" attribute
+            wasn't initialized. Thanks to Michael Lackoff for reporting.
+
   v0.43 (released 2011/04/12):
     *   bug fixes
 

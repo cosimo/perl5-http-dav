@@ -2,22 +2,28 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>v0.40:</title>
+<title>Changes</title>
+<link rel="stylesheet" href="perldav.css" type="text/css" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:" />
+<link rev="made" href="mailto:root@localhost" />
 </head>
 
-<body style="background-color: white">
+<body>
 
 
 <!-- INDEX BEGIN -->
 <div name="index">
 <p><a name="__index__"></a></p>
+<!--
 
 <ul>
 
 	<ul>
 
+		<li><a href="#v0_44__released_2011_06_19__">v0.44 (released 2011/06/19):</a></li>
+		<li><a href="#v0_43__released_2011_04_12__">v0.43 (released 2011/04/12):</a></li>
+		<li><a href="#v0_42__released_2010_11_07__">v0.42 (released 2010/11/07):</a></li>
+		<li><a href="#v0_41__released_2010_07_24__">v0.41 (released 2010/07/24):</a></li>
 		<li><a href="#v0_40__released_2010_01_27__">v0.40 (released 2010/01/27):</a></li>
 		<li><a href="#v0_39__released_2009_12_12__">v0.39 (released 2009/12/12):</a></li>
 		<li><a href="#v0_38__released_2009_06_09__">v0.38 (released 2009/06/09):</a></li>
@@ -37,7 +43,9 @@
 
 </ul>
 
-<hr name="index" />
+-->
+
+
 </div>
 <!-- INDEX END -->
 
@@ -48,33 +56,83 @@ Revision history for PerlDAV
 </div>
 <div id="content"><p>
 </p>
-<h2><a name="v0_40__released_2010_01_27__">v0.40 (released 2010/01/27):</a></h2>
+<h2><a name="v0_44__released_2011_06_19__">v0.44 (released 2011/06/19):</a></h2>
 <ul>
 <li><strong><a name="bug_fixes" class="item"><strong>bug fixes</strong></a></strong>
+
+<pre>
+  - Fixed RT #68936 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=68936">http://rt.cpan.org/Public/Bug/Display.html?id=68936</a>),
+    Fixed errors() method that would bomb out when the &quot;_errors&quot; attribute
+    wasn't initialized. Thanks to Michael Lackoff for reporting.</pre>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="v0_43__released_2011_04_12__">v0.43 (released 2011/04/12):</a></h2>
+<ul>
+<li><strong><a name="bug_fixes2" class="item"><strong>bug fixes</strong></a></strong>
+
+<pre>
+  - Fixed RT #38677 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=38677">http://rt.cpan.org/Public/Bug/Display.html?id=38677</a>),
+    Intercept correctly 405 (Method now allowed) errors and report them
+    to the clients.</pre>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="v0_42__released_2010_11_07__">v0.42 (released 2010/11/07):</a></h2>
+<ul>
+<li><strong><a name="bug_fixes3" class="item"><strong>bug fixes</strong></a></strong>
+
+<pre>
+  - Fixed RT #60457 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=60457">http://rt.cpan.org/Public/Bug/Display.html?id=60457</a>),
+    Added and documented possibility to pass your own custom HTTP headers.
+  - Fixed errors in the code examples in the synopsis.</pre>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="v0_41__released_2010_07_24__">v0.41 (released 2010/07/24):</a></h2>
+<ul>
+<li><strong><a name="bug_fixes4" class="item"><strong>bug fixes</strong></a></strong>
+
+<pre>
+  - Fixed RT #59674 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=59674">http://rt.cpan.org/Public/Bug/Display.html?id=59674</a>),
+        When SSL support is needed but not installed, a more specific
+    error messages is now displayed, instead of &quot;not DAV enabled or not accessible&quot;.</pre>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="v0_40__released_2010_01_27__">v0.40 (released 2010/01/27):</a></h2>
+<ul>
+<li><strong><a name="bug_fixes5" class="item"><strong>bug fixes</strong></a></strong>
 
 <pre>
   - Fixed RT #47500 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=47500">http://rt.cpan.org/Public/Bug/Display.html?id=47500</a>),
         HTTP::DAV::Comms-&gt;credentials() method erroneously autovivified
         basic authentication internal values, causing wrong or undefined
         credentials to be sent out, or credentials to be &quot;forgot&quot; by HTTP::DAV.</pre>
+</li>
 </ul>
 <p>
 </p>
 <h2><a name="v0_39__released_2009_12_12__">v0.39 (released 2009/12/12):</a></h2>
 <ul>
-<li><strong><a name="bug_fixes2" class="item"><strong>bug fixes</strong></a></strong>
+<li><strong><a name="bug_fixes6" class="item"><strong>bug fixes</strong></a></strong>
 
 <pre>
   - Fixed RT #52665 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=52665">http://rt.cpan.org/Public/Bug/Display.html?id=52665</a>),
         Using dave or propfind() on URLs containing escaped chars (%xx) could fail,
         due to upper/lower case differences. Thanks to cebjyre for the patch
         and the test case.</pre>
+</li>
 </ul>
 <p>
 </p>
 <h2><a name="v0_38__released_2009_06_09__">v0.38 (released 2009/06/09):</a></h2>
 <ul>
-<li><strong><a name="bug_fixes3" class="item"><strong>bug fixes</strong></a></strong>
+<li><strong><a name="bug_fixes7" class="item"><strong>bug fixes</strong></a></strong>
 
 <pre>
   - Fixed RT #14506 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=14506">http://rt.cpan.org/Public/Bug/Display.html?id=14506</a>),
@@ -85,6 +143,7 @@ Revision history for PerlDAV
 <pre>
   - Fixed RT #31014 (<a href="http://rt.cpan.org/Public/Bug/Display.html?id=31014">http://rt.cpan.org/Public/Bug/Display.html?id=31014</a>),
     probably already in v0.34, since it seems related to propfind() &quot;depth&quot; bug.</pre>
+</li>
 </ul>
 <p>
 </p>

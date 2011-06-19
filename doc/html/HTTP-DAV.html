@@ -3,16 +3,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>HTTP::DAV - A WebDAV client library for Perl5</title>
+<link rel="stylesheet" href="perldav_plain.css" type="text/css" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:" />
+<link rev="made" href="mailto:root@localhost" />
 </head>
 
-<body style="background-color: white">
+<body>
 
 
 <!-- INDEX BEGIN -->
 <div name="index">
 <p><a name="__index__"></a></p>
+<!--
 
 <ul>
 
@@ -36,7 +38,9 @@
 	<li><a href="#author_and_copyright">AUTHOR AND COPYRIGHT</a></li>
 </ul>
 
-<hr name="index" />
+-->
+
+
 </div>
 <!-- INDEX END -->
 
@@ -55,15 +59,19 @@
 <pre>
    use HTTP::DAV;
   
-   $d = new HTTP::DAV;
+   $d = HTTP::DAV-&gt;new();
    $url = &quot;<a href="http://host.org:8080/dav/&quot">http://host.org:8080/dav/&quot</a>;;
-  
-   $d-&gt;credentials( -user=&gt;&quot;pcollins&quot;,-pass =&gt;&quot;mypass&quot;, 
-                    -url =&gt;$url,      -realm=&gt;&quot;DAV Realm&quot; );
-  
-   $d-&gt;open( -url=&gt;&quot;$url )
+ 
+   $d-&gt;credentials(
+      -user  =&gt; &quot;pcollins&quot;,
+      -pass  =&gt; &quot;mypass&quot;, 
+      -url   =&gt; $url,
+      -realm =&gt; &quot;DAV Realm&quot;
+   );
+ 
+   $d-&gt;open( -url =&gt; $url )
       or die(&quot;Couldn't open $url: &quot; .$d-&gt;message . &quot;\n&quot;);
-  
+ 
    # Make a null lock on newdir
    $d-&gt;lock( -url =&gt; &quot;$url/newdir&quot;, -timeout =&gt; &quot;10m&quot; ) 
       or die &quot;Won't put unless I can lock for 10 minutes\n&quot;;</pre>
@@ -152,6 +160,7 @@
   -url=&gt;&quot;file.txt&quot;           # Relative</pre>
 <p>You can only use a relative URL if you have already &quot;open&quot;ed an absolute URL.</p>
 <p>The HTTP::DAV module now consistently uses the named parameter: URL. The lower-level HTTP::DAV::Resource interface inconsistently interchanges URL and URI. I'm working to resolve this, in the meantime, you'll just need to remember to use the right one by checking the documentation if you need to mix up your use of both interfaces.</p>
+</li>
 <li><strong><a name="globs" class="item">GLOBS</a></strong>
 
 <p>Some methods accept wildcards in the URL. A wildcard can be used to indicate that the command should perform the command on all Resources that match the wildcard. These wildcards are called GLOBS.</p>
@@ -193,94 +202,72 @@
 </p>
 <h2><a name="public_methods">PUBLIC METHODS</a></h2>
 <dl>
-<dt><strong><a name="new" class="item"><strong>new(USERAGENT)</strong></a></strong>
+<dt><strong><a name="new" class="item"><strong>new(USERAGENT)</strong></a></strong></dt>
+
+<dt><strong><strong>new(USERAGENT, HEADERS)</strong></strong></dt>
 
 <dd>
 <p>Creates a new <code>HTTP::DAV</code> client</p>
-</dd>
-<dd>
 <pre>
- $d = HTTP::DAV-&gt;new()</pre>
+ $d = HTTP::DAV-&gt;new();</pre>
+<p>The <code>-useragent</code> parameter allows you to pass your own <strong>user agent object</strong> and expects an <code>HTTP::DAV::UserAgent</code> object. See the <a href="#dave"><code>dave</code></a> program for an advanced example of a custom UserAgent that interactively prompts the user for their username and password.</p>
+<p>The <code>-headers</code> parameter allows you to specify a list of headers to be sent along with all requests. This can be either a hashref like:</p>
+<pre>
+  { &quot;X-My-Header&quot; =&gt; &quot;value&quot;, ... }</pre>
+<p>or a <a href="HTTP/Headers.html">the HTTP::Headers manpage</a> object.</p>
 </dd>
-<dd>
-<p>The <code>-useragent</code> parameter expects an <code>HTTP::DAV::UserAgent</code> object. See the <a href="#dave"><code>dave</code></a> program for an advanced example of a custom UserAgent that interactively prompts the user for their username and password.</p>
-</dd>
-</li>
-<dt><strong><a name="credentials" class="item"><strong>credentials(USER,PASS,[URL],[REALM])</strong></a></strong>
+<dt><strong><a name="credentials" class="item"><strong>credentials(USER,PASS,[URL],[REALM])</strong></a></strong></dt>
 
 <dd>
 <p>sets authorization credentials for a <code>URL</code> and/or <code>REALM</code>.</p>
-</dd>
-<dd>
 <p>When the client hits a protected resource it will check these credentials to see if either the <code>URL</code> or <code>REALM</code> match the authorization response.</p>
-</dd>
-<dd>
 <p>Either <code>URL</code> or <code>REALM</code> must be provided.</p>
-</dd>
-<dd>
 <p>returns no value</p>
-</dd>
-<dd>
 <p>Example:</p>
-</dd>
-<dd>
 <pre>
  $d-&gt;credentials( -url=&gt;'myhost.org:8080/test/',
                   -user=&gt;'pcollins',
                   -pass=&gt;'mypass');</pre>
 </dd>
-</li>
-<dt><strong><a name="debuglevel" class="item"><strong>DebugLevel($val)</strong></a></strong>
+<dt><strong><a name="debuglevel" class="item"><strong>DebugLevel($val)</strong></a></strong></dt>
 
 <dd>
 <p>sets the debug level to <code>$val</code>. 0=off 3=noisy.</p>
-</dd>
-<dd>
 <p><code>$val</code> default is 0.</p>
-</dd>
-<dd>
 <p>returns no value.</p>
-</dd>
-<dd>
 <p>When the value is greater than 1, the <a href="#http_dav_comms"><code>HTTP::DAV::Comms</code></a> module will log all of the client&lt;=&gt;server interactions into /tmp/perldav_debug.txt.</p>
 </dd>
-</li>
 </dl>
 <p>
 </p>
 <h2><a name="dav_operations">DAV OPERATIONS</a></h2>
 <p>For all of the following operations, URL can be absolute (http://host.org/dav/) or relative (../dir2/). The only operation that requires an absolute URL is open.</p>
 <dl>
-<dt><strong><a name="copy" class="item"><strong>copy(URL,DEST,[OVERWRITE],[DEPTH])</strong></a></strong>
+<dt><strong><a name="copy" class="item"><strong>copy(URL,DEST,[OVERWRITE],[DEPTH])</strong></a></strong></dt>
 
 <dd>
 <p>copies one remote resource to another</p>
-</dd>
 <dl>
-<dt><strong><a name="url" class="item"><code>-url</code></a></strong>
+<dt><strong><a name="url" class="item"><code>-url</code></a></strong></dt>
 
 <dd>
 <p>is the remote resource you'd like to copy. Mandatory</p>
 </dd>
-</li>
-<dt><strong><a name="dest" class="item"><code>-dest</code></a></strong>
+<dt><strong><a name="dest" class="item"><code>-dest</code></a></strong></dt>
 
 <dd>
 <p>is the remote target for the copy command. Mandatory</p>
 </dd>
-</li>
-<dt><strong><a name="overwrite" class="item"><code>-overwrite</code></a></strong>
+<dt><strong><a name="overwrite" class="item"><code>-overwrite</code></a></strong></dt>
 
 <dd>
 <p>optionally indicates whether the server should fail if the target exists. Valid values are &quot;T&quot; and &quot;F&quot; (1 and 0 are synonymous). Default is T.</p>
 </dd>
-</li>
-<dt><strong><a name="depth" class="item"><code>-depth</code></a></strong>
+<dt><strong><a name="depth" class="item"><code>-depth</code></a></strong></dt>
 
 <dd>
 <p>optionally indicates whether the server should do a recursive copy or not. Valid values are 0 and (1 or &quot;infinity&quot;). Default is &quot;infinity&quot; (1).</p>
 </dd>
-</li>
 </dl>
 <p>The return value is always 1 or 0 indicating success or failure.</p>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
@@ -301,100 +288,69 @@
 <p>Create a copy of file.txt as dir2/new_file.txt</p>
 <pre>
   $d-&gt;copy(&quot;file.txt&quot;,&quot;/dav_dir/dir2/new_file.txt&quot;)</pre>
-<dt><strong><a name="cwd" class="item"><strong>cwd(URL)</strong></a></strong>
+</dd>
+<dt><strong><a name="cwd" class="item"><strong>cwd(URL)</strong></a></strong></dt>
 
 <dd>
 <p>changes the remote working directory.</p>
-</dd>
-<dd>
 <p>This is synonymous to open except that the URL can be relative and may contain a <code>glob</code> (the first match in a glob will be used).</p>
-</dd>
-<dd>
 <pre>
   $d-&gt;open(&quot;host.org/dav_dir/dir1/&quot;);
   $d-&gt;cwd(&quot;../dir2&quot;);
   $d-&gt;cwd(-url=&gt;&quot;../dir1&quot;);</pre>
-</dd>
-<dd>
 <p>The return value is always 1 or 0 indicating success or failure.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>You can not cwd to files, only collections (directories).</p>
 </dd>
-</li>
-<dt><strong><a name="delete" class="item"><strong>delete(URL)</strong></a></strong>
+<dt><strong><a name="delete" class="item"><strong>delete(URL)</strong></a></strong></dt>
 
 <dd>
 <p>deletes a remote resource.</p>
-</dd>
-<dd>
 <pre>
   $d-&gt;open(&quot;host.org/dav_dir/&quot;);
   $d-&gt;delete(&quot;index.html&quot;);
   $d-&gt;delete(&quot;./dir1&quot;);
   $d-&gt;delete(-url=&gt;&quot;/dav_dir/dir2/file*&quot;,-callback=&gt;\&amp;mycallback);</pre>
 </dd>
-</li>
-<dt><strong><a name="url2" class="item"><a href="#url"><code>-url</code></a></a></strong>
+<dt><strong><a name="url2" class="item"><a href="#url"><code>-url</code></a></a></strong></dt>
 
 <dd>
 <p>is the remote resource(s) you'd like to delete. It can be a file, directory or <code>glob</code>.</p>
 </dd>
-</li>
-<dt><strong><a name="callback_is_a_reference_to_a_callback_function_which_will_be_called_everytime_a_file_is_deleted_this_is_mainly_useful_when_used_in_conjunction_with_globs_deletes_see_callbacks" class="item"><a href="#callback"><code>-callback</code></a>                                                                                                                                                                    is a reference to a callback function which will be called everytime a file is deleted. This is mainly useful when used in conjunction with <a href="#globs">GLOBS</a> deletes. See <em>callbacks</em></a></strong>
+<dt><strong><a name="callback_is_a_reference_to_a_callback_function_which_will_be_called_everytime_a_file_is_deleted_this_is_mainly_useful_when_used_in_conjunction_with_globs_deletes_see_callbacks" class="item"><a href="#callback"><code>-callback</code></a>                                                                                                                                                                    is a reference to a callback function which will be called everytime a file is deleted. This is mainly useful when used in conjunction with <a href="#globs">GLOBS</a> deletes. See <em>callbacks</em></a></strong></dt>
 
 <dd>
 <p>The return value is always 1 or 0 indicating success or failure.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>This command will recursively delete directories. BE CAREFUL of uninitialised file variables in situation like this: $d-&gt;<a href="#delete"><code>delete(&quot;$dir/$file&quot;)</code></a>. This will trash your $dir if $file is not set.</p>
 </dd>
-</li>
-<dt><strong><a name="get" class="item"><strong>get(URL,[TO],[CALLBACK])</strong></a></strong>
+<dt><strong><a name="get" class="item"><strong>get(URL,[TO],[CALLBACK])</strong></a></strong></dt>
 
 <dd>
 <p>downloads the file or directory at <code>URL</code> to the local location indicated by <code>TO</code>.</p>
-</dd>
 <dl>
-<dt><strong><a name="url3" class="item"><a href="#url"><code>-url</code></a></a></strong>
+<dt><strong><a name="url3" class="item"><a href="#url"><code>-url</code></a></a></strong></dt>
 
 <dd>
 <p>is the remote resource you'd like to get. It can be a file or directory or a &quot;glob&quot;.</p>
 </dd>
-</li>
-<dt><strong><a name="to" class="item"><code>-to</code></a></strong>
+<dt><strong><a name="to" class="item"><code>-to</code></a></strong></dt>
 
 <dd>
 <p>is where you'd like to put the remote resource. The -to parameter can be:</p>
-</dd>
-<dd>
 <pre>
  - a B&lt;filename&gt; indicating where to save the contents.</pre>
-</dd>
-<dd>
 <pre>
  - a B&lt;FileHandle reference&gt;.</pre>
-</dd>
-<dd>
 <pre>
  - a reference to a B&lt;scalar object&gt; into which the contents will be saved.</pre>
-</dd>
-<dd>
 <p>If the <a href="#url"><code>-url</code></a> matches multiple files (via a glob or a directory download), then the <a href="#get"><code>get</code></a> routine will return an error if you try to use a FileHandle reference or a scalar reference.</p>
 </dd>
-</li>
-<dt><strong><a name="callback" class="item"><code>-callback</code></a></strong>
+<dt><strong><a name="callback" class="item"><code>-callback</code></a></strong></dt>
 
 <dd>
 <p>is a reference to a callback function which will be called everytime a file is completed downloading. The idea of the callback function is that some recursive get's can take a very long time and the user may require some visual feedback. See <a href="#callbacks">CALLBACKS</a> for an examples and how to use a callback.</p>
 </dd>
-</li>
 </dl>
 <p>The return value of get is always 1 or 0 indicating whether the entire get sequence was a success or if there was ANY failures. For instance, in a recursive get, if the server couldn't open 1 of the 10 remote files, for whatever reason, then the return value will be 0. This is so that you can have your script call the <a href="#errors"><code>errors()</code></a> routine to handle error conditions.</p>
 <p>Previous versions of HTTP::DAV allowed the return value to be the file contents if no -to attribute was supplied. This functionality is deprecated.</p>
@@ -432,12 +388,11 @@
 <p>Invalid glob:</p>
 <pre>
   $d-&gt;get(&quot;/dav_dir/*/index.html&quot;,&quot;/tmp&quot;); # Can not glob like this.</pre>
-<dt><strong><a name="lock" class="item"><strong>lock([URL],[OWNER],[DEPTH],[TIMEOUT],[SCOPE],[TYPE])</strong></a></strong>
+</dd>
+<dt><strong><a name="lock" class="item"><strong>lock([URL],[OWNER],[DEPTH],[TIMEOUT],[SCOPE],[TYPE])</strong></a></strong></dt>
 
 <dd>
 <p>locks a resource. If URL is not specified, it will lock the current working resource (opened resource).</p>
-</dd>
-<dd>
 <pre>
    $d-&gt;lock( -url     =&gt; &quot;index.html&quot;,
              -owner   =&gt; &quot;Patrick Collins&quot;,
@@ -445,20 +400,10 @@
              -scope   =&gt; &quot;exclusive&quot;,
              -type    =&gt; &quot;write&quot;,
              -timeout =&gt; &quot;10h&quot; )</pre>
-</dd>
-<dd>
 <p>See <a href="#http_dav_resource"><code>HTTP::DAV::Resource</code></a> <a href="#lock"><code>lock()</code></a> for details of the above parameters.</p>
-</dd>
-<dd>
 <p>The return value is always 1 or 0 indicating success or failure.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>When you lock a resource, the lock is held against the current HTTP::DAV object. In fact, the locks are held in a <a href="#http_dav_resourcelist"><code>HTTP::DAV::ResourceList</code></a> object. You can operate against all of the locks that you have created as follows:</p>
-</dd>
-<dd>
 <pre>
   ## Print and unlock all locks that we own.
   my $rl_obj = $d-&gt;get_lockedresourcelist();
@@ -471,64 +416,46 @@
       ## Unlock them?
       $resource-&gt;unlock;
   }</pre>
-</dd>
-<dd>
 <p>Typically, a simple $d-&gt;<a href="#unlock"><code>unlock($uri)</code></a> will suffice.</p>
-</dd>
-<dd>
 <p><strong>lock example</strong></p>
-</dd>
-<dd>
 <pre>
   $d-&gt;lock($uri, -timeout=&gt;&quot;1d&quot;);
   ...
   $d-&gt;put(&quot;/tmp/index.html&quot;,$uri);
   $d-&gt;unlock($uri);</pre>
 </dd>
-</li>
-<dt><strong><a name="mkcol" class="item"><strong>mkcol(URL)</strong></a></strong>
+<dt><strong><a name="mkcol" class="item"><strong>mkcol(URL)</strong></a></strong></dt>
 
 <dd>
 <p>make a remote collection (directory)</p>
-</dd>
-<dd>
 <p>The return value is always 1 or 0 indicating success or failure.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <pre>
   $d-&gt;open(&quot;host.org/dav_dir/&quot;);
   $d-&gt;mkcol(&quot;new_dir&quot;);                  # Should succeed
   $d-&gt;mkcol(&quot;/dav_dir/new_dir&quot;);         # Should succeed
   $d-&gt;mkcol(&quot;/dav_dir/new_dir/xxx/yyy&quot;); # Should fail</pre>
 </dd>
-</li>
-<dt><strong><a name="move" class="item"><strong>move(URL,DEST,[OVERWRITE],[DEPTH])</strong></a></strong>
+<dt><strong><a name="move" class="item"><strong>move(URL,DEST,[OVERWRITE],[DEPTH])</strong></a></strong></dt>
 
 <dd>
 <p>moves one remote resource to another</p>
-</dd>
 <dl>
-<dt><strong><a name="url4" class="item"><a href="#url"><code>-url</code></a></a></strong>
+<dt><strong><a name="url4" class="item"><a href="#url"><code>-url</code></a></a></strong></dt>
 
 <dd>
 <p>is the remote resource you'd like to move. Mandatory</p>
 </dd>
-</li>
-<dt><strong><a name="dest2" class="item"><a href="#dest"><code>-dest</code></a></a></strong>
+<dt><strong><a name="dest2" class="item"><a href="#dest"><code>-dest</code></a></a></strong></dt>
 
 <dd>
 <p>is the remote target for the move command. Mandatory</p>
 </dd>
-</li>
-<dt><strong><a name="overwrite2" class="item"><a href="#overwrite"><code>-overwrite</code></a></a></strong>
+<dt><strong><a name="overwrite2" class="item"><a href="#overwrite"><code>-overwrite</code></a></a></strong></dt>
 
 <dd>
 <p>optionally indicates whether the server should fail if the target exists. Valid values are &quot;T&quot; and &quot;F&quot; (1 and 0 are synonymous). Default is T.</p>
 </dd>
-</li>
 </dl>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
 <p>The return value is always 1 or 0 indicating success or failure.</p>
@@ -549,74 +476,43 @@
 <p>move file.txt to dir2/new_file.txt</p>
 <pre>
   $d-&gt;move(&quot;file.txt&quot;,&quot;/dav_dir/dir2/new_file.txt&quot;)</pre>
-<dt><strong><a name="open" class="item"><strong>open(URL)</strong></a></strong>
+</dd>
+<dt><strong><a name="open" class="item"><strong>open(URL)</strong></a></strong></dt>
 
 <dd>
 <p>opens the directory (collection resource) at URL.</p>
-</dd>
-<dd>
 <p>open will perform a propfind against URL. If the server does not understand the request then the open will fail.</p>
-</dd>
-<dd>
 <p>Similarly, if the server indicates that the resource at URL is NOT a collection, the open command will fail.</p>
 </dd>
-</li>
-<dt><strong><a name="options" class="item"><strong>options([URL])</strong></a></strong>
+<dt><strong><a name="options" class="item"><strong>options([URL])</strong></a></strong></dt>
 
 <dd>
 <p>Performs an OPTIONS request against the URL or the working resource if URL is not supplied.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>The return value is a string of comma separated OPTIONS that the server states are legal for URL or undef otherwise.</p>
-</dd>
-<dd>
 <p>A fully compliant DAV server may offer as many methods as: OPTIONS, TRACE, GET, HEAD, DELETE, PUT, COPY, MOVE, PROPFIND, PROPPATCH, LOCK, UNLOCK</p>
-</dd>
-<dd>
 <p>Note: IIS5 does not support PROPPATCH or LOCK on collections.</p>
-</dd>
-<dd>
 <p>Example:</p>
-</dd>
-<dd>
 <pre>
  $options = $d-&gt;options($url);
  print $options . &quot;\n&quot;;
  if ($options=~ /\bPROPPATCH\b/) {
     print &quot;OK to proppatch\n&quot;;
  }</pre>
-</dd>
-<dd>
 <p>Or, put more simply:</p>
-</dd>
-<dd>
 <pre>
  if ( $d-&gt;options($url) =~ /\bPROPPATCH\b/ ) {
     print &quot;OK to proppatch\n&quot;;
  }</pre>
 </dd>
-</li>
-<dt><strong><a name="propfind" class="item"><strong>propfind([URL],[DEPTH])</strong></a></strong>
+<dt><strong><a name="propfind" class="item"><strong>propfind([URL],[DEPTH])</strong></a></strong></dt>
 
 <dd>
 <p>Perform a propfind against URL at DEPTH depth.</p>
-</dd>
-<dd>
 <p><a href="#depth"><code>-depth</code></a> can be used to specify how deep the propfind goes. &quot;0&quot; is collection only. &quot;1&quot; is collection and it's immediate members (This is the default value). &quot;infinity&quot; is the entire directory tree. Note that most DAV compliant servers deny &quot;infinity&quot; depth propfinds for security reasons.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>The return value is an <a href="#http_dav_resource"><code>HTTP::DAV::Resource</code></a> object on success or 0 on failure.</p>
-</dd>
-<dd>
 <p>The Resource object can be used for interrogating properties or performing other operations.</p>
-</dd>
-<dd>
 <pre>
  ## Print collection or content length
  if ( $r=$d-&gt;propfind( -url=&gt;&quot;/my_dir&quot;, -depth=&gt;1) ) {
@@ -627,118 +523,58 @@
        print $r-&gt;get_property(&quot;getcontentlength&quot;) .&quot;\n&quot;;
     }
  }</pre>
-</dd>
-<dd>
 <p>Please note that although you may set a different namespace for a property of a resource during a set_prop, HTTP::DAV currently ignores all XML namespaces so you will get clashes if two properties have the same name but in different namespaces. Currently this is unavoidable but I'm working on the solution.</p>
 </dd>
-</li>
-<dt><strong><a name="proppatch" class="item"><strong>proppatch([URL],[NAMESPACE],PROPNAME,PROPVALUE,ACTION,[NSABBR])</strong></a></strong>
+<dt><strong><a name="proppatch" class="item"><strong>proppatch([URL],[NAMESPACE],PROPNAME,PROPVALUE,ACTION,[NSABBR])</strong></a></strong></dt>
 
 <dd>
 <p>If <code>-action</code> equals &quot;set&quot; then we set a property named <code>-propname</code> to <code>-propvalue</code> in the namespace <code>-namespace</code> for <a href="#url"><code>-url</code></a>.</p>
-</dd>
-<dd>
 <p>If <code>-action</code> equals &quot;remove&quot; then we unset a property named <code>-propname</code> in the namespace <code>-namespace</code> for <a href="#url"><code>-url</code></a>.</p>
-</dd>
-<dd>
 <p>If no action is supplied then the default action is &quot;set&quot;.</p>
-</dd>
-<dd>
 <p>The return value is an <a href="#http_dav_resource"><code>HTTP::DAV::Resource</code></a> object on success or 0 on failure.</p>
-</dd>
-<dd>
 <p>The Resource object can be used for interrogating properties or performing other operations.</p>
-</dd>
-<dd>
 <p>To explicitly set a namespace in which to set the propname then you can use the <code>-namespace</code> and <code>-nsabbr</code> (namespace abbreviation) parameters. But you're welcome to play around with DAV namespaces.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>It is recommended that you use <a href="#set_prop"><code>set_prop</code></a> and <a href="#unset_prop"><code>unset_prop</code></a> instead of proppatch for readability.</p>
-</dd>
-<dd>
 <p><a href="#set_prop"><code>set_prop</code></a> simply calls <a href="#proppatch"><code>proppatch(-action=</code></a>set)&gt; and <a href="#unset_prop"><code>unset_prop</code></a> calls <a href="#proppatch"><code>proppatch(-action=</code></a>&quot;remove&quot;)&gt;</p>
-</dd>
-<dd>
 <p>See <a href="#set_prop"><code>set_prop</code></a> and <a href="#unset_prop"><code>unset_prop</code></a> for examples.</p>
 </dd>
-</li>
-<dt><strong><a name="put" class="item"><strong>put(LOCAL,[URL],[CALLBACK])</strong></a></strong>
+<dt><strong><a name="put" class="item"><strong>put(LOCAL,[URL],[CALLBACK],[HEADERS])</strong></a></strong></dt>
 
 <dd>
-<p>uploads the files or directories at -local to the remote destination at -url.</p>
-</dd>
-<dd>
-<p>-local points to a file, directory or series of files or directories (indicated by a glob).</p>
-</dd>
-<dd>
+<p>uploads the files or directories at <code>-local</code> to the remote destination at <a href="#url"><code>-url</code></a>.</p>
+<p><code>-local</code> points to a file, directory or series of files or directories (indicated by a glob).</p>
 <p>If the filename contains any of the characters `*',  `?' or  `['  it is a candidate for filename substitution, also  known  as  ``globbing''.   This word  is  then regarded as a pattern (``glob-pattern''), and replaced with an alphabetically sorted list  of  file  names which match the pattern.</p>
-</dd>
-<dd>
 <p>One can upload/put a string by passing a reference to a scalar in the -local parameter. See example below.</p>
-</dd>
-<dd>
 <p>put requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>The return value is always 1 or 0 indicating success or failure.</p>
-</dd>
-<dd>
 <p>See <a href="#get">get()</a> for a description of what the optional callback parameter does.</p>
-</dd>
-<dd>
+<p>You can also pass a <code>-headers</code> argument. That allows to specify custom HTTP headers. It can be either a hashref with header names and values, or a <a href="HTTP/Headers.html">the HTTP::Headers manpage</a> object.</p>
 <p><strong>put examples:</strong></p>
-</dd>
-<dd>
 <p>Put a string to the server:</p>
-</dd>
-<dd>
 <pre>
   my $myfile = &quot;This is the contents of a file to be uploaded\n&quot;;
   $d-&gt;put(-local=&gt;\$myfile,-url=&gt;&quot;<a href="http://www.host.org/dav_dir/file.txt&quot">http://www.host.org/dav_dir/file.txt&quot</a>;);</pre>
-</dd>
-<dd>
 <p>Put a local file to the server:</p>
-</dd>
-<dd>
 <pre>
   $d-&gt;put(-local=&gt;&quot;/tmp/index.html&quot;,-url=&gt;&quot;<a href="http://www.host.org/dav_dir/&quot">http://www.host.org/dav_dir/&quot</a>;);</pre>
-</dd>
-<dd>
 <p>Put a series of local files to the server:</p>
-</dd>
-<dd>
 <pre>
   In these examples, /tmp contains file1.html, file1, file2.html, 
   file2.txt, file3.html, file2/</pre>
-</dd>
-<dd>
 <pre>
   $d-&gt;put(-local=&gt;&quot;/tmp/file[12]*&quot;,-url=&gt;&quot;<a href="http://www.host.org/dav_dir/&quot">http://www.host.org/dav_dir/&quot</a>;);
   
   uploads file1.html, file1, file2.html, file2.txt and the directory file2/ to dav_dir/.</pre>
 </dd>
-</li>
-<dt><strong><a name="set_prop" class="item"><strong>set_prop([URL],[NAMESPACE],PROPNAME,PROPVALUE)</strong></a></strong>
+<dt><strong><a name="set_prop" class="item"><strong>set_prop([URL],[NAMESPACE],PROPNAME,PROPVALUE)</strong></a></strong></dt>
 
 <dd>
 <p>Sets a property named <code>-propname</code> to <code>-propvalue</code> in the namespace <code>-namespace</code> for <a href="#url"><code>-url</code></a>.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>The return value is an <a href="#http_dav_resource"><code>HTTP::DAV::Resource</code></a> object on success or 0 on failure.</p>
-</dd>
-<dd>
 <p>The Resource object can be used for interrogating properties or performing other operations.</p>
-</dd>
-<dd>
 <p>Example:</p>
-</dd>
-<dd>
 <pre>
  if ( $r = $d-&gt;set_prop(-url=&gt;$url,
               -namespace=&gt;&quot;dave&quot;,
@@ -749,26 +585,15 @@
  } else {
     print &quot;set_prop failed:&quot; . $d-&gt;message . &quot;\n&quot;;
  }</pre>
-</dd>
-<dd>
 <p>See the note in propfind about namespace support in HTTP::DAV. They're settable, but not readable.</p>
 </dd>
-</li>
-<dt><strong><a name="steal" class="item"><strong>steal([URL])</strong></a></strong>
+<dt><strong><a name="steal" class="item"><strong>steal([URL])</strong></a></strong></dt>
 
 <dd>
 <p>forcefully steals any locks held against URL.</p>
-</dd>
-<dd>
 <p>steal will perform a propfind against URL and then, any locks that are found will be unlocked one by one regardless of whether we own them or not.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>The return value is always 1 or 0 indicating success or failure. If multiple locks are found and unlocking one of them fails then the operation will be aborted.</p>
-</dd>
-<dd>
 <pre>
  if ($d-&gt;steal()) {
     print &quot;Steal succeeded\n&quot;;
@@ -776,19 +601,12 @@
     print &quot;Steal failed: &quot;. $d-&gt;message() . &quot;\n&quot;;
  }</pre>
 </dd>
-</li>
-<dt><strong><a name="unlock" class="item"><strong>unlock([URL])</strong></a></strong>
+<dt><strong><a name="unlock" class="item"><strong>unlock([URL])</strong></a></strong></dt>
 
 <dd>
 <p>unlocks any of our locks on URL.</p>
-</dd>
-<dd>
 <p>Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>The return value is always 1 or 0 indicating success or failure.</p>
-</dd>
-<dd>
 <pre>
  if ($d-&gt;unlock()) {
     print &quot;Unlock succeeded\n&quot;;
@@ -796,23 +614,14 @@
     print &quot;Unlock failed: &quot;. $d-&gt;message() . &quot;\n&quot;;
  }</pre>
 </dd>
-</li>
-<dt><strong><a name="unset_prop" class="item"><strong>unset_prop([URL],[NAMESPACE],PROPNAME)</strong></a></strong>
+<dt><strong><a name="unset_prop" class="item"><strong>unset_prop([URL],[NAMESPACE],PROPNAME)</strong></a></strong></dt>
 
 <dd>
 <p>Unsets a property named <code>-propname</code> in the namespace <code>-namespace</code> for <a href="#url"><code>-url</code></a>. 
 Requires a working resource to be set before being called. See <a href="#open"><code>open</code></a>.</p>
-</dd>
-<dd>
 <p>The return value is an <a href="#http_dav_resource"><code>HTTP::DAV::Resource</code></a> object on success or 0 on failure.</p>
-</dd>
-<dd>
 <p>The Resource object can be used for interrogating properties or performing other operations.</p>
-</dd>
-<dd>
 <p>Example:</p>
-</dd>
-<dd>
 <pre>
  if ( $r = $d-&gt;unset_prop(-url=&gt;$url,
               -namespace=&gt;&quot;dave&quot;,
@@ -822,135 +631,87 @@ Requires a working resource to be set before being called. See <a href="#open"><
  } else {
     print &quot;set_prop failed:&quot; . $d-&gt;message . &quot;\n&quot;;
  }</pre>
-</dd>
-<dd>
 <p>See the note in propfind about namespace support in HTTP::DAV. They're settable, but not readable.</p>
 </dd>
-</li>
 </dl>
 <p>
 </p>
 <h2><a name="accessor_methods">ACCESSOR METHODS</a></h2>
 <dl>
-<dt><strong><a name="get_user_agent" class="item"><strong>get_user_agent</strong></a></strong>
+<dt><strong><a name="get_user_agent" class="item"><strong>get_user_agent</strong></a></strong></dt>
 
 <dd>
 <p>Returns the clients' working <code>HTTP::DAV::UserAgent</code> object.</p>
-</dd>
-<dd>
 <p>You may want to interact with the <code>HTTP::DAV::UserAgent</code> object 
 to modify request headers or provide advanced authentication 
 procedures. See dave for an advanced authentication procedure.</p>
 </dd>
-</li>
-<dt><strong><a name="get_last_request" class="item"><strong>get_last_request</strong></a></strong>
+<dt><strong><a name="get_last_request" class="item"><strong>get_last_request</strong></a></strong></dt>
 
 <dd>
 <p>Takes no arguments and returns the clients' last outgoing <a href="#http_request"><code>HTTP::Request</code></a> object.</p>
-</dd>
-<dd>
 <p>You would only use this to inspect a request that has already occurred.</p>
-</dd>
-<dd>
 <p>If you would like to modify the <a href="#http_request"><code>HTTP::Request</code></a> BEFORE the HTTP request takes place (for instance to add another header), you will need to get the <code>HTTP::DAV::UserAgent</code> using <a href="#get_user_agent"><code>get_user_agent</code></a> and interact with that.</p>
 </dd>
-</li>
-<dt><strong><a name="get_workingresource" class="item"><strong>get_workingresource</strong></a></strong>
+<dt><strong><a name="get_workingresource" class="item"><strong>get_workingresource</strong></a></strong></dt>
 
 <dd>
 <p>Returns the currently &quot;opened&quot; or &quot;working&quot; resource (<a href="#http_dav_resource"><code>HTTP::DAV::Resource</code></a>).</p>
-</dd>
-<dd>
 <p>The working resource is changed whenever you open a url or use the cwd command.</p>
-</dd>
-<dd>
 <p>e.g. 
   $r = $d-&gt;get_workingresource
   print &quot;pwd: &quot; . $r-&gt;get_uri . &quot;\n&quot;;</p>
 </dd>
-</li>
-<dt><strong><a name="get_workingurl" class="item"><strong>get_workingurl</strong></a></strong>
+<dt><strong><a name="get_workingurl" class="item"><strong>get_workingurl</strong></a></strong></dt>
 
 <dd>
 <p>Returns the currently &quot;opened&quot; or &quot;working&quot; <code>URL</code>.</p>
-</dd>
-<dd>
 <p>The working resource is changed whenever you open a url or use the cwd command.</p>
-</dd>
-<dd>
 <pre>
   print &quot;pwd: &quot; . $d-&gt;get_workingurl . &quot;\n&quot;;</pre>
 </dd>
-</li>
-<dt><strong><a name="get_lockedresourcelist" class="item"><strong>get_lockedresourcelist</strong></a></strong>
+<dt><strong><a name="get_lockedresourcelist" class="item"><strong>get_lockedresourcelist</strong></a></strong></dt>
 
 <dd>
 <p>Returns an <a href="#http_dav_resourcelist"><code>HTTP::DAV::ResourceList</code></a> object that represents all of the locks we've created using THIS dav client.</p>
-</dd>
-<dd>
 <pre>
   print &quot;pwd: &quot; . $d-&gt;get_workingurl . &quot;\n&quot;;</pre>
 </dd>
-</li>
-<dt><strong><a name="get_absolute_uri" class="item"><strong>get_absolute_uri(REL_URI,[BASE_URI])</strong></a></strong>
+<dt><strong><a name="get_absolute_uri" class="item"><strong>get_absolute_uri(REL_URI,[BASE_URI])</strong></a></strong></dt>
 
 <dd>
 <p>This is a useful utility function which joins <code>BASE_URI</code> and <code>REL_URI</code> and returns a new URI.</p>
-</dd>
-<dd>
 <p>If <code>BASE_URI</code> is not supplied then the current working resource (as indicated by get_workingurl) is used. If <code>BASE_URI</code> is not set and there is no current working resource the <code>REL_URI</code> will be returned.</p>
-</dd>
-<dd>
 <p>For instance:
  $d-&gt;open(&quot;http://host.org/webdav/dir1/&quot;);</p>
-</dd>
-<dd>
 <pre>
  # Returns &quot;<a href="http://host.org/webdav/dir2/&quot">http://host.org/webdav/dir2/&quot</a>;
  $d-&gt;get_absolute_uri(-rel_uri=&gt;&quot;../dir2&quot;);</pre>
-</dd>
-<dd>
 <pre>
  # Returns &quot;<a href="http://x.org/dav/dir2/file.txt&quot">http://x.org/dav/dir2/file.txt&quot</a>;
  $d-&gt;get_absolute_uri(-rel_uri  =&gt;&quot;dir2/file.txt&quot;,
                       -&gt;base_uri=&gt;&quot;<a href="http://x.org/dav/&quot">http://x.org/dav/&quot</a>;);</pre>
-</dd>
-<dd>
 <p>Note that it subtly takes care of trailing slashes.</p>
 </dd>
-</li>
 </dl>
 <p>
 </p>
 <h2><a name="error_handling_methods">ERROR HANDLING METHODS</a></h2>
 <dl>
-<dt><strong><a name="message" class="item"><strong>message</strong></a></strong>
+<dt><strong><a name="message" class="item"><strong>message</strong></a></strong></dt>
 
 <dd>
 <p><a href="#message"><code>message</code></a> gets the last success or error message.</p>
-</dd>
-<dd>
 <p>The return value is always a scalar (string) and will change everytime a dav operation is invoked (lock, cwd, put, etc).</p>
-</dd>
-<dd>
 <p>See also <a href="#errors"><code>errors</code></a> for operations which contain multiple error messages.</p>
 </dd>
-</li>
-<dt><strong><a name="errors" class="item"><strong>errors</strong></a></strong>
+<dt><strong><a name="errors" class="item"><strong>errors</strong></a></strong></dt>
 
 <dd>
 <p>Returns an @array of error messages that had been set during a multi-request operation.</p>
-</dd>
-<dd>
 <p>Some of <code>HTTP::DAV</code>'s operations perform multiple request to the server. At the time of writing only put and get are considered multi-request since they can operate recursively requiring many HTTP requests.</p>
-</dd>
-<dd>
 <p>In these situations you should check the errors array if to determine if any of the requests failed.</p>
-</dd>
-<dd>
 <p>The <a href="#errors"><code>errors</code></a> function is used for multi-request operations and not to be confused with a multi-status server response. A multi-status server response is when the server responds with multiple error messages for a SINGLE request. To deal with multi-status responses, see <a href="#http_dav_response"><code>HTTP::DAV::Response</code></a>.</p>
-</dd>
-<dd>
 <pre>
  # Recursive put
  if (!$d-&gt;put( &quot;/tmp/my_dir&quot;, $url ) ) {
@@ -960,43 +721,25 @@ procedures. See dave for an advanced authentication procedure.</p>
     foreach $err ( $d-&gt;errors ) { print &quot;  Error:$err\n&quot; }
  }</pre>
 </dd>
-</li>
-<dt><strong><a name="is_success" class="item"><strong>is_success</strong></a></strong>
+<dt><strong><a name="is_success" class="item"><strong>is_success</strong></a></strong></dt>
 
 <dd>
 <p>Returns the status of the last DAV operation performed through the HTTP::DAV interface.</p>
-</dd>
-<dd>
 <p>This value will always be the same as the value returned from an HTTP::DAV::method. For instance:</p>
-</dd>
-<dd>
 <pre>
   # This will always evaluate to true
   ($d-&gt;lock($url) eq $d-&gt;is_success) ?</pre>
-</dd>
-<dd>
 <p>You may want to use the is_success method if you didn't capture the return value immediately. But in most circumstances you're better off just evaluating as follows:
   if($d-&gt;lock($url)) { ... }</p>
 </dd>
-</li>
-<dt><strong><a name="get_last_response" class="item"><strong>get_last_response</strong></a></strong>
+<dt><strong><a name="get_last_response" class="item"><strong>get_last_response</strong></a></strong></dt>
 
 <dd>
 <p>Takes no arguments and returns the last seen <a href="#http_dav_response"><code>HTTP::DAV::Response</code></a> object.</p>
-</dd>
-<dd>
 <p>You may want to use this if you have just called a propfind and need the individual error messages returned in a MultiStatus.</p>
-</dd>
-<dd>
 <p>If you find that you're using <a href="#get_last_response"><code>get_last_response()</code></a> method a lot, you may be better off using the more advanced <code>HTTP::DAV</code> interface and interacting with the HTTP::DAV::* interfaces directly as discussed in the intro. For instance, if you find that you're always wanting a detailed understanding of the server's response headers or messages, then you're probably better off using the <a href="#http_dav_resource"><code>HTTP::DAV::Resource</code></a> methods and interpreting the <a href="#http_dav_response"><code>HTTP::DAV::Response</code></a> directly.</p>
-</dd>
-<dd>
 <p>To perform detailed analysis of the server's response (if for instance you got back a multistatus response) you can call <a href="#get_last_response"><code>get_last_response()</code></a> which will return to you the most recent response object (always the result of the last operation, PUT, PROPFIND, etc). With the returned HTTP::DAV::Response object you can handle multi-status responses.</p>
-</dd>
-<dd>
 <p>For example:</p>
-</dd>
-<dd>
 <pre>
    # Print all of the messages in a multistatus response
    if (! $d-&gt;unlock($url) ) {
@@ -1010,13 +753,12 @@ procedures. See dave for an advanced authentication procedure.</p>
       }
    }</pre>
 </dd>
-</li>
 </dl>
 <p>
 </p>
 <h2><a name="advanced_methods">ADVANCED METHODS</a></h2>
 <dl>
-<dt><strong><a name="new_resource" class="item"><strong>new_resource</strong></a></strong>
+<dt><strong><a name="new_resource" class="item"><strong>new_resource</strong></a></strong></dt>
 
 <dd>
 <p>Creates a new resource object with which to play.
@@ -1024,26 +766,18 @@ This is the preferred way of creating an <a href="#http_dav_resource"><code>HTTP
 Why? Because each Resource object needs to sit within a global HTTP::DAV client. 
 Also, because the new_resource routine checks the <code>HTTP::DAV</code> locked resource
 list before creating a new object.</p>
-</dd>
-<dd>
 <pre>
     $dav-&gt;new_resource( -uri =&gt; &quot;<a href="http://...&quot">http://...&quot</a>; );</pre>
 </dd>
-</li>
-<dt><strong><a name="set_workingresource" class="item"><strong>set_workingresource(URL)</strong></a></strong>
+<dt><strong><a name="set_workingresource" class="item"><strong>set_workingresource(URL)</strong></a></strong></dt>
 
 <dd>
 <p>Sets the current working resource to URL.</p>
-</dd>
-<dd>
 <p>You shouldn't need this method. Call open or cwd to set the working resource.</p>
-</dd>
-<dd>
 <p>You CAN call <a href="#set_workingresource"><code>set_workingresource()</code></a> but you will need to perform a
 <a href="#propfind"><code>propfind</code></a> immediately following it to ensure that the working
 resource is valid.</p>
 </dd>
-</li>
 </dl>
 <p>
 </p>
@@ -1059,26 +793,26 @@ or the README file in this library.</p>
 <h1><a name="see_also">SEE ALSO</a></h1>
 <p>You'll want to also read:</p>
 <dl>
-<dt><strong><a name="http_dav_response" class="item"><code>HTTP::DAV::Response</code></a></strong>
+<dt><strong><a name="http_dav_response" class="item"><code>HTTP::DAV::Response</code></a></strong></dt>
 
-<dt><strong><a name="http_dav_resource" class="item"><code>HTTP::DAV::Resource</code></a></strong>
+<dt><strong><a name="http_dav_resource" class="item"><code>HTTP::DAV::Resource</code></a></strong></dt>
 
-<dt><strong><a name="dave" class="item"><code>dave</code></a></strong>
+<dt><strong><a name="dave" class="item"><code>dave</code></a></strong></dt>
 
 </dl>
 <p>and maybe if you're more inquisitive:</p>
 <dl>
-<dt><strong><a name="lwp_useragent" class="item"><code>LWP::UserAgent</code></a></strong>
+<dt><strong><a name="lwp_useragent" class="item"><code>LWP::UserAgent</code></a></strong></dt>
 
-<dt><strong><a name="http_request" class="item"><code>HTTP::Request</code></a></strong>
+<dt><strong><a name="http_request" class="item"><code>HTTP::Request</code></a></strong></dt>
 
-<dt><strong><a name="http_dav_comms" class="item"><code>HTTP::DAV::Comms</code></a></strong>
+<dt><strong><a name="http_dav_comms" class="item"><code>HTTP::DAV::Comms</code></a></strong></dt>
 
-<dt><strong><a name="http_dav_lock" class="item"><code>HTTP::DAV::Lock</code></a></strong>
+<dt><strong><a name="http_dav_lock" class="item"><code>HTTP::DAV::Lock</code></a></strong></dt>
 
-<dt><strong><a name="http_dav_resourcelist" class="item"><code>HTTP::DAV::ResourceList</code></a></strong>
+<dt><strong><a name="http_dav_resourcelist" class="item"><code>HTTP::DAV::ResourceList</code></a></strong></dt>
 
-<dt><strong><a name="http_dav_utils" class="item"><code>HTTP::DAV::Utils</code></a></strong>
+<dt><strong><a name="http_dav_utils" class="item"><code>HTTP::DAV::Utils</code></a></strong></dt>
 
 </dl>
 <p>

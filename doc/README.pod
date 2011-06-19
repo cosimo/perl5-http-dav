@@ -27,8 +27,6 @@ B<dave> - the DAV Explorer, an end-user Unix console program for interacting wit
 
 =back
 
-Learn more about WebDAV at http://www.webdav.org/
-
 =head1 LATEST VERSION AND WHAT'S NEW
 
 See the included C<Changes> file for the full changelog.
@@ -42,7 +40,7 @@ The lazy way to install PerlDAV:
 
 Or the normal way:
 
-Retrieve the latest copy from CPAN: http://www.cpan.org/authors/id/P/PC/PCOLLINS/
+Retrieve the latest copy from CPAN: http://search.cpan.org/dist/HTTP-DAV/
 
    $ perl Makefile.PL # Creates the Makefile
    $ make             # Runs the makefile

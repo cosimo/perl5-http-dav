@@ -11,8 +11,6 @@ PerlDAV -- A WebDAV client library for Perl5
         interacting with WebDAV servers. dave looks and feels like a
         standard Unix ftp program.
 
-    Learn more about WebDAV at http://www.webdav.org/
-
 LATEST VERSION AND WHAT'S NEW
     See the included "Changes" file for the full changelog.
 
@@ -25,7 +23,7 @@ INSTALLING PERLDAV
     Or the normal way:
 
     Retrieve the latest copy from CPAN:
-    http://www.cpan.org/authors/id/P/PC/PCOLLINS/
+    http://search.cpan.org/dist/HTTP-DAV/
 
        $ perl Makefile.PL # Creates the Makefile
        $ make             # Runs the makefile

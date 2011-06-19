@@ -2,17 +2,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>PerlDAV -- A WebDAV client library for Perl5</title>
+<title>PerlDAV</title>
+<link rel="stylesheet" href="perldav.css" type="text/css" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:" />
+<link rev="made" href="mailto:root@localhost" />
 </head>
 
-<body style="background-color: white">
+<body>
 
 
 <!-- INDEX BEGIN -->
 <div name="index">
 <p><a name="__index__"></a></p>
+<!--
 
 <ul>
 
@@ -40,7 +42,9 @@
 	<li><a href="#license">LICENSE</a></li>
 </ul>
 
-<hr name="index" />
+-->
+
+
 </div>
 <!-- INDEX END -->
 
@@ -56,7 +60,6 @@
 <p><strong>dave</strong> - the DAV Explorer, an end-user Unix console program for interacting with WebDAV servers. dave looks and feels like a standard Unix ftp program.</p>
 </li>
 </ul>
-<p>Learn more about WebDAV at <a href="http://www.webdav.org/">http://www.webdav.org/</a></p>
 <p>
 </p>
 <hr />
@@ -71,7 +74,7 @@
    $ perl -MCPAN -e shell
    cpan&gt; install HTTP::DAV</pre>
 <p>Or the normal way:</p>
-<p>Retrieve the latest copy from CPAN: <a href="http://www.cpan.org/authors/id/P/PC/PCOLLINS/">http://www.cpan.org/authors/id/P/PC/PCOLLINS/</a></p>
+<p>Retrieve the latest copy from CPAN: <a href="http://search.cpan.org/dist/HTTP-DAV/">http://search.cpan.org/dist/HTTP-DAV/</a></p>
 <pre>
    $ perl Makefile.PL # Creates the Makefile
    $ make             # Runs the makefile
@@ -98,6 +101,10 @@
 <li>
 <p>XML::DOM (Have not tested lower than v1.26). 
 Requires James Clark's expat library:</p>
+</li>
+<li>
+<p>To access SSL urls you will need <a href="Crypt/SSLeay.html">the Crypt::SSLeay manpage</a>
+and/or <a href="IO/Socket/SSL.html">the IO::Socket::SSL manpage</a>.</p>
 </li>
 </ul>
 <p>

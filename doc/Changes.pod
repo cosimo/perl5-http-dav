@@ -12,6 +12,18 @@ Revision history for PerlDAV
 
 =end text
 
+=head2 v0.44 (released 2011/06/19):
+
+=over 4
+
+=item * B<bug fixes>
+
+  - Fixed RT #68936 (http://rt.cpan.org/Public/Bug/Display.html?id=68936),
+    Fixed errors() method that would bomb out when the "_errors" attribute
+    wasn't initialized. Thanks to Michael Lackoff for reporting.
+
+=back
+
 =head2 v0.43 (released 2011/04/12):
 
 =over 4

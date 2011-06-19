@@ -3,16 +3,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>dave -- DAV Explorer</title>
+<link rel="stylesheet" href="http://www.webdav.org/perldav/perldav_plain.css" type="text/css" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:" />
+<link rev="made" href="mailto:root@localhost" />
 </head>
 
-<body style="background-color: white">
+<body>
 
 
 <!-- INDEX BEGIN -->
 <div name="index">
 <p><a name="__index__"></a></p>
+<!--
 
 <ul>
 
@@ -28,7 +30,9 @@
 	<li><a href="#author_and_copyright">AUTHOR AND COPYRIGHT</a></li>
 </ul>
 
-<hr name="index" />
+-->
+
+
 </div>
 <!-- INDEX END -->
 
@@ -56,22 +60,31 @@
 <ul>
 <li><strong><a name="get_and_put_files" class="item">get and put files</a></strong>
 
+</li>
 <li><strong><a name="make_directories_on_a_remote_webserver" class="item">make directories on a remote webserver</a></strong>
 
+</li>
 <li><strong><a name="remove_files_and_directories_from_a_remote_webserver" class="item">remove files and directories from a remote webserver</a></strong>
 
+</li>
 <li><strong><a name="edit_a_file_on_the_webserver_with_a_single_command" class="item">edit a file on the webserver with a single command</a></strong>
 
+</li>
 <li><strong><a name="recursively_get_a_remote_directory" class="item">recursively get a remote directory</a></strong>
 
+</li>
 <li><strong><a name="recursively_put_a_local_directory" class="item">recursively put a local directory</a></strong>
 
+</li>
 <li><strong><a name="lock_and_unlock_remote_files_and_directories" class="item">lock and unlock remote files and directories</a></strong>
 
+</li>
 <li><strong><a name="securely_transfer_over_https" class="item">securely transfer over https</a></strong>
 
+</li>
 <li><strong><a name="authenticate_using_the_safer_digest_authentication" class="item">authenticate using the safer Digest authentication</a></strong>
 
+</li>
 </ul>
 <p>Dave is a part of the PerlDAV project (http://www.webdav.org/perldav/) and is built on top of the HTTP::DAV perl API.</p>
 <p>If you would like to script webdav interactions in Perl checkout the HTTP::DAV API as it's commands are the basis for dave's.</p>
@@ -80,296 +93,188 @@
 <hr />
 <h1><a name="options">OPTIONS</a></h1>
 <dl>
-<dt><strong><a name="debug_n" class="item">-debug N</a></strong>
+<dt><strong><a name="debug_n" class="item">-debug N</a></strong></dt>
 
 <dd>
 <p>Sets the debug level to N. 0=none. 3=noisy.</p>
 </dd>
-</li>
-<dt><strong><a name="h" class="item">-h</a></strong>
+<dt><strong><a name="h" class="item">-h</a></strong></dt>
 
 <dd>
 <p>Prints basic help and options.</p>
 </dd>
-</li>
-<dt><strong><a name="man" class="item">-man</a></strong>
+<dt><strong><a name="man" class="item">-man</a></strong></dt>
 
 <dd>
 <p>Prints the full manual (equivalent to perldoc dave).</p>
-</dd>
-<dd>
 <p>You will need to use a pager like &quot;more&quot; or &quot;less&quot;.</p>
-</dd>
-<dd>
 <pre>
  e.g. dave -man |less</pre>
 </dd>
-</li>
-<dt><strong><a name="p_password" class="item">-p &lt;password&gt;</a></strong>
+<dt><strong><a name="p_password" class="item">-p &lt;password&gt;</a></strong></dt>
 
 <dd>
 <p>Sets the password to be used for the URL.</p>
-</dd>
-<dd>
 <p>You must also supply a user. See -u.</p>
 </dd>
-</li>
-<dt><strong><a name="u_username" class="item">-u &lt;username&gt;</a></strong>
+<dt><strong><a name="u_username" class="item">-u &lt;username&gt;</a></strong></dt>
 
 <dd>
 <p>Sets the username to be used for the URL.</p>
-</dd>
-<dd>
 <p>You must also supply a pass. See -p.</p>
 </dd>
-</li>
 </dl>
 <p>
 </p>
 <hr />
 <h1><a name="commands">COMMANDS</a></h1>
 <dl>
-<dt><strong><a name="cd" class="item"><strong>cd URL</strong></a></strong>
+<dt><strong><a name="cd" class="item"><strong>cd URL</strong></a></strong></dt>
 
 <dd>
 <p>changes directories</p>
-</dd>
-<dd>
 <pre>
    dave&gt; open host.org/dav_dir/
    dave&gt; cd dir1
    dave&gt; cd ../dir2</pre>
 </dd>
-</li>
-<dt><strong><a name="cat" class="item"><strong>cat URL</strong></a></strong>
+<dt><strong><a name="cat" class="item"><strong>cat URL</strong></a></strong></dt>
 
 <dd>
 <p>shows the contents of a remote file</p>
-</dd>
-<dd>
 <pre>
    dave&gt; open host.org/dav_dir/
    dave&gt; cat index.html</pre>
-</dd>
-<dd>
 <p>Note: you cannot cat a directory (collection).</p>
 </dd>
-</li>
-<dt><strong><a name="cp" class="item"><strong>cp</strong></a></strong>
+<dt><strong><a name="cp" class="item"><strong>cp</strong></a></strong></dt>
 
-<dt><strong><a name="copy_source_url_dest_url" class="item"><strong>copy SOURCE_URL DEST_URL</strong></a></strong>
+<dt><strong><a name="copy_source_url_dest_url" class="item"><strong>copy SOURCE_URL DEST_URL</strong></a></strong></dt>
 
 <dd>
 <p>copies one remote resource to another</p>
-</dd>
-<dd>
 <pre>
   dave&gt; open host.org/dav_dir/</pre>
-</dd>
-<dd>
 <p>Create a copy of dir1/ as dav2/</p>
-</dd>
-<dd>
 <pre>
   dave&gt; cp dir1 dav2</pre>
-</dd>
-<dd>
 <p>Create a copy of dir1/file.txt as dav2/file.txt</p>
-</dd>
-<dd>
 <pre>
   dave&gt; cd dir1
   dave&gt; copy file.txt ../dav2</pre>
-</dd>
-<dd>
 <p>Create a copy of file.txt as ../dav2/new_file.txt</p>
-</dd>
-<dd>
 <pre>
   dave&gt; copy file.txt dav2/new_file.txt</pre>
-</dd>
-<dd>
 <p>Aliases: cp</p>
 </dd>
-</li>
-<dt><strong><a name="rmdir" class="item"><strong>rmdir URL</strong></a></strong>
+<dt><strong><a name="rmdir" class="item"><strong>rmdir URL</strong></a></strong></dt>
 
-<dt><strong><a name="rm" class="item"><strong>rm URL</strong></a></strong>
+<dt><strong><a name="rm" class="item"><strong>rm URL</strong></a></strong></dt>
 
-<dt><strong><a name="delete" class="item"><strong>delete URL</strong></a></strong>
+<dt><strong><a name="delete" class="item"><strong>delete URL</strong></a></strong></dt>
 
 <dd>
 <p>deletes a remote resource</p>
-</dd>
-<dd>
 <pre>
    dave&gt; open host.org/dav_dir/
    dave&gt; delete index.html
    dave&gt; rmdir ./dir1
    dave&gt; delete /dav_dir/dir2/
    dave&gt; delete /dav_dir/*.html</pre>
-</dd>
-<dd>
 <p>This command recursively deletes directories. BE CAREFUL :)</p>
-</dd>
-<dd>
 <p>This command supported wildcards (globbing). See get.</p>
-</dd>
-<dd>
 <p>Aliases: rm, rmdir</p>
 </dd>
-</li>
-<dt><strong><a name="edit" class="item"><strong>edit URL</strong></a></strong>
+<dt><strong><a name="edit" class="item"><strong>edit URL</strong></a></strong></dt>
 
 <dd>
 <p>edits the contents of a remote file</p>
-</dd>
-<dd>
 <pre>
    dave&gt; open host.org/dav_dir/
    dave&gt; edit index.html</pre>
-</dd>
-<dd>
 <p>Edit is equivalent to the following sequence of commands:</p>
-</dd>
-<dd>
 <pre>
    LOCK index.html (if allowed)
    GET index.html /tmp/dave.perldav.421341234124
    sh $EDITOR /tmp/dave.perldav.421341234124
    PUT index.html (if modified)
    UNLOCK index.html (if locked)</pre>
-</dd>
-<dd>
 <p>Where $EDITOR is determined from the environment variables 
 DAV_EDITOR or EDITOR.</p>
-</dd>
-<dd>
 <p>If DAV_EDITOR is set, it will use that, otherwise it will 
 use EDITOR. If neither variables are set, then &quot;vi&quot; will 
 be used.</p>
-</dd>
-<dd>
 <p>Notes:</p>
-</dd>
-<dd>
 <p>The lock only lasts for 10 hours.</p>
-</dd>
-<dd>
 <p>You cannot edit a directory (collection).</p>
-</dd>
-<dd>
 <p>The temporary save directory is editable by 
 editing dave and changing TMP_DIR</p>
 </dd>
-</li>
-<dt><strong><a name="get_url_file" class="item"><strong>get URL [FILE]</strong></a></strong>
+<dt><strong><a name="get_url_file" class="item"><strong>get URL [FILE]</strong></a></strong></dt>
 
 <dd>
 <p>downloads the file or directory at URL</p>
-</dd>
-<dd>
 <p>If FILE is not specified it will be saved to your 
 current working directory using the same name as 
 the remote name.</p>
-</dd>
-<dd>
 <pre>
   dave&gt; open host.org/dav_dir/</pre>
-</dd>
-<dd>
 <p>Recursively get remote my_dir/ to .</p>
-</dd>
-<dd>
 <pre>
   dave&gt; get my_dir/</pre>
-</dd>
-<dd>
 <p>Recursively get remote my_dir/ to /tmp/my_dir/</p>
-</dd>
-<dd>
 <pre>
   dave&gt; get my_dir /tmp</pre>
-</dd>
-<dd>
 <p>Get remote my_dir/index.html to /tmp/index.html</p>
-</dd>
-<dd>
 <pre>
   dave&gt; get /dav_dir/my_dir/index.html /tmp</pre>
-</dd>
-<dd>
 <p>Get remote index.html to /tmp/index1.html</p>
-</dd>
-<dd>
 <pre>
   dave&gt; get index.html /tmp/index1.html</pre>
-</dd>
-<dd>
 <p>Use globs and save to /tmp</p>
-</dd>
-<dd>
 <pre>
   dave&gt; get index* /tmp                   # Gets index*.html, index*.txt, etc.
   dave&gt; get index*.html /tmp/index1.html  # Gets index*.html
   dave&gt; get index[12].htm?                # Gets file1 and file2, .htm and .html</pre>
 </dd>
-</li>
-<dt><strong><a name="cmd" class="item"><strong>? [CMD]</strong></a></strong>
+<dt><strong><a name="cmd" class="item"><strong>? [CMD]</strong></a></strong></dt>
 
-<dt><strong><a name="h_cmd" class="item"><strong>h [CMD]</strong></a></strong>
+<dt><strong><a name="h_cmd" class="item"><strong>h [CMD]</strong></a></strong></dt>
 
-<dt><strong><a name="help_cmd" class="item"><strong>help [CMD]</strong></a></strong>
+<dt><strong><a name="help_cmd" class="item"><strong>help [CMD]</strong></a></strong></dt>
 
 <dd>
 <p>prints list of commands or help for CMD</p>
-</dd>
-<dd>
 <pre>
   dave&gt; ?</pre>
-</dd>
-<dd>
 <pre>
   dave&gt; help get</pre>
-</dd>
-<dd>
 <p>Aliases: ?, h</p>
 </dd>
-</li>
-<dt><strong><a name="lcd_dir" class="item"><strong>lcd [DIR]</strong></a></strong>
+<dt><strong><a name="lcd_dir" class="item"><strong>lcd [DIR]</strong></a></strong></dt>
 
 <dd>
 <p>changes local directory</p>
-</dd>
-<dd>
 <pre>
   dave&gt; lcd /tmp</pre>
 </dd>
-</li>
-<dt><strong><a name="lls_dir" class="item"><strong>lls [DIR]</strong></a></strong>
+<dt><strong><a name="lls_dir" class="item"><strong>lls [DIR]</strong></a></strong></dt>
 
 <dd>
 <p>lists local directory contents</p>
-</dd>
-<dd>
 <pre>
   dave&gt; lcd /tmp
   dave&gt; lls
   dave&gt; lls /home</pre>
-</dd>
-<dd>
 <p>This command simply execs the local ls command and is 
 equivalent to &quot;!ls&quot;</p>
 </dd>
-</li>
-<dt><strong><a name="dir_url" class="item"><strong>dir [URL]</strong></a></strong>
+<dt><strong><a name="dir_url" class="item"><strong>dir [URL]</strong></a></strong></dt>
 
-<dt><strong><a name="ls_url" class="item"><strong>ls [URL]</strong></a></strong>
+<dt><strong><a name="ls_url" class="item"><strong>ls [URL]</strong></a></strong></dt>
 
 <dd>
 <p>lists remote directory contents or file props</p>
-</dd>
-<dd>
 <pre>
   dave&gt; ls
   Listing of <a href="http://host.org/dav_dir/">http://host.org/dav_dir/</a>
@@ -378,8 +283,6 @@ equivalent to &quot;!ls&quot;</p>
           index.html    4580  Aug 11 11:45
       index0.04.html    4936  Nov 11  2000
               mydir/          Aug 19 21:14  &lt;dir&gt;,&lt;locked&gt;</pre>
-</dd>
-<dd>
 <pre>
   dave&gt; ls index.html
   URL: <a href="http://www.webdav.org/perldav/index.html">http://www.webdav.org/perldav/index.html</a>
@@ -389,25 +292,16 @@ equivalent to &quot;!ls&quot;</p>
   Size: 4580 bytes
   Locks supported: write/exclusive write/shared
   Locks:</pre>
-</dd>
-<dd>
 <p>Use propfind to get a similar printout of a 
 collection (directory).</p>
-</dd>
-<dd>
 <p>Aliases: dir</p>
 </dd>
-</li>
-<dt><strong><a name="lock_url_timeout_depth" class="item"><strong>lock [URL [TIMEOUT] [DEPTH]]</strong></a></strong>
+<dt><strong><a name="lock_url_timeout_depth" class="item"><strong>lock [URL [TIMEOUT] [DEPTH]]</strong></a></strong></dt>
 
 <dd>
 <p>locks a resource</p>
-</dd>
-<dd>
 <p>Without a URL you will lock the current remote 
 collection.</p>
-</dd>
-<dd>
 <p>TIMEOUT can be any of the following formats:
              30s          30 seconds from now
              10m          ten minutes from now
@@ -417,117 +311,72 @@ collection.</p>
              10y          in ten years time
              2000-02-31 00:40:33
              2000-02-31</p>
-</dd>
-<dd>
 <p>Default is an infinite timeout</p>
-</dd>
-<dd>
 <p>See perldoc <code>HTTP::DAV::Resource</code> for more information 
 about timeouts.</p>
-</dd>
-<dd>
 <p>DEPTH can be either &quot;0&quot; or &quot;infinity&quot; (default)</p>
-</dd>
-<dd>
 <p>Seeting the lock Scope and Type is not currently 
 implemented. Let me know if you need it as it shouldn't 
 be too much effort.</p>
 </dd>
-</li>
-<dt><strong><a name="mkdir" class="item"><strong>mkdir URL</strong></a></strong>
+<dt><strong><a name="mkdir" class="item"><strong>mkdir URL</strong></a></strong></dt>
 
-<dt><strong><a name="mkcol" class="item"><strong>mkcol URL</strong></a></strong>
+<dt><strong><a name="mkcol" class="item"><strong>mkcol URL</strong></a></strong></dt>
 
 <dd>
 <p>make a remote collection (directory)</p>
-</dd>
-<dd>
 <pre>
   dave&gt; open host.org/dav_dir/
   dave&gt; mkcol new_dir
   dave&gt; mkdir /dav_dir/new_dir</pre>
-</dd>
-<dd>
 <p>Aliases: mkdir</p>
 </dd>
-</li>
-<dt><strong><a name="mv" class="item"><strong>mv</strong></a></strong>
+<dt><strong><a name="mv" class="item"><strong>mv</strong></a></strong></dt>
 
-<dt><strong><a name="move_source_url_dest_url" class="item"><strong>move SOURCE_URL DEST_URL</strong></a></strong>
+<dt><strong><a name="move_source_url_dest_url" class="item"><strong>move SOURCE_URL DEST_URL</strong></a></strong></dt>
 
 <dd>
 <p>moves a remote resource to another</p>
-</dd>
-<dd>
 <pre>
   dave&gt; open host.org/dav_dir/</pre>
-</dd>
-<dd>
 <p>Move dir1/ to dav2/</p>
-</dd>
-<dd>
 <pre>
   dave&gt; move dir1 dav2</pre>
-</dd>
-<dd>
 <p>Move file dir2/file.txt to ../file.txt</p>
-</dd>
-<dd>
 <pre>
   dave&gt; cd dir2
   dave&gt; move file.txt ..</pre>
-</dd>
-<dd>
 <p>Move file.txt to dav2/new_file.txt</p>
-</dd>
-<dd>
 <pre>
   dave&gt; move file.txt dav2/new_file.txt</pre>
-</dd>
-<dd>
 <p>Aliases: mv</p>
 </dd>
-</li>
-<dt><strong><a name="open" class="item"><strong>open URL</strong></a></strong>
+<dt><strong><a name="open" class="item"><strong>open URL</strong></a></strong></dt>
 
 <dd>
 <p>connects to the WebDAV-enabled server at URL</p>
-</dd>
-<dd>
 <pre>
    dave&gt; open host.org/dav_dir/</pre>
-</dd>
-<dd>
 <p>Note that if authorization details are required you will 
 be prompted for them.</p>
-</dd>
-<dd>
 <p>https and Digest authorization are not currently 
 supported. Please let me know if you need it.</p>
 </dd>
-</li>
-<dt><strong><a name="options_url" class="item"><strong>options [URL]</strong></a></strong>
+<dt><strong><a name="options_url" class="item"><strong>options [URL]</strong></a></strong></dt>
 
 <dd>
 <p>show the HTTP methods allowed for a URL</p>
-</dd>
-<dd>
 <pre>
    dave&gt; options index.html
    OPTIONS, GET, HEAD, POST, DELETE, TRACE, PROPFIND, 
    PROPPATCH, COPY, MOVE, LOCK, UNLOCK</pre>
-</dd>
-<dd>
 <p>Note that Microsoft's IIS does not support LOCK on 
 collections (directories). Nor does it support PROPPATCH.</p>
 </dd>
-</li>
-<dt><strong><a name="propfind_url" class="item"><strong>propfind [URL]</strong></a></strong>
+<dt><strong><a name="propfind_url" class="item"><strong>propfind [URL]</strong></a></strong></dt>
 
 <dd>
 <p>show the properties of a resource</p>
-</dd>
-<dd>
 <pre>
   dave&gt; propfind test
   URL: <a href="http://host.org/dav_dir/test/">http://host.org/dav_dir/test/</a>
@@ -537,177 +386,113 @@ collections (directories). Nor does it support PROPPATCH.</p>
   Size:  bytes
   Locks supported: write/exclusive write/shared
   Locks:</pre>
-</dd>
-<dd>
 <p>Using ls will get you the same printout if you ls 
 a file. But ls'ing a collection will show you the 
 collections contents.</p>
 </dd>
-</li>
-<dt><strong><a name="put_file_url" class="item"><strong>put FILE [URL]</strong></a></strong>
+<dt><strong><a name="put_file_url" class="item"><strong>put FILE [URL]</strong></a></strong></dt>
 
 <dd>
 <p>uploads a local file or directory to URL
 or the currently opened location.</p>
-</dd>
-<dd>
 <p>If URL is an existing collection then the dir/file will
 be copied INTO that collection.</p>
-</dd>
-<dd>
 <pre>
   dave&gt; open host.org/dav_dir/</pre>
-</dd>
-<dd>
 <p>Recursively put local my_dir/ to host.org/dav_dir/my_dir/:</p>
-</dd>
-<dd>
 <pre>
   dave&gt; put my_dir/</pre>
-</dd>
-<dd>
 <p>Put local index.html to host.org/dav_dir/index1.html:</p>
-</dd>
-<dd>
 <pre>
   dave&gt; put /tmp/index.html index1.html</pre>
-</dd>
-<dd>
 <p>Put * to remote directory</p>
-</dd>
-<dd>
 <pre>
   dave&gt; put *</pre>
-</dd>
-<dd>
 <p>Put index[12].htm? to remote directory /dav_dir (/dav_dir must exist)</p>
-</dd>
-<dd>
 <pre>
   dave&gt; put index[12].htm? /dav_dir</pre>
-</dd>
-<dd>
 <p>Put index[1234].htm? to remote directory /dav_dir (/dav_dir must exist)</p>
-</dd>
-<dd>
 <pre>
   dave&gt; put index[1-4].htm? /dav_dir</pre>
-</dd>
-<dd>
 <p>Glob types supported are, * (matches any characters), ? (matches any one character), [...] (matches any characters in the set ...).</p>
 </dd>
-</li>
-<dt><strong><a name="pwd" class="item"><strong>pwd</strong></a></strong>
+<dt><strong><a name="pwd" class="item"><strong>pwd</strong></a></strong></dt>
 
 <dd>
 <p>prints the currently opened URL (working directory)</p>
-</dd>
-<dd>
 <pre>
  dave&gt; open host.org/dav_dir/
  dave&gt; cd new_dir/
  dave&gt; pwd
  <a href="http://host.org/dav_dir/new_dir/">http://host.org/dav_dir/new_dir/</a></pre>
 </dd>
-</li>
-<dt><strong><a name="q" class="item"><strong>q</strong></a></strong>
+<dt><strong><a name="q" class="item"><strong>q</strong></a></strong></dt>
 
-<dt><strong><a name="bye" class="item"><strong>bye</strong></a></strong>
+<dt><strong><a name="bye" class="item"><strong>bye</strong></a></strong></dt>
 
-<dt><strong><a name="quit" class="item"><strong>quit</strong></a></strong>
+<dt><strong><a name="quit" class="item"><strong>quit</strong></a></strong></dt>
 
 <dd>
 <p>exits dave</p>
-</dd>
-<dd>
 <p>Note that dave does not unlock any locks created 
 during your session.</p>
-</dd>
-<dd>
 <p>Aliases: q, quit</p>
 </dd>
-</li>
-<dt><strong><a name="set_url_property_value_namespace" class="item"><strong>set URL PROPERTY VALUE [NAMESPACE]</strong></a></strong>
+<dt><strong><a name="set_url_property_value_namespace" class="item"><strong>set URL PROPERTY VALUE [NAMESPACE]</strong></a></strong></dt>
 
 <dd>
 <p>sets a custom property on a resource</p>
-</dd>
-<dd>
 <pre>
    dave&gt; set file.txt author &quot;Patrick Collins&quot;
    dave&gt; set file.txt author &quot;Patrick Collins&quot; &quot;mynamespace&quot;</pre>
-</dd>
-<dd>
 <p>The NAMESPACE by default is &quot;DAV:&quot;.</p>
 </dd>
-</li>
-<dt><strong><a name="_" class="item"><strong>!</strong></a></strong>
+<dt><strong><a name="_" class="item"><strong>!</strong></a></strong></dt>
 
-<dt><strong><a name="sh" class="item"><strong>sh</strong></a></strong>
+<dt><strong><a name="sh" class="item"><strong>sh</strong></a></strong></dt>
 
 <dd>
 <p>executes a local command (alias !)</p>
-</dd>
-<dd>
 <pre>
    dave&gt; sh cat localfile
    dave&gt; !gzip localfile.gz
    dave&gt; ! &quot;cat localfile | less&quot;</pre>
-</dd>
-<dd>
 <p>Aliases: !</p>
 </dd>
-</li>
-<dt><strong><a name="showlocks" class="item"><strong>showlocks</strong></a></strong>
+<dt><strong><a name="showlocks" class="item"><strong>showlocks</strong></a></strong></dt>
 
 <dd>
 <p>show my locks on a resource</p>
-</dd>
-<dd>
 <p>Shows any locked resources that you've locked in this 
 session.</p>
-</dd>
-<dd>
 <p>See <code>propfind</code> if you'd like to see anyone's locks held 
 against a particular resource.</p>
 </dd>
-</li>
-<dt><strong><a name="steal_url" class="item"><strong>steal [URL]</strong></a></strong>
+<dt><strong><a name="steal_url" class="item"><strong>steal [URL]</strong></a></strong></dt>
 
 <dd>
 <p>remove ANY locks on a resource</p>
-</dd>
-<dd>
 <p>Useful if you accidentally forgot to unlock a resource 
 from a previous session or if you think that somebody 
 has forgotten to unlock a resource.</p>
 </dd>
-</li>
-<dt><strong><a name="unlock_url" class="item"><strong>unlock [URL]</strong></a></strong>
+<dt><strong><a name="unlock_url" class="item"><strong>unlock [URL]</strong></a></strong></dt>
 
 <dd>
 <p>unlocks a resource</p>
-</dd>
-<dd>
 <p>Note that unlock will only unlock locks that you have 
 created. Use steal if you want to forcefully unlock 
 somebody else's lock.</p>
 </dd>
-</li>
-<dt><strong><a name="unset_url_property_namespace" class="item"><strong>unset URL PROPERTY [NAMESPACE]</strong></a></strong>
+<dt><strong><a name="unset_url_property_namespace" class="item"><strong>unset URL PROPERTY [NAMESPACE]</strong></a></strong></dt>
 
 <dd>
 <p>unsets a property from a resource</p>
-</dd>
-<dd>
 <pre>
    dave&gt; unset file.txt author
    dave&gt; unset file.txt author &quot;mynamespace&quot;</pre>
-</dd>
-<dd>
 <p>The NAMESPACE by default is &quot;DAV:&quot;.</p>
 </dd>
-</li>
 </dl>
 <p>
 </p>
