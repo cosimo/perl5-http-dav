@@ -53,8 +53,14 @@ GetOptions(
    'man|?'          => \$opt_man, 
    'debug:i'        => \$debug, 
    'u|username=s'   => \$user,
-   'p|password=s'   => \$pass
+   'p|password=s'   => \$pass,
+   'tmpdir:s'       => \$TMP_DIR,
 ) or pod2usage(2);
+
+# Basic sanity check for /tmp dir
+if (! -d $TMP_DIR or ! -w $TMP_DIR) {
+    die "Can't write into temp dir '$TMP_DIR': $!\n";
+}
 
 ## Setup the Terminal
 my $prompt = "dave> ";
@@ -695,33 +701,35 @@ If you would like to script webdav interactions in Perl checkout the HTTP::DAV A
 
 =over 4
 
-=item -debug N
+=item C<-debug N>
 
 Sets the debug level to N. 0=none. 3=noisy.
 
-=item -h
+=item C<-h>
 
 Prints basic help and options.
 
-=item -man
+=item C<-man>
 
 Prints the full manual (equivalent to perldoc dave).
 
-You will need to use a pager like "more" or "less".
+You will need to use a pager like C<more> or C<less>. e.g.
 
- e.g. dave -man |less
+    dave -man |less
 
-=item -p <password>
+=item C<< -p <password> >>
 
 Sets the password to be used for the URL.
+You must also supply a user. See C<-u>.
 
-You must also supply a user. See -u.
-
-=item -u <username>
+=item C<< -u <username> >>
 
 Sets the username to be used for the URL.
+You must also supply a pass. See C<-p>.
 
-You must also supply a pass. See -p.
+=item C<-tmpdir /some/path>
+
+Create temporary files in C</some/path> instead of the default C</tmp>.
 
 =back
 
