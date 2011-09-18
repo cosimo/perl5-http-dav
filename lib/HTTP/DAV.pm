@@ -25,6 +25,7 @@ use URI::file;
 use URI::Escape;
 use FileHandle;
 use File::Glob;
+use File::Temp ();
 
 sub new {
     my $class = shift;
@@ -69,6 +70,26 @@ sub DebugLevel {
     $level = 256 if !defined $level || $level eq "";
 
     $DEBUG = $level;
+}
+
+sub _tempfile {
+    my ($prefix, $tempdir) = @_;
+
+    $prefix ||= 'dav';
+    $tempdir ||= '/tmp';
+
+    my $template = $prefix . 'XXXXXXXXXXXXX';
+
+    my $old_umask = umask 0077;
+    my ($fh, $filename) = File::Temp::tempfile($template,
+        DIR => $tempdir,
+        SUFFIX => '.tmp'
+    );
+    umask $old_umask;
+
+    return wantarray
+        ? ($fh, $filename)
+        : $filename;
 }
 
 ######################################################################

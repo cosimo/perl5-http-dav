@@ -55,10 +55,10 @@ GetOptions(
    'u|username=s'   => \$user,
    'p|password=s'   => \$pass,
    'tmpdir:s'       => \$TMP_DIR,
-) or pod2usage(2);
+) or Pod::Usage::pod2usage(2);
 
 # Basic sanity check for /tmp dir
-if (! -d $TMP_DIR or ! -w $TMP_DIR) {
+if (! $TMP_DIR or ! -d $TMP_DIR or ! -w $TMP_DIR) {
     die "Can't write into temp dir '$TMP_DIR': $!\n";
 }
 
@@ -238,9 +238,9 @@ sub command_cat {
 
 sub command_edit { 
    my $remote_file = shift;
-   $TMP_DIR||="/tmp";
-   my $EDITOR= $ENV{DAV_EDITOR} || $ENV{EDITOR} || "vi";
-   my $local_file = "$TMP_DIR/dave.perldav." . $$ . time;
+
+   my $EDITOR= $ENV{DAV_EDITOR} || $ENV{EDITOR} || 'vi';
+   my $local_file = HTTP::DAV::_tempfile('dave', $TMP_DIR);
 
    my $resource = $gdc->propfind($remote_file);
    if ( $resource && $resource->is_collection() ) {

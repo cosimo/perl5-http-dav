@@ -15,6 +15,7 @@ WriteMakefile(
     'EXE_FILES' => [ map {"bin/$_"} @programs_to_install ],
     'PREREQ_PM' => { 
         'Cwd'          => 0,
+        'File::Temp'   => 0,
         'LWP'          => 5.48,
         'Scalar::Util' => 0,
         'Time::Local'  => 0,
@@ -23,7 +24,6 @@ WriteMakefile(
         'XML::DOM'     => 0,
 
         # bin/dave specific dependencies
-        'File::Temp'       => 0,
         'Getopt::Long'     => 0,
         'Term::ReadLine'   => 0,
         'Text::ParseWords' => 0,

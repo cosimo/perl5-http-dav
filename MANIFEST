@@ -1,13 +1,6 @@
 bin/dave
 bin/dist
 Changes
-lib/HTTP/DAV.pm
-lib/HTTP/DAV/Comms.pm
-lib/HTTP/DAV/Lock.pm
-lib/HTTP/DAV/Resource.pm
-lib/HTTP/DAV/ResourceList.pm
-lib/HTTP/DAV/Response.pm
-lib/HTTP/DAV/Utils.pm
 doc/Changes.pod
 doc/html/Changes.html
 doc/html/dave.html
@@ -16,8 +9,17 @@ doc/html/index.html
 doc/html/TODO.html
 doc/README.pod
 doc/TODO.pod
+lib/HTTP/DAV.pm
+lib/HTTP/DAV/Changes.pod
+lib/HTTP/DAV/Comms.pm
+lib/HTTP/DAV/Lock.pm
+lib/HTTP/DAV/Resource.pm
+lib/HTTP/DAV/ResourceList.pm
+lib/HTTP/DAV/Response.pm
+lib/HTTP/DAV/Utils.pm
 Makefile.PL
 MANIFEST
+MANIFEST.SKIP
 META.yml			Module meta-data (added by MakeMaker)
 README
 t/1_loadme.t
@@ -42,6 +44,7 @@ t/9_RT_52665.t
 t/9_RT_59674.t
 t/9_RT_60457.t
 t/9_RT_68936.t
+t/9_RT_69439.t
 t/multistatus.xml
 t/test_data/file1
 t/test_data/file2
