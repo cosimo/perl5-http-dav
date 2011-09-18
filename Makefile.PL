@@ -1,14 +1,12 @@
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
-# $Id$
-
 
 my @programs_to_install = qw(dave);
 
 WriteMakefile(
     'NAME'	=> 'HTTP::DAV',
-    'VERSION_FROM' => 'DAV.pm', # finds $VERSION
+    'VERSION_FROM' => 'lib/HTTP/DAV.pm',
     'dist'          => { COMPRESS => 'gzip -9f --best',
                          SUFFIX => '.gz',
 #                         PREOP => 'bin/dist'
