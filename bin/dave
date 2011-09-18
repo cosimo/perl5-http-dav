@@ -1,5 +1,26 @@
 #!/usr/bin/env perl
-# $Id$
+
+=pod
+
+=head1 NAME
+
+dave - DAV Explorer
+
+=head1 SYNOPSIS
+
+    dave [OPTIONS] URL
+
+E.g. 
+
+   $ dave -u pcollins -p mypass www.host.org/dav_dir/
+   ...
+   dave> get file.txt
+
+Use C<dave -h> to get help on options.
+
+Use C<perldoc dave> for the whole manpage.
+
+=cut
 
 use strict;
 use vars '$AUTOLOAD';
@@ -14,7 +35,7 @@ use Text::ParseWords;
 use Time::Local;
 use URI::file;
 
-my $VERSION    = sprintf("%d.%02d", q$Revision: 1.23 $ =~ /(\d+)\.(\d+)/);
+my $VERSION    = "2.00";
 my $TMP_DIR    = "/tmp";
 my $LOCK_OWNER = "dave/v$VERSION (pid $$)";
 my $USER_AGENT = "dave/v$VERSION (perldav)";
@@ -28,13 +49,12 @@ my $user='';
 my $pass='';
 my $debug=0;
 GetOptions(
-   'help|?'=>\$opt_h, 
-   'man|?' =>\$opt_man, 
-   'debug:i' =>\$debug, 
-   'u=s'   =>\$user,
-   'p=s'   =>\$pass
-  ) or pod2usage(2);
-
+   'help|?'         => \$opt_h, 
+   'man|?'          => \$opt_man, 
+   'debug:i'        => \$debug, 
+   'u|username=s'   => \$user,
+   'p|password=s'   => \$pass
+) or pod2usage(2);
 
 ## Setup the Terminal
 my $prompt = "dave> ";
@@ -641,24 +661,6 @@ BEGIN {
 # PERLDOC
 __END__
 
-=head1 NAME
-
-dave -- DAV Explorer
-
-=head1 SYNOPSIS
-
-dave [OPTIONS] URL
-
-E.g. 
-
-   $ dave -u pcollins -p mypass www.host.org/dav_dir/
-   ...
-   dave> get file.txt
-
-Use "dave -h" to get help on options
-
-Use "perldoc dave" for the whole manpage.
-
 =head1 DESCRIPTION
 
 dave is a powerful command-line program for interacting with WebDAV-enabled webservers. With dave you can:
@@ -1165,5 +1167,9 @@ This module is Copyright (C) 2001 by
 All rights reserved.
 
 You may distribute this module under the terms of either the GNU General Public License or the Artistic License, as specified in the Perl README file.
+
+=head1 MAINTAINER
+
+Cosimo Streppone, E<lt>cosimo@cpan.orgE<gt>
 
 =cut
