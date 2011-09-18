@@ -1,9 +1,19 @@
-#
 # Perl WebDAV client library
-#
 
 package HTTP::DAV;
 
+use strict;
+use vars qw($VERSION $VERSION_DATE $DEBUG);
+
+# Globals
+$VERSION = '0.45';
+$VERSION_DATE = '2011/09/18';
+
+# Set this up to 3
+$DEBUG = 0;
+
+#use Carp (cluck);
+use Cwd ();  # Can't import all of it, cwd clashes with our namespace.
 use LWP;
 use XML::DOM;
 use Time::Local;
@@ -15,19 +25,6 @@ use URI::file;
 use URI::Escape;
 use FileHandle;
 use File::Glob;
-
-#use Carp (cluck);
-use Cwd ();  # Can't import all of it, cwd clashes with our namespace.
-
-# Globals
-$VERSION = '0.44';
-$VERSION_DATE = '2011/06/19';
-
-# Set this up to 3
-$DEBUG = 0;
-
-use strict;
-use vars qw($VERSION $VERSION_DATE $DEBUG);
 
 sub new {
     my $class = shift;

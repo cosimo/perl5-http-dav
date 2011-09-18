@@ -1,5 +1,9 @@
-# $Id$
 package HTTP::DAV::Resource;
+
+use strict;
+use vars qw($VERSION); 
+
+$VERSION = '0.30';
 
 use HTTP::DAV;
 use HTTP::DAV::Utils;
@@ -8,11 +12,6 @@ use HTTP::Date qw(str2time);
 use HTTP::DAV::ResourceList;
 use Scalar::Util ();
 use URI::Escape;
-
-$VERSION = sprintf("%d.%02d", q$Revision: 0.29 $ =~ /(\d+)\.(\d+)/);
-
-use strict;
-use vars  qw($VERSION); 
 
 ###########################################################################
 

@@ -1,10 +1,9 @@
-# $Id$
 package HTTP::DAV::Utils;
 
-$VERSION = sprintf("%d.%02d", q$Revision: 0.10 $ =~ /(\d+)\.(\d+)/);
-
 use strict;
-use vars  qw($VERSION);
+use vars qw($VERSION);
+
+$VERSION = '0.11';
 
 ###########################################################################
 # Borrowed from Lincoln Stein's CGI.pm

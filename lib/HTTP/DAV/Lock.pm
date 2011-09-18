@@ -1,12 +1,10 @@
-# $Id$
 package HTTP::DAV::Lock;
 
+use strict;
+use vars qw($VERSION);
 use HTTP::DAV::Utils;
 
-$VERSION = sprintf("%d.%02d", q$Revision: 0.8 $ =~ /(\d+)\.(\d+)/);
-
-use strict;
-use vars  qw($VERSION);
+$VERSION = '0.09';
 
 ###########################################################################
 

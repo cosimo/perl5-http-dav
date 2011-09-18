@@ -1,16 +1,14 @@
-# $Id$
-
 package HTTP::DAV::Comms;
+
+use strict;
+use vars qw($VERSION $DEBUG);
+
+$VERSION = q(0.23);
 
 use HTTP::DAV::Utils;
 use HTTP::DAV::Response;
 use LWP;
 use URI;
-
-$VERSION = q(0.22);
-
-use strict;
-use vars qw($VERSION $DEBUG);
 
 ####
 # Construct a new object and initialize it
@@ -257,10 +255,10 @@ sub do_http_request {
 
     # }}}
 
-    if ( $HTTP::DAV::DEBUG > 1 ) {
+    if ($HTTP::DAV::DEBUG > 1) {
         no warnings;
-
         #open(DEBUG, ">&STDOUT") || die ("Can't open STDERR");;
+        my $old_umask = umask 0077;
         open( DEBUG, ">>/tmp/perldav_debug.txt" );
         print DEBUG "\n" . "-" x 70 . "\n";
         print DEBUG localtime() . "\n";
@@ -268,23 +266,21 @@ sub do_http_request {
 
         if ( $resp->headers->header('Content-Type') =~ /xml/ ) {
             my $body = $resp->as_string();
-
             #$body =~ s/>\n*/>\n/g;
             print DEBUG "$method XML RESPONSE>>$body\n";
-
-     #} elsif ( $resp->headers->header('Content-Type') =~ /text.html/ ) {
-     #require HTML::TreeBuilder;
-     #require HTML::FormatText;
-     #my $tree = HTML::TreeBuilder->new->parse($resp->content());
-     #my $formatter = HTML::FormatText->new(leftmargin => 0);
-     #print DEBUG "$method RESPONSE (HTML)>>\n" . $resp->headers->as_string();
-     #print DEBUG $formatter->format($tree);
+        #} elsif ( $resp->headers->header('Content-Type') =~ /text.html/ ) {
+        #require HTML::TreeBuilder;
+        #require HTML::FormatText;
+        #my $tree = HTML::TreeBuilder->new->parse($resp->content());
+        #my $formatter = HTML::FormatText->new(leftmargin => 0);
+        #print DEBUG "$method RESPONSE (HTML)>>\n" . $resp->headers->as_string();
+        #print DEBUG $formatter->format($tree);
         }
         else {
-
             print DEBUG "$method RESPONSE>>\n" . $resp->as_string();
         }
         close DEBUG;
+        umask $old_umask;
     }
 
     ####

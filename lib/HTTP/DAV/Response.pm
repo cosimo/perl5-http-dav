@@ -1,14 +1,12 @@
-# $Id$
 package HTTP::DAV::Response;
 
-$VERSION = sprintf("%d.%02d", q$Revision: 0.13 $ =~ /(\d+)\.(\d+)/);
-
 use strict;
-use vars qw(@ISA);
-use vars qw($VERSION);
+use vars qw(@ISA $VERSION);
+
+$VERSION = '0.14';
 
 require HTTP::Response;
-@ISA = qw( HTTP::Response );
+@ISA = qw(HTTP::Response);
 
 my %dav_status_codes = (
    102 => "Processing. Server has accepted the request, but has not yet completed it",
