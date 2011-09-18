@@ -1,16 +1,33 @@
 =for html
 <div id="content">
-<H1>
-Revision history for PerlDAV
-</H1>
+<h1>
+Revision history for HTTP::DAV
+</h1>
 </div>
 <div id="content">
 
 =begin text
 
-Revision history for PerlDAV
+Revision history for HTTP::DAV
 
 =end text
+
+=head2 v0.45 (released 2011/09/18):
+
+=over 4
+
+=item * B<bug fixes>
+
+  - Fixed RT #69439 (http://rt.cpan.org/Public/Bug/Display.html?id=69439),
+    insecure /tmp files handling in dave client.
+
+=item * B<improvements>
+
+  - Added -tmpdir option to dave client.
+  - Reorganized distribution layout to match usual CPAN practice
+  - Removed remains of svn-era ($Id and such...)
+
+=back
 
 =head2 v0.44 (released 2011/06/19):
 
@@ -107,9 +124,7 @@ Revision history for PerlDAV
 
 =over 4
 
-=item *
-
-B<bug fixes>
+=item * B<bug fixes>
 
   - Fixed RT #44409 (http://rt.cpan.org/Public/Bug/Display.html?id=44409),
     Small bug in HTTP::DAV::put(). Passing a reference as local content resulted
@@ -121,9 +136,7 @@ B<bug fixes>
 
 =over 4
 
-=item *
-
-B<bug fixes>
+=item * B<bug fixes>
 
   - Fixed RT #19616 (http://rt.cpan.org/Public/Bug/Display.html?id=19616),
     LWP::UserAgent::redirect_ok() is not changed anymore. We're subclassing
@@ -145,9 +158,7 @@ B<bug fixes>
 
 =over 4
 
-=item *
-
-B<bug fixes>
+=item * B<bug fixes>
 
   - Fixed RT #40318 (http://rt.cpan.org/Public/Bug/Display.html?id=40318),
     about getting single or multiple files directly to \*STDOUT.
@@ -158,9 +169,7 @@ B<bug fixes>
 
 =over 4
 
-=item *
-
-B<bug fixes>
+=item * B<bug fixes>
 
   - Fixed RT #39150 (http://rt.cpan.org/Public/Bug/Display.html?id=39150),
     about downloading multiple files in the same directory.
@@ -171,9 +180,7 @@ B<bug fixes>
 
 =over 4
 
-=item *
-
-B<documentation>
+=item * B<documentation>
 
   - Clearly state that opera software asa is now co-maintainer of http::dav
 
@@ -185,15 +192,11 @@ B<documentation>
 
 =over 4
 
-=item *
-
-B<incompatibilities>
+=item * B<incompatibilities>
 
  - Now HTTP::DAV requires Perl 5.6.0+ and Scalar::Util (core in 5.8.x).
 
-=item *
-
-B<bug fixes>
+=item * B<bug fixes>
 
  - Now HTTP::DAV objects are correctly released from memory when
    they go out of scope. Now it should be possible to use multiple instances
@@ -207,15 +210,11 @@ B<bug fixes>
 
 =over 4
 
-=item *
-
-B<Apache 2 mod_dav support>
+=item * B<Apache 2 mod_dav support>
 
  - Now works with mod_dav under Apache 2.
 
-=item *
-
-B<bug fixes>
+=item * B<bug fixes>
 
  - Fixed bug to correctly handle the put/get of filenames with spaces in them.
 
