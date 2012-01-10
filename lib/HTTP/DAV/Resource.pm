@@ -271,7 +271,7 @@ sub lock {
    # Handle the lock response
 
    # Normal spec scenario
-   if ( $resp->content_type =~ m#text/xml# ) {
+   if ( $resp->content_type =~ m#(application|text)/xml# ) {
 
       # use XML::DOM to parse the result.
       my $parser = new XML::DOM::Parser;
@@ -463,7 +463,7 @@ sub propfind {
       );
 
 
-   if ( $resp->content_type !~ m#text/xml# ) {
+   if ( $resp->content_type !~ m#(application|text)/xml# ) {
       $resp->add_status_line("HTTP/1.1 422 Unprocessable Entity, no XML body.",
                              "", $self->{_uri}, $self->{_uri});
    } else {
@@ -573,8 +573,8 @@ sub mkcol {
        );
 
    # Handle a multistatus response
-   if ( $resp->content_type =~ m#text/xml# && # XML body
-        $resp->is_multistatus()               # Multistatus
+   if ( $resp->content_type =~ m#(application|text)/xml# && # XML body
+        $resp->is_multistatus()                             # Multistatus
       ) {
       # use XML::DOM to parse the result.
       my $parser = new XML::DOM::Parser;
@@ -856,8 +856,8 @@ sub delete {
       );
 
    # Handle a multistatus response
-   if ( $resp->content_type =~ m#text/xml# && # XML body
-        $resp->is_multistatus()               # Multistatus
+   if ( $resp->content_type =~ m#(application|text)/xml# && # XML body
+        $resp->is_multistatus()                             # Multistatus
       ) {
       # use XML::DOM to parse the result.
       my $parser = new XML::DOM::Parser;
