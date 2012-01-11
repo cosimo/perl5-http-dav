@@ -1,7 +1,6 @@
 bin/dave
 bin/dist
 Changes
-doc/Changes.pod
 doc/html/Changes.html
 doc/html/dave.html
 doc/html/HTTP-DAV.html
