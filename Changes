@@ -1,4 +1,24 @@
-Revision history for PerlDAV
+Revision history for HTTP::DAV
+  v0.46 (released 2012/01/11):
+    *   improvements
+
+        HTTP::DAV should now be working with more WebDAV servers.
+
+        We are more flexible in what content types we consider to be XML.
+        Thanks Ron1 and Adam for the feedback and patches.
+
+  v0.45 (released 2011/09/18):
+    *   bug fixes
+
+          - Fixed RT #69439 (http://rt.cpan.org/Public/Bug/Display.html?id=69439),
+            insecure /tmp files handling in dave client.
+
+    *   improvements
+
+          - Added -tmpdir option to dave client.
+          - Reorganized distribution layout to match usual CPAN practice
+          - Removed remains of svn-era ($Id and such...)
+
   v0.44 (released 2011/06/19):
     *   bug fixes
 
