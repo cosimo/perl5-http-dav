@@ -12,6 +12,17 @@ Revision history for HTTP::DAV
 
 =end text
 
+=head2 v0.47 (released 2012/03/24):
+
+=over 4
+
+=item * B<bug fixes>
+
+Improve C<propfind()> resilience when server response contains
+broken, truncated or no XML at all. RT#75011.
+
+=back
+
 =head2 v0.46 (released 2012/01/11):
 
 =over 4

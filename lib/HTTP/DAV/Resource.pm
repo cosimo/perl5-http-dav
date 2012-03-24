@@ -486,33 +486,52 @@ sub propfind {
         -content => $xml_request,
     );
 
+    # Reset the resource list, in case of intermediate errors,
+    # to keep object state consistent
+    $self->{_resource_list} = undef;
+
     if (! $self->content_type_is_xml($resp)) {
         $resp->add_status_line(
             "HTTP/1.1 422 Unprocessable Entity, no XML body.",
             "", $self->{_uri}, $self->{_uri}
         );
+        return $resp;
     }
-    else {
 
-        # use XML::DOM to parse the result.
-        my $parser = new XML::DOM::Parser;
-        my $doc    = $parser->parse($resp->content);
+    # use XML::DOM to parse the result.
+    my $parser = XML::DOM::Parser->new();
+    my $xml_resp = $resp->content;
+    my $doc;
 
-        # Setup a ResourceList in which to pump all of the collection
-        my $resource_list;
-        eval { $resource_list = $self->_XML_parse_multistatus($doc, $resp) };
-
-        warn "XML error: " . $@ if $@;
-
-        if ($resource_list && $resource_list->count_resources()) {
-            $self->{_resource_list} = $resource_list;
-        }
-        else {
-            $self->{_resource_list} = undef;
-        }
-
-        $doc->dispose;
+    if (! $xml_resp) {
+        $resp->add_status_line(
+            "HTTP/1.1 422 Unprocessable Entity, no XML body.",
+            "", $self->{_uri}, $self->{_uri}
+        );
+        return $resp;
     }
+
+    eval {
+        $doc = $parser->parse($xml_resp);
+    } or do {
+        warn "Unparsable XML received from server (" . length($xml_resp) . " bytes)\n";
+        warn "ERROR: $@\n";
+        return $resp;
+    };
+
+    # Setup a ResourceList in which to pump all of the collection
+    my $resource_list;
+    eval {
+        $resource_list = $self->_XML_parse_multistatus($doc, $resp)
+    } or do {
+        warn "Error parsing PROPFIND response XML: $@\n";
+    };
+
+    if ($resource_list && $resource_list->count_resources()) {
+        $self->{_resource_list} = $resource_list;
+    }
+
+    $doc->dispose;
 
     return $resp;
 }
