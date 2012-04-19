@@ -156,8 +156,10 @@ sub get_locktokens {
          # e.g. u=/a  r=/a/b/c.txt
          my $r = $resource_uri->canonical();
          my $u = $url->canonical();
-         $r =~ s/\/*$/\//g; # Add a trailing slash
-         $u =~ s/\/*$/\//g; # Add a tailing slash
+
+         # Add a trailing slash
+         s{/*$}{/} for $r, $u;
+
          if ($u =~ /\Q$r/ ) {
 
             my @locks = $resource->get_locks(-owned=>$owned);
