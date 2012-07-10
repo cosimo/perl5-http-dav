@@ -575,7 +575,7 @@ sub put {
     my $headers = HTTP::DAV::Headers->new();
 
     $self->_setup_if_headers($headers);
-    $self->_setup_custom_headers($custom_headers);
+    $self->_setup_custom_headers($headers, $custom_headers);
 
     if (!defined $content) {
         $content = $self->get_content();

@@ -1007,27 +1007,47 @@ sub _put {
     else {
         my $content = "";
         my $fail    = 0;
+        my $length  = 0;
+        
         if ($content_ptr) {
             $content = $$local;
+            $length = length($content);
         }
         else {
-            if ( !CORE::open( F, $local ) ) {
+            $length = -s $local if -e $local;
+            my $fh;
+            unless (CORE::open($fh, "<", $local)) {
                 $self->err( 'ERR_GENERIC',
                     "Couldn't open local file $local: $!" );
                 $fail = 1;
             }
             else {
-                binmode F;
-                while (<F>) { $content .= $_; }
-                close F;
+                binmode($fh);
             }
+            # Setting the content to a simple subroutine will 
+            # let it upload the file one piece at a time
+            $content = sub {
+                my $buffer;
+                my $num_bytes = read($fh, $buffer, 2048);
+                if ($num_bytes) {
+                    return $buffer;
+                }
+                else {
+                    close($fh);
+                }
+            };
+            # Since we set the content to be a subroutine, 
+            # we need to set the content length here since the 
+            # downstream code will no longer have access to the file name
+            $custom_headers = {} unless $custom_headers;
+            $custom_headers->{'Content-Length'} = $length;
         }
 
         if ( !$fail ) {
             my $resource = $self->new_resource( -uri => $target );
             my $response = $resource->put($content,$custom_headers);
             if ( $response->is_success ) {
-                $self->ok( "put $target (" . length($content) . " bytes)",
+                $self->ok( "put $target (" . $length . " bytes)",
                     $target );
             }
             else {
