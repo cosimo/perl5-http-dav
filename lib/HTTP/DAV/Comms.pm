@@ -404,7 +404,7 @@ sub credentials {
         my $userpass;
         {
             no warnings;    # SHUTUP with your silly warnings.
-            $userpass 
+            $userpass
                 = $self->{'basic_authentication'}{$netloc}{$realm}
                 || $self->{'basic_authentication'}{default}{$realm}
                 || $self->{'basic_authentication'}{$netloc}{default}

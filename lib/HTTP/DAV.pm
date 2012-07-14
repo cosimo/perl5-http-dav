@@ -1008,7 +1008,7 @@ sub _put {
         my $content = "";
         my $fail    = 0;
         my $length  = 0;
-        
+
         if ($content_ptr) {
             $content = $$local;
             $length = length($content);
@@ -1024,7 +1024,7 @@ sub _put {
             else {
                 binmode($fh);
             }
-            # Setting the content to a simple subroutine will 
+            # Setting the content to a simple subroutine will
             # let it upload the file one piece at a time
             $content = sub {
                 my $buffer;
@@ -1036,8 +1036,8 @@ sub _put {
                     close($fh);
                 }
             };
-            # Since we set the content to be a subroutine, 
-            # we need to set the content length here since the 
+            # Since we set the content to be a subroutine,
+            # we need to set the content length here since the
             # downstream code will no longer have access to the file name
             $custom_headers = {} unless $custom_headers;
             $custom_headers->{'Content-Length'} = $length;
@@ -1196,40 +1196,40 @@ HTTP::DAV - A WebDAV client library for Perl5
 
 =head1 SYNOPSIS
 
-   # DAV script that connects to a webserver, safely makes 
-   # a new directory and uploads all html files in 
+   # DAV script that connects to a webserver, safely makes
+   # a new directory and uploads all html files in
    # the /tmp directory.
 
    use HTTP::DAV;
-  
+
    $d = HTTP::DAV->new();
    $url = "http://host.org:8080/dav/";
- 
+
    $d->credentials(
       -user  => "pcollins",
-      -pass  => "mypass", 
+      -pass  => "mypass",
       -url   => $url,
       -realm => "DAV Realm"
    );
- 
+
    $d->open( -url => $url )
       or die("Couldn't open $url: " .$d->message . "\n");
- 
+
    # Make a null lock on newdir
-   $d->lock( -url => "$url/newdir", -timeout => "10m" ) 
+   $d->lock( -url => "$url/newdir", -timeout => "10m" )
       or die "Won't put unless I can lock for 10 minutes\n";
 
    # Make a new directory
    $d->mkcol( -url => "$url/newdir" )
       or die "Couldn't make newdir at $url\n";
-  
+
    # Upload multiple files to newdir.
    if ( $d->put( -local => "/tmp/*.html", -url => $url ) ) {
       print "successfully uploaded multiple files to $url\n";
    } else {
       print "put failed: " . $d->message . "\n";
    }
-  
+
    $d->unlock( -url => $url );
 
 =head1 DESCRIPTION
@@ -1288,7 +1288,7 @@ The methods provided in C<HTTP::DAV> should do most of what you want. If, howeve
 
 You can pass parameters to C<HTTP::DAV> methods in one of two ways: named or unnamed.
 
-Named parameters provides for a simpler/easier to use interface. A named interface affords more readability and allows the developer to ignore a specific order on the parameters. (named parameters are also case insensitive) 
+Named parameters provides for a simpler/easier to use interface. A named interface affords more readability and allows the developer to ignore a specific order on the parameters. (named parameters are also case insensitive)
 
 Each argument name is preceded by a dash.  Neither case nor order matters in the argument list.  -url, -Url, and -URL are all acceptable.  In fact, only the first argument needs to begin with a dash.  If a dash is present in the first argument, C<HTTP::DAV> assumes dashes for the subsequent ones.
 
@@ -1312,7 +1312,7 @@ In all of the methods specified in L<PUBLIC METHODS> there are some common conce
 
 =over 4
 
-=item * URLs represent an absolute or relative URI. 
+=item * URLs represent an absolute or relative URI.
 
   -url=>"host.org/dav_dir/"  # Absolute
   -url=>"/dav_dir/"          # Relative
@@ -1362,11 +1362,11 @@ Your callback function MUST accept arguments as follows:
 
 The C<status> argument specifies whether the operation has succeeded (1), failed (0), or is in progress (-1).
 
-The C<mesg> argument is a status message. The status message could contain any string and often contains useful error messages or success messages. 
+The C<mesg> argument is a status message. The status message could contain any string and often contains useful error messages or success messages.
 
 The C<url> the remote URL.
 
-The C<so_far>, C<length> - these parameters indicate how many bytes have been downloaded and how many we should expect. This is useful for doing "56% to go" style-gauges. 
+The C<so_far>, C<length> - these parameters indicate how many bytes have been downloaded and how many we should expect. This is useful for doing "56% to go" style-gauges.
 
 The C<data> parameter - is the actual data transferred. The C<cat> command uses this to print the data to the screen. This value will be empty for C<put>.
 
@@ -1418,7 +1418,7 @@ Example:
 
 sets the debug level to C<$val>. 0=off 3=noisy.
 
-C<$val> default is 0. 
+C<$val> default is 0.
 
 returns no value.
 
@@ -1430,27 +1430,27 @@ When the value is greater than 1, the C<HTTP::DAV::Comms> module will log all of
 
 For all of the following operations, URL can be absolute (http://host.org/dav/) or relative (../dir2/). The only operation that requires an absolute URL is open.
 
-=over 4 
+=over 4
 
 =item B<copy(URL,DEST,[OVERWRITE],[DEPTH])>
 
 copies one remote resource to another
 
-=over 4 
+=over 4
 
-=item C<-url> 
+=item C<-url>
 
 is the remote resource you'd like to copy. Mandatory
 
-=item C<-dest> 
+=item C<-dest>
 
 is the remote target for the copy command. Mandatory
 
-=item C<-overwrite> 
+=item C<-overwrite>
 
 optionally indicates whether the server should fail if the target exists. Valid values are "T" and "F" (1 and 0 are synonymous). Default is T.
 
-=item C<-depth> 
+=item C<-depth>
 
 optionally indicates whether the server should do a recursive copy or not. Valid values are 0 and (1 or "infinity"). Default is "infinity" (1).
 
@@ -1485,7 +1485,7 @@ Create a copy of file.txt as dir2/new_file.txt
 
 =item B<cwd(URL)>
 
-changes the remote working directory. 
+changes the remote working directory.
 
 This is synonymous to open except that the URL can be relative and may contain a C<glob> (the first match in a glob will be used).
 
@@ -1493,7 +1493,7 @@ This is synonymous to open except that the URL can be relative and may contain a
   $d->cwd("../dir2");
   $d->cwd(-url=>"../dir1");
 
-The return value is always 1 or 0 indicating success or failure. 
+The return value is always 1 or 0 indicating success or failure.
 
 Requires a working resource to be set before being called. See C<open>.
 
@@ -1510,11 +1510,11 @@ deletes a remote resource.
 
 =item C<-url>
 
-is the remote resource(s) you'd like to delete. It can be a file, directory or C<glob>. 
+is the remote resource(s) you'd like to delete. It can be a file, directory or C<glob>.
 
 =item C<-callback>                                                                                                                                                                    is a reference to a callback function which will be called everytime a file is deleted. This is mainly useful when used in conjunction with L<GLOBS> deletes. See L<callbacks>
 
-The return value is always 1 or 0 indicating success or failure. 
+The return value is always 1 or 0 indicating success or failure.
 
 Requires a working resource to be set before being called. See C<open>.
 
@@ -1524,13 +1524,13 @@ This command will recursively delete directories. BE CAREFUL of uninitialised fi
 
 downloads the file or directory at C<URL> to the local location indicated by C<TO>.
 
-=over 4 
+=over 4
 
-=item C<-url> 
+=item C<-url>
 
 is the remote resource you'd like to get. It can be a file or directory or a "glob".
 
-=item C<-to> 
+=item C<-to>
 
 is where you'd like to put the remote resource. The -to parameter can be:
 
@@ -1610,7 +1610,7 @@ locks a resource. If URL is not specified, it will lock the current working reso
 
 See C<HTTP::DAV::Resource> lock() for details of the above parameters.
 
-The return value is always 1 or 0 indicating success or failure. 
+The return value is always 1 or 0 indicating success or failure.
 
 Requires a working resource to be set before being called. See C<open>.
 
@@ -1620,7 +1620,7 @@ When you lock a resource, the lock is held against the current HTTP::DAV object.
   my $rl_obj = $d->get_lockedresourcelist();
   foreach $resource ( $rl_obj->get_resources() ) {
       @locks = $resource->get_locks(-owned=>1);
-      foreach $lock ( @locks ) { 
+      foreach $lock ( @locks ) {
         print $resource->get_uri . "\n";
         print $lock->as_string . "\n";
       }
@@ -1641,7 +1641,7 @@ B<lock example>
 
 make a remote collection (directory)
 
-The return value is always 1 or 0 indicating success or failure. 
+The return value is always 1 or 0 indicating success or failure.
 
 Requires a working resource to be set before being called. See C<open>.
 
@@ -1654,17 +1654,17 @@ Requires a working resource to be set before being called. See C<open>.
 
 moves one remote resource to another
 
-=over 4 
+=over 4
 
-=item C<-url> 
+=item C<-url>
 
 is the remote resource you'd like to move. Mandatory
 
-=item C<-dest> 
+=item C<-dest>
 
 is the remote target for the move command. Mandatory
 
-=item C<-overwrite> 
+=item C<-overwrite>
 
 optionally indicates whether the server should fail if the target exists. Valid values are "T" and "F" (1 and 0 are synonymous). Default is T.
 
@@ -1701,7 +1701,7 @@ move file.txt to dir2/new_file.txt
 
 opens the directory (collection resource) at URL.
 
-open will perform a propfind against URL. If the server does not understand the request then the open will fail. 
+open will perform a propfind against URL. If the server does not understand the request then the open will fail.
 
 Similarly, if the server indicates that the resource at URL is NOT a collection, the open command will fail.
 
@@ -1746,7 +1746,7 @@ The Resource object can be used for interrogating properties or performing other
  ## Print collection or content length
  if ( $r=$d->propfind( -url=>"/my_dir", -depth=>1) ) {
     if ( $r->is_collection ) {
-       print "Collection\n" 
+       print "Collection\n"
        print $r->get_resourcelist->as_string . "\n"
     } else {
        print $r->get_property("getcontentlength") ."\n";
@@ -1757,9 +1757,9 @@ Please note that although you may set a different namespace for a property of a 
 
 =item B<proppatch([URL],[NAMESPACE],PROPNAME,PROPVALUE,ACTION,[NSABBR])>
 
-If C<-action> equals "set" then we set a property named C<-propname> to C<-propvalue> in the namespace C<-namespace> for C<-url>. 
+If C<-action> equals "set" then we set a property named C<-propname> to C<-propvalue> in the namespace C<-namespace> for C<-url>.
 
-If C<-action> equals "remove" then we unset a property named C<-propname> in the namespace C<-namespace> for C<-url>. 
+If C<-action> equals "remove" then we unset a property named C<-propname> in the namespace C<-namespace> for C<-url>.
 
 If no action is supplied then the default action is "set".
 
@@ -1771,7 +1771,7 @@ To explicitly set a namespace in which to set the propname then you can use the 
 
 Requires a working resource to be set before being called. See C<open>.
 
-It is recommended that you use C<set_prop> and C<unset_prop> instead of proppatch for readability. 
+It is recommended that you use C<set_prop> and C<unset_prop> instead of proppatch for readability.
 
 C<set_prop> simply calls C<proppatch(-action=>set)> and C<unset_prop> calls C<proppatch(-action=>"remove")>
 
@@ -1783,7 +1783,7 @@ uploads the files or directories at C<-local> to the remote destination at C<-ur
 
 C<-local> points to a file, directory or series of files or directories (indicated by a glob).
 
-If the filename contains any of the characters `*',  `?' or  `['  it is a candidate for filename substitution, also  known  as  ``globbing''.   This word  is  then regarded as a pattern (``glob-pattern''), and replaced with an alphabetically sorted list  of  file  names which match the pattern.  
+If the filename contains any of the characters `*',  `?' or  `['  it is a candidate for filename substitution, also  known  as  ``globbing''.   This word  is  then regarded as a pattern (``glob-pattern''), and replaced with an alphabetically sorted list  of  file  names which match the pattern.
 
 One can upload/put a string by passing a reference to a scalar in the -local parameter. See example below.
 
@@ -1808,16 +1808,16 @@ Put a local file to the server:
 
 Put a series of local files to the server:
 
-  In these examples, /tmp contains file1.html, file1, file2.html, 
+  In these examples, /tmp contains file1.html, file1, file2.html,
   file2.txt, file3.html, file2/
 
   $d->put(-local=>"/tmp/file[12]*",-url=>"http://www.host.org/dav_dir/");
-  
+
   uploads file1.html, file1, file2.html, file2.txt and the directory file2/ to dav_dir/.
 
 =item B<set_prop([URL],[NAMESPACE],PROPNAME,PROPVALUE)>
 
-Sets a property named C<-propname> to C<-propvalue> in the namespace C<-namespace> for C<-url>. 
+Sets a property named C<-propname> to C<-propvalue> in the namespace C<-namespace> for C<-url>.
 
 Requires a working resource to be set before being called. See C<open>.
 
@@ -1873,7 +1873,7 @@ The return value is always 1 or 0 indicating success or failure.
 
 =item B<unset_prop([URL],[NAMESPACE],PROPNAME)>
 
-Unsets a property named C<-propname> in the namespace C<-namespace> for C<-url>. 
+Unsets a property named C<-propname> in the namespace C<-namespace> for C<-url>.
 Requires a working resource to be set before being called. See C<open>.
 
 The return value is an C<HTTP::DAV::Resource> object on success or 0 on failure.
@@ -1897,19 +1897,19 @@ See the note in propfind about namespace support in HTTP::DAV. They're settable,
 
 =head2 ACCESSOR METHODS
 
-=over 4 
+=over 4
 
 =item B<get_user_agent>
 
-Returns the clients' working C<HTTP::DAV::UserAgent> object. 
+Returns the clients' working C<HTTP::DAV::UserAgent> object.
 
-You may want to interact with the C<HTTP::DAV::UserAgent> object 
-to modify request headers or provide advanced authentication 
+You may want to interact with the C<HTTP::DAV::UserAgent> object
+to modify request headers or provide advanced authentication
 procedures. See dave for an advanced authentication procedure.
 
 =item B<get_last_request>
 
-Takes no arguments and returns the clients' last outgoing C<HTTP::Request> object. 
+Takes no arguments and returns the clients' last outgoing C<HTTP::Request> object.
 
 You would only use this to inspect a request that has already occurred.
 
@@ -1921,7 +1921,7 @@ Returns the currently "opened" or "working" resource (C<HTTP::DAV::Resource>).
 
 The working resource is changed whenever you open a url or use the cwd command.
 
-e.g. 
+e.g.
   $r = $d->get_workingresource
   print "pwd: " . $r->get_uri . "\n";
 
@@ -1975,7 +1975,7 @@ See also C<errors> for operations which contain multiple error messages.
 
 Returns an @array of error messages that had been set during a multi-request operation.
 
-Some of C<HTTP::DAV>'s operations perform multiple request to the server. At the time of writing only put and get are considered multi-request since they can operate recursively requiring many HTTP requests. 
+Some of C<HTTP::DAV>'s operations perform multiple request to the server. At the time of writing only put and get are considered multi-request since they can operate recursively requiring many HTTP requests.
 
 In these situations you should check the errors array if to determine if any of the requests failed.
 
@@ -2003,7 +2003,7 @@ You may want to use the is_success method if you didn't capture the return value
 
 =item B<get_last_response>
 
-Takes no arguments and returns the last seen C<HTTP::DAV::Response> object. 
+Takes no arguments and returns the last seen C<HTTP::DAV::Response> object.
 
 You may want to use this if you have just called a propfind and need the individual error messages returned in a MultiStatus.
 
@@ -2035,7 +2035,7 @@ For example:
 
 Creates a new resource object with which to play.
 This is the preferred way of creating an C<HTTP::DAV::Resource> object if required.
-Why? Because each Resource object needs to sit within a global HTTP::DAV client. 
+Why? Because each Resource object needs to sit within a global HTTP::DAV client.
 Also, because the new_resource routine checks the C<HTTP::DAV> locked resource
 list before creating a new object.
 

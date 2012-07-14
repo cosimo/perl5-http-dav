@@ -1576,12 +1576,12 @@ Description here
 
 Returns a new resource represented by the URI.
 
-$r = HTTP::DAV::Resource->new( 
-        -uri => $uri, 
-        -LockedResourceList => $locks, 
-        -Comms => $comms 
-        -Client => $dav_client 
-     );
+    $r = HTTP::DAV::Resource->new(
+        -uri => $uri,
+        -LockedResourceList => $locks,
+        -Comms => $comms,
+        -Client => $dav_client,
+    );
 
 On creation a Resource object needs 2 other objects passed in:
 
@@ -1595,19 +1595,19 @@ On creation a Resource object needs 2 other objects passed in:
 
 =head1 METHODS
 
-=over 4 
+=over 4
 
 
 =item B<get/GET>
 
-Performs an HTTP GET and returns a DAV::Response object.        
+Performs an HTTP GET and returns a DAV::Response object.
 
  $response = $resource->get;
  print $resource->get_content if ($response->is_success);
 
 =item B<put/PUT>
 
-Performs an HTTP PUT and returns a DAV::Response object.        
+Performs an HTTP PUT and returns a DAV::Response object.
 
 $response = $resource->put( $string );
 
@@ -1621,11 +1621,11 @@ Will use a Lock header if this resource was previously locked.
 
 =item B<copy>
 
-Not implemented 
+Not implemented
 
 =item B<move>
 
-Not implemented 
+Not implemented
 
 =item B<delete>
 
@@ -1666,7 +1666,7 @@ Performs a WebDAV PROPFIND request and returns a DAV::Response object.
     print $resource->get_property("displayname") . "\n";
  }
 
-A successful PROPFIND fills the object with much data about the Resource.  
+A successful PROPFIND fills the object with much data about the Resource.
 Including:
    displayname
    ...
@@ -1681,7 +1681,7 @@ Performs a WebDAV LOCK request and returns a DAV::Response object.
         -owner   => "Patrick Collins",
         -depth   => "infinity"
         -scope   => "exclusive",
-        -type    => "write" 
+        -type    => "write",
         -timeout => TIMEOUT',
      )
 
@@ -1690,17 +1690,17 @@ lock takes the following arguments.
 
 B<owner> - Indicates who locked this resource
 
-The default value is: 
- DAV.pm/v$DAV::VERSION ($$)
+The default value is:
 
- e.g. DAV.pm/v0.1 (123)
+  DAV.pm/v$DAV::VERSION ($$)
+
+  e.g. DAV.pm/v0.1 (123)
 
 If you use a URL as the owner, the module will
-automatically indicate to the server that is is a 
+automatically indicate to the server that is is a
 URL (<D:href>http://...</D:href>)
 
-
-B<depth> - Indicates the depth of the lock. 
+B<depth> - Indicates the depth of the lock.
 
 Legal values are 0 or infinity. (1 is not allowed).
 
@@ -1713,7 +1713,7 @@ B<scope> - Indicates the scope of the lock.
 
 Legal DAV values are "exclusive" or "shared".
 
-The default value is exclusive. 
+The default value is exclusive.
 
 See section 6.1 of RFC2518 for a description of shared vs. exclusive locks.
 
@@ -1727,7 +1727,7 @@ The default value is write.
 
 B<timeout> - Indicates when the lock will timeout
 
-The timeout value may be one of, an Absolute Date, a Time Offset from now, or the word "infinity". 
+The timeout value may be one of, an Absolute Date, a Time Offset from now, or the word "infinity".
 
 The default value is "infinity".
 
@@ -1744,24 +1744,25 @@ Time Offset:
 Absolute Date:
 
     timeout at the indicated time & date (UTC/GMT)
-       2000-02-31 00:40:33   
+       2000-02-31 00:40:33
 
     timeout at the indicated date (UTC/GMT)
-       2000-02-31            
+       2000-02-31
 
 You can use any of the Absolute Date formats specified in HTTP::Date (see perldoc HTTP::Date)
 
-Note: the DAV server may choose to ignore your specified timeout. 
+Note: the DAV server may choose to ignore your specified timeout.
 
 
 =item B<unlock>
 
 Performs a WebDAV UNLOCK request and returns a DAV::Response object.
 
- $response = $resource->unlock()
- $response = $resource->unlock( -force => 1 )
- $response = $resource->unlock( 
-    -token => "opaquelocktoken:1342-21423-2323" )
+  $response = $resource->unlock();
+
+  $response = $resource->unlock( -force => 1 );
+
+  $response = $resource->unlock( -token => "opaquelocktoken:1342-21423-2323" );
 
 This method will automatically use the correct locktoken If: header if this resource was previously locked.
 
@@ -1773,7 +1774,7 @@ Remove all locks from a resource and return the last DAV::Response object. This 
 
 $response = $resource->forcefully_unlock_all;
 
-This method will perform a lockdiscovery against the resource to determine all of the current locks. Then it will UNLOCK them one by one. unlock( -token => locktoken ). 
+This method will perform a lockdiscovery against the resource to determine all of the current locks. Then it will UNLOCK them one by one. unlock( -token => locktoken ).
 
 This unlock process is achievable because DAV does not enforce any security over locks.
 
@@ -1808,14 +1809,14 @@ print $resource->as_string
 
 =head1 ACCESSOR METHODS (get, set and is)
 
-=over 4 
+=over 4
 
 =item B<is_option>
 
 Returns a boolean indicating whether this resource supports the option passed in as a string. The option match is case insensitive so, PUT and Put are should both work.
 
  if ($resource->is_option( "PUT" ) ) {
-    $resource->put( ... ) 
+    $resource->put( ... );
  }
 
 Note: this routine automatically calls the options() routine which makes the request to the server. Subsequent calls to is_option will use the cached option list. To force a rerequest to the server call options()
@@ -1830,7 +1831,8 @@ B<owned> - this parameter is used to ask, is this resource locked by me?
 
 Note: You must have already called propfind() or lockdiscovery()
 
-e.g. 
+e.g.
+
 Is the resource locked at all?
  print "yes" if $resource->is_locked();
 
@@ -1842,7 +1844,7 @@ Is the resource locked by someone other than me?
 
 =item B<is_collection>
 
-Returns a boolean indicating whether this resource is a collection. 
+Returns a boolean indicating whether this resource is a collection.
 
  print "Directory" if ( $resource->is_collection );
 
@@ -1874,7 +1876,7 @@ Note: If $resource->options has not been called then it will return an empty arr
 =item B<get_content>
 
 Returns the resource's content/body as a string.
-The content is typically the result of a GET. 
+The content is typically the result of a GET.
 
 $content = $resource->get_content
 
@@ -1906,7 +1908,7 @@ B<owned> - this parameter indicates which locks you want.
 
 Note: You must have already called propfind() or lockdiscovery()
 
-e.g. 
+e.g.
  Give me my locks
   @lock = $resource->get_locks( -owned=>1 );
 
