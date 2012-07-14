@@ -6,8 +6,8 @@ use strict;
 use vars qw($VERSION $VERSION_DATE $DEBUG);
 
 # Globals
-$VERSION = '0.47';
-$VERSION_DATE = '2012/03/24';
+$VERSION = '0.47_01';
+$VERSION_DATE = '2012/07/14';
 
 # Set this up to 3
 $DEBUG = 0;
@@ -1009,26 +1009,30 @@ sub _put {
         my $fail    = 0;
         my $length  = 0;
 
+        # Content was passed in as a scalar ref
         if ($content_ptr) {
             $content = $$local;
             $length = length($content);
         }
+
+        # Content is a local file presumably
         else {
+
             $length = -s $local if -e $local;
             my $fh;
-            unless (CORE::open($fh, "<", $local)) {
-                $self->err( 'ERR_GENERIC',
-                    "Couldn't open local file $local: $!" );
-                $fail = 1;
+            if (! CORE::open($fh, "<", $local)) {
+                $self->err('ERR_GENERIC', "Couldn't open local file $local: $!");
+                return;
             }
-            else {
-                binmode($fh);
-            }
+
+            binmode($fh);
+
             # Setting the content to a simple subroutine will
-            # let it upload the file one piece at a time
+            # let it upload the file one piece at a time.
+            # HTTP::Request provides this functionality.
             $content = sub {
                 my $buffer;
-                my $num_bytes = read($fh, $buffer, 2048);
+                my $num_bytes = read($fh, $buffer, 4096);
                 if ($num_bytes) {
                     return $buffer;
                 }
@@ -1036,6 +1040,7 @@ sub _put {
                     close($fh);
                 }
             };
+
             # Since we set the content to be a subroutine,
             # we need to set the content length here since the
             # downstream code will no longer have access to the file name
@@ -1043,18 +1048,18 @@ sub _put {
             $custom_headers->{'Content-Length'} = $length;
         }
 
-        if ( !$fail ) {
-            my $resource = $self->new_resource( -uri => $target );
-            my $response = $resource->put($content,$custom_headers);
-            if ( $response->is_success ) {
-                $self->ok( "put $target (" . $length . " bytes)",
-                    $target );
-            }
-            else {
-                $self->err( 'ERR_RESP_FAIL',
-                    "put failed " . $response->message(), $target );
-            }
+        my $resource = $self->new_resource( -uri => $target );
+        my $response = $resource->put($content, $custom_headers);
+
+        if ($response->is_success) {
+            $self->ok("put $target ($length bytes)", $target);
         }
+        else {
+            $self->err('ERR_RESP_FAIL',
+                "put failed " . $response->message(), $target
+            );
+        }
+
     }
 }
 

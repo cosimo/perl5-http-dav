@@ -3,7 +3,7 @@ package HTTP::DAV::Comms;
 use strict;
 use vars qw($VERSION $DEBUG);
 
-$VERSION = q(0.23);
+$VERSION = '0.24';
 
 use HTTP::DAV::Utils;
 use HTTP::DAV::Response;
@@ -117,19 +117,16 @@ sub get_last_response { $_[0]->{_last_response}; }
 # Ensure there is a Host: header based on the URL
 #
 sub do_http_request {
-    my ( $self, @p ) = @_;
+    my ($self, @p) = @_;
 
-    my ( $method, $url, $newheaders, $content, $save_to, $callback_func,
-        $chunk )
-        = HTTP::DAV::Utils::rearrange(
-        [   'METHOD', [ 'URL', 'URI' ], 'HEADERS', 'CONTENT',
+    my ($method, $url, $newheaders, $content, $save_to, $callback_func, $chunk) =
+        HTTP::DAV::Utils::rearrange([
+	    'METHOD', [ 'URL', 'URI' ], 'HEADERS', 'CONTENT',
             'SAVE_TO', 'CALLBACK', 'CHUNK'
-        ],
-        @p
-        );
+        ], @p);
 
     # Method management
-    if ( !defined $method || $method eq "" || $method !~ /^\w+$/ ) {
+    if (! defined $method || $method eq "" || $method !~ /^\w+$/ ) {
         die "Incorrect HTTP Method specified in do_http_request: \"$method\"";
     }
     $method = uc($method);
@@ -162,10 +159,10 @@ sub do_http_request {
 
     # If the content is a subroutine, don't try to use it to determine
     # the length or type of the file.  We will have set the length earlier
-    unless ( ref($content) =~ /CODE/ ) {
+    if (ref($content) !~ m{CODE}) {
 
         my $length = ($content) ? length($content) : 0;
-        $headers->header( "Content-Length", $length );
+        $headers->header("Content-Length", $length);
 
         #print "HTTP HEADERS\n" . $self->get_headers->as_string . "\n\n";
 
@@ -177,16 +174,16 @@ sub do_http_request {
         #@userpass = $self->{_user_agent}->get_basic_credentials(undef, $url);
 
         # Add a Content-type of text/xml if the body has <?xml in it
-        if ( $content && $content =~ /<\?xml/i ) {
-            $headers->header( "Content-Type", "text/xml" );
+        if ($content && $content =~ /<\?xml/i) {
+            $headers->header("Content-Type" => "text/xml");
         }
     }
 
     ####
     # Do the HTTP call
-    my $req
-        = HTTP::Request->new( $method, $url_obj, $headers->to_http_headers,
-        $content );
+    my $req = HTTP::Request->new(
+	$method, $url_obj, $headers->to_http_headers, $content,
+    );
 
     # It really bugs me, but libwww-perl doesn't honour this call.
     # I'll leave it here anyway for future compatibility.

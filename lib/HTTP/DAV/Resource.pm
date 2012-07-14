@@ -3,7 +3,7 @@ package HTTP::DAV::Resource;
 use strict;
 use vars qw($VERSION);
 
-$VERSION = '0.31';
+$VERSION = '0.32';
 
 use HTTP::DAV;
 use HTTP::DAV::Utils;
