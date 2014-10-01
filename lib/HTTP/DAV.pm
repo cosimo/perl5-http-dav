@@ -1018,7 +1018,7 @@ sub _put {
             }
             else {
                 binmode F;
-                while (<F>) { $content .= $_; }
+                while (my $line = <F>) { $content .= $line; }
                 close F;
             }
         }
