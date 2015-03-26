@@ -158,20 +158,19 @@ sub get_locktokens {
          my $u = $url->canonical();
 
          # Add a trailing slash
-         s{/*$}{/} for $r, $u;
+         $r =~ s{/*$}{/};
+         $u =~ s{/*$}{/};
 
-         if ($u =~ /\Q$r/ ) {
-
+         if ($u =~ m{\Q$r}) {
             my @locks = $resource->get_locks(-owned=>$owned);
-            #my $uri = $resource_uri->path();
             foreach my $lock (@locks) {
                my @lock_tokens = @{$lock->get_locktokens()};
                push(@{$tokens{$resource_uri}}, @lock_tokens);
             }
-
          }
 
       } # foreach uri
+
    } # foreach resource
 
    return \%tokens;
