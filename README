@@ -14,16 +14,15 @@ PerlDAV -- A WebDAV client library for Perl5
 LATEST VERSION AND WHAT'S NEW
     See the included "Changes" file for the full changelog.
 
-INSTALLING PERLDAV
+INSTALLING HTTP::DAV
     The lazy way to install PerlDAV:
 
-       $ perl -MCPAN -e shell
-       cpan> install HTTP::DAV
+       $ cpan HTTP::DAV
 
     Or the normal way:
 
     Retrieve the latest copy from CPAN:
-    http://search.cpan.org/dist/HTTP-DAV/
+    https://metacpan.org/module/HTTP-DAV/
 
        $ perl Makefile.PL # Creates the Makefile
        $ make             # Runs the makefile
@@ -39,7 +38,7 @@ INSTALLING PERLDAV
     "dave" will be installed to /usr/local/bin. This suits most people but
     you can modify this by using the INSTALLBIN flag:
 
-       $ perl Makefile.PL INSTALLBIN="/home/pcollins/bin"
+       $ perl Makefile.PL INSTALLBIN="/home/user/bin"
 
   What Are The Prerequisites?
     *   Perl 5.6.0+

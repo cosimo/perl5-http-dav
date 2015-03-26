@@ -31,16 +31,15 @@ B<dave> - the DAV Explorer, an end-user Unix console program for interacting wit
 
 See the included C<Changes> file for the full changelog.
 
-=head1 INSTALLING PERLDAV
+=head1 INSTALLING HTTP::DAV
 
 The lazy way to install PerlDAV:
 
-   $ perl -MCPAN -e shell
-   cpan> install HTTP::DAV
+   $ cpan HTTP::DAV
 
 Or the normal way:
 
-Retrieve the latest copy from CPAN: http://search.cpan.org/dist/HTTP-DAV/
+Retrieve the latest copy from CPAN: https://metacpan.org/module/HTTP-DAV/
 
    $ perl Makefile.PL # Creates the Makefile
    $ make             # Runs the makefile
@@ -53,7 +52,7 @@ When you install PerlDAV, the HTTP::DAV library will be installed to your Perl l
 
 C<dave> will be installed to /usr/local/bin. This suits most people but you can modify this by using the INSTALLBIN flag:
 
-   $ perl Makefile.PL INSTALLBIN="/home/pcollins/bin"
+   $ perl Makefile.PL INSTALLBIN="/home/user/bin"
 
 =head2 What Are The Prerequisites?
 
@@ -78,8 +77,7 @@ Requires James Clark's expat library:
 
 =item *
 
-To access SSL urls you will need L<Crypt::SSLeay>
-and/or L<IO::Socket::SSL>.
+To access SSL urls you will need L<Crypt::SSLeay> and/or L<IO::Socket::SSL>.
 
 =back
 

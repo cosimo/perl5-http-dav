@@ -1,4 +1,15 @@
 Revision history for HTTP::DAV
+  v0.48 (released 2015/03/26):
+    *   bug fixes
+
+        "RT#103126", fixed faulty code to add trailing slash to URLs.
+
+  v0.47 (released 2012/03/24):
+    *   bug fixes
+
+        Improve "propfind()" resilience when server response contains
+        broken, truncated or no XML at all. RT#75011.
+
   v0.46 (released 2012/01/11):
     *   improvements
 

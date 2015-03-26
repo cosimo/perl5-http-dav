@@ -7,7 +7,7 @@ HTML="doc/html"
 
 echo "Updating \"The latest version is: ...\" string in doc/README.pod"
 
-perl -pi -e 'BEGIN{require "./DAV.pm";}; s/(latest version is:\s*v).*/$1$HTTP::DAV::VERSION (released $HTTP::DAV::VERSION_DATE)/gi;' doc/README.pod
+perl -pi -e 'BEGIN{require "./lib/HTTP/DAV.pm";}; s/(latest version is:\s*v).*/$1$HTTP::DAV::VERSION (released $HTTP::DAV::VERSION_DATE)/gi;' doc/README.pod
 
 echo "Making html docs"
 pod2html="pod2html --noindex --htmldir $HTML"
