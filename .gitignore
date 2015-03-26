@@ -5,4 +5,5 @@ Makefile.old
 MANIFEST.bak
 blib
 pod2htm*
-
+MYMETA.yml
+MYMETA.json
