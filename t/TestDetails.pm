@@ -39,7 +39,10 @@ my %details = (
 ######################################################################
 
 my $method = "";
-my $PERLDAV_TEST = lc $ENV{'PERLDAV_TEST'} || 'default';
+my $PERLDAV_TEST = 'default';
+if (defined $ENV{'PERLDAV_TEST'}) {
+    $PERLDAV_TEST = lc $ENV{'PERLDAV_TEST'} || 'default';
+}
 
 our $test_user = user();
 our $test_pass = pass();
