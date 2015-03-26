@@ -12,6 +12,16 @@ Revision history for HTTP::DAV
 
 =end text
 
+=head2 v0.48 (released 2015/03/26):
+
+=over 4
+
+=item * B<bug fixes>
+
+C<RT#103126>, fixed faulty code to add trailing slash to URLs.
+
+=back
+
 =head2 v0.47 (released 2012/03/24):
 
 =over 4

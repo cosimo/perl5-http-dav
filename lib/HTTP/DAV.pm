@@ -6,8 +6,8 @@ use strict;
 use vars qw($VERSION $VERSION_DATE $DEBUG);
 
 # Globals
-$VERSION = '0.47';
-$VERSION_DATE = '2012/03/24';
+$VERSION = '0.48';
+$VERSION_DATE = '2015/03/26';
 
 # Set this up to 3
 $DEBUG = 0;
