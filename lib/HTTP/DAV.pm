@@ -831,7 +831,7 @@ sub propfind {
 
     # Make the call
     my $resp = $resource->propfind( -depth => $depth );
-    if ( $resp->is_success() ) {
+    if ($resp->is_success() || $resp->code == 207) {
         $resource->build_ls($resource);
         $self->ok( "propfind " . $resource->get_uri() . " succeeded", $url );
         return $resource;

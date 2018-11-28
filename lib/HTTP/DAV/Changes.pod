@@ -21,6 +21,9 @@ Revision history for HTTP::DAV
 Fixed perl shebang line in C<dave> script, for ExtUtils::MakeMaker to correctly
 replace it. Closes C<RT#127819>.
 
+Fixed C<propfind> response handling to also consider successful an HTTP 207
+status code. Closes C<RT#127591>.
+
 =back
 
 =head2 v0.48 (released 2015/03/26):
