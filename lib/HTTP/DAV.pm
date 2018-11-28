@@ -6,8 +6,8 @@ use strict;
 use vars qw($VERSION $VERSION_DATE $DEBUG);
 
 # Globals
-$VERSION = '0.48';
-$VERSION_DATE = '2015/03/26';
+$VERSION = '0.48.RT123528';
+$VERSION_DATE = '2018/08/05';
 
 # Set this up to 3
 $DEBUG = 0;
@@ -36,7 +36,7 @@ sub new {
 
 ###########################################################################
 sub clone {
-    my $self  = @_;
+    my ($self)= @_;
     my $class = ref($self);
     my %clone = %{$self};
     bless {%clone}, $class;
