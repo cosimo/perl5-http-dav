@@ -1773,7 +1773,7 @@ The return value is always 1 or 0 indicating success or failure.
 
 See L<get()> for a description of what the optional callback parameter does.
 
-You can also pass a C<-headers> argument. That allows to specify custom HTTP headers. It can be either a hashref with header names and values, or a L<HTTP::Headers> object.
+You can also pass a C<-headers> argument. That allows one to specify custom HTTP headers. It can be either a hashref with header names and values, or a L<HTTP::Headers> object.
 
 B<put examples:>
 
@@ -2045,7 +2045,7 @@ or the README file in this library.
 
 You'll want to also read:
 
-=over *
+=over
 
 =item C<HTTP::DAV::Response>
 
@@ -2057,7 +2057,7 @@ You'll want to also read:
 
 and maybe if you're more inquisitive:
 
-=over *
+=over
 
 =item C<LWP::UserAgent>
 
