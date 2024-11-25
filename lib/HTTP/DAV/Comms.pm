@@ -160,21 +160,26 @@ sub do_http_request {
     #$headers->header("Host", $url_obj->host);
     $headers->header( "Host", $url_obj->host_port );
 
-    my $length = ($content) ? length($content) : 0;
-    $headers->header( "Content-Length", $length );
+    # If the content is a subroutine, don't try to use it to determine
+    # the length or type of the file.  We will have set the length earlier
+    if (ref($content) !~ m{CODE}) {
 
-    #print "HTTP HEADERS\n" . $self->get_headers->as_string . "\n\n";
+        my $length = ($content) ? length($content) : 0;
+        $headers->header("Content-Length", $length);
 
-    # It would be good if, at this stage, we could prefill the
-    # username and password values to prevent the client having
-    # to submit 2 requests, submit->401, submit->200
-    # This is the same kind of username, password remembering
-    # functionality that a browser performs.
-    #@userpass = $self->{_user_agent}->get_basic_credentials(undef, $url);
+        #print "HTTP HEADERS\n" . $self->get_headers->as_string . "\n\n";
 
-    # Add a Content-type of text/xml if the body has <?xml in it
-    if ( $content && $content =~ /<\?xml/i ) {
-        $headers->header( "Content-Type", "text/xml" );
+        # It would be good if, at this stage, we could prefill the
+        # username and password values to prevent the client having
+        # to submit 2 requests, submit->401, submit->200
+        # This is the same kind of username, password remembering
+        # functionality that a browser performs.
+        #@userpass = $self->{_user_agent}->get_basic_credentials(undef, $url);
+
+        # Add a Content-type of text/xml if the body has <?xml in it
+        if ($content && $content =~ /<\?xml/i) {
+            $headers->header("Content-Type" => "text/xml");
+        }
     }
 
     ####

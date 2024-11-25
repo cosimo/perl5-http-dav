@@ -1007,33 +1007,68 @@ sub _put {
     else {
         my $content = "";
         my $fail    = 0;
+        my $length  = 0;
+
+        # Content was passed in as a scalar ref
         if ($content_ptr) {
             $content = $$local;
-        }
-        else {
-            if ( !CORE::open( F, $local ) ) {
-                $self->err( 'ERR_GENERIC',
-                    "Couldn't open local file $local: $!" );
-                $fail = 1;
-            }
-            else {
-                binmode F;
-                while (my $line = <F>) { $content .= $line; }
-                close F;
-            }
+            $length = length($content);
         }
 
-        if ( !$fail ) {
-            my $resource = $self->new_resource( -uri => $target );
-            my $response = $resource->put($content,$custom_headers);
-            if ( $response->is_success ) {
-                $self->ok( "put $target (" . length($content) . " bytes)",
-                    $target );
+        # Content is a local file presumably
+        else {
+            $length = -s $local if -e $local;
+            my $fh;
+            if (! CORE::open($fh, "<", $local)) {
+                $self->err('ERR_GENERIC', "Couldn't open local file $local: $!");
+                return;
             }
-            else {
-                $self->err( 'ERR_RESP_FAIL',
-                    "put failed " . $response->message(), $target );
+
+            binmode($fh);
+
+            # Setting the content to a simple subroutine will
+            # let it upload the file one piece at a time.
+            # HTTP::Request provides this functionality.
+            $content = sub {
+                my $buffer;
+                my $num_bytes = read($fh, $buffer, 4096);
+                if ($num_bytes) {
+                    return $buffer;
+                }
+                else {
+                    close($fh);
+                }
+            };
+
+            # Since we set the content to be a subroutine,
+            # we need to set the content length here since the
+            # downstream code will no longer have access to the file name
+            $custom_headers = {} unless $custom_headers;
+            $custom_headers->{'Content-Length'} = $length;
+
+            # Simple check to see if the file is XML
+            # In HTTP::DAV::Comms::do_http_request(), the
+            # content is checked against a regular expression.
+            # But it cannot do this when the file is being streamed.
+            # So, we'll check the beginning of the file since that is
+            # where the "<?xml" tag would be present.
+            my $file_header;
+            my $bytes = read($fh, $file_header, 4096);
+            seek($fh, 0, 0);
+            if ($bytes && $file_header =~ /<\?xml/i) {
+                $custom_headers->{'Content-Type'} = 'text/xml';
             }
+        }
+        my $resource = $self->new_resource( -uri => $target );
+        my $response = $resource->put($content, $custom_headers);
+
+        if ($response->is_success) {
+            $self->ok("put $target ($length bytes)", $target);
+         }
+        else {
+            $self->err('ERR_RESP_FAIL',
+                "put failed " . $response->message(), $target
+            );
         }
     }
 }
