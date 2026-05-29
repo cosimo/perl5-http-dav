@@ -90,6 +90,7 @@ my %command_synonyms = qw(
    ?     help
    q     quit
    bye   quit
+   exit  quit
    h     help
    dir   ls
    mkdir mkcol
