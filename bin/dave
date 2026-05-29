@@ -93,6 +93,7 @@ my %command_synonyms = qw(
    h     help
    dir   ls
    mkdir mkcol
+   rmcol delete
    rmdir delete
    rm    delete
    cp    copy
